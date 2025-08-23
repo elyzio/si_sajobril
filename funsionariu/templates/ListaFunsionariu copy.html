@@ -1,0 +1,204 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<section>
+        <div class="container mt-5 border p-3">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              {% if page == "form" %}
+              <li class="breadcrumb-item"><a href="{% url 'ListaFunsionariu' %}">Lista Professores</a></li>
+              {% endif %}
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+          {% if page == "list" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <h4>Tabela Lista Professores</h4>
+                  <div class="d-flex justify-content-between">
+                    {% if  group == "Secretario" or group == "admin" %}
+                     <a href="{% url 'AddFunsionariu' %}" class="btn btn-sm btn-info mr-2 title="Add Data"> <i class="fa fa-plus-square"></i> Rejistu Professores </a>
+                    {%endif%} 
+                    {% if  group == "Secretario" or group == "Director" %}
+                     <a href="{% url 'e-active-funsionariu' %}" class="btn btn-sm btn-info mr-2" title="print Data" target="_blank"> <i class="fa fa-print"></i>Print</a>
+                     {%endif%}  
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th class="text-center"><i class="fa fa-user"></i></th>
+                          <th>Naran</th>
+                          <th>Sexu</th>
+                          <th>Pozisaun</th>
+                         <th>Departamento</th>
+                          <th>Email</th> 
+                          {% if  group == "Secretario" %}
+                          <th class="text-center">Aksaun</th>
+                          {%endif%}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in listaFunsionariu %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td class="text-center">{% if data.image %}<a href="{{data.image.url}}" target="_blank"><img src="{{data.image.url}}" width="50px" height="50px"></a>{%else%}{%endif%}</td>
+                          <td><a href="{% url 'detailViewprof' data.id %}">{{ data.naran }}</td>
+                          <td>{{ data.Sexo }}</td>
+                          <td>{{ data.pozisaun }}</td>
+                          <td>{{ data.departamento }}</td>
+                          <td>{{ data.email }}</td> 
+                          {% if  group == "Secretario" %}
+                           <td>
+                            <div class="d-flex">
+                              <div class="flex-fill"><a href="{% url 'UpdateFunsionariu' data.id %}" class="btn btn-sm btn-warning" title="Update"><i class="fa fa-edit"></i></a></div>
+                              <div class="flex-fill"> <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#delete-{{ data.id }}" style="text-decoration: none"><i class="fa fa-trash"></i></button></div>
+                            </div>
+                           </td>
+                           {%endif%}
+                          <div class="modal fade" id="delete-{{ data.id}}"><!-- modal -->
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Delete Estudante</h4>
+                                  <button type="button" class="close" data-dismiss="modal">X</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                  Ita Boot hakarak hamoos dadus professor {{data.naran}}?
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                  <a href="{% url 'deleteprof' data.id %}" class="btn btn-info">Yes</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div><!-- endmodal -->
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {%endif%}
+          {% if page == "form" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                </div>
+                <div class="card-body">
+                  {% csrf_token %}
+                  {% crispy form %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <script src="{% static 'main/js/jquery.min.js'%}"> </script>
+          <script type="text/javascript">
+            $("#id_areamunicipality").change(function () {
+              var municipalityId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_posts' %}",
+                data: {
+                  'municipality': municipalityId
+                },
+                success: function (data) {
+                  $("#id_areaadministrativepost").html(data);
+                }
+
+              });
+            });
+            $("#id_areaadministrativepost").change(function () {
+              var postId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_villages' %}",
+                data: {
+                  'post': postId
+                },
+                success: function (data) {
+                  $("#id_areavillage").html(data);
+                }
+              });
+
+            });
+            $("#id_municipality").change(function () {
+              var municipalityId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_posts' %}",
+                data: {
+                  'municipality': municipalityId
+                },
+                success: function (data) {
+                  $("#id_administrativepost").html(data);
+                }
+
+              });
+            });
+            $("#id_administrativepost").change(function () {
+              var postId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_villages' %}",
+                data: {
+                  'post': postId
+                },
+                success: function (data) {
+                  $("#id_village").html(data);
+                }
+              });
+
+            });
+            $("#id_village").change(function () {
+              var villageId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_aldeias' %}",
+                data: {
+                  'village': villageId
+                },
+                success: function (data) {
+                  $("#id_aldeia").html(data);
+                }
+              });
+
+            });
+          //load Imagen
+            function myFunction() {
+              var image = document.getElementById("output");
+              image.src = URL.createObjectURL(event.target.files[0]);
+            }
+          	
+          </script>
+          {%endif%}
+        </div>
+      </section>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

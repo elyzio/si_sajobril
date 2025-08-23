@@ -1,0 +1,59 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+	<div class="container-fluid pt-5">
+		<header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              {% if page == "form" %}
+              <li class="breadcrumb-item"><a href="{% url 'ListaDep' %}">Lista Departamento</a></li>
+              {%endif%}
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+        </header>
+        <div class="row">
+            <div class="col-lg-12">
+              	<div class="card">
+	                <div class="card-body">
+	                	<h2><p>Formulariu Adisiona Klasse Departamentu</p></h2>
+							{% csrf_token %}
+							{% crispy form %}
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+<script src="{% static 'main/js/jquery.min.js'%}"> </script>
+          <script type="text/javascript">
+            $("#id_Departamento").change(function () {
+              var DepartamentoId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_classe' %}",
+                data: {
+                  'Departamento': DepartamentoId
+                },
+                success: function (data) {
+                  $("#id_Classe").html(data);
+                }
+
+              });
+            });
+            $("#id_Classe").change(function () {
+              var classeId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_classe' %}",
+                data: {
+                  'name': classeId
+                },
+                success: function (data) {
+                  $("#id_Turma").html(data);
+                }
+              });
+
+            });
+             
+          </script>
+{% endblock %}

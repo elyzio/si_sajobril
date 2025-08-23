@@ -1,0 +1,71 @@
+{% extends 'public_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section>
+    <div class="row">
+      <div class="card col-lg-5">
+        <div class="card-header">
+        <h5 align="center">{{title|upper}}</h5></div>
+        <hr/>
+      <!-- estudante kada tinan -->
+                      <div class="table-responsive">
+                        <table id="#" class="table table-sm table-bordered" style="width:100%">
+                          <tr class="text-center">
+                            <th rowspan="2">Nu</th>
+                            <th rowspan="2">Tinan</th>
+                            <th colspan="3">Total Estudante</th>
+                          </tr>
+                          <tr class="text-center"> 
+                            <td>Mane</td>
+                            <td>Feto</td>
+                            <td>Total</td>
+                          </tr>
+                          {% for xx in looping_total_estudante_tin %}
+                <tr class="text-center">
+                  <td>{{forloop.counter}}</td>
+                  <th>{{xx.ano}}</th> 
+                  <td><a href="{% url 'public_list_estudante_Mane' xx.id%}">{% if xx.total_sexo_Mane_tinan %}{{xx.total_sexo_Mane_tinan}}{% else %} 0 {% endif %}</a></td>
+                  <td><a href="{% url 'public_list_estudante_feto' xx.id%}">{% if xx.total_sexo_Feto_tinan %}{{xx.total_sexo_Feto_tinan}}{% else %} 0 {% endif %}</a></td>
+                  <td><a href="{% url 'public_Listaestudante_tin' xx.id %}">{% if xx.total_estudante_kada_tinan %}{{xx.total_estudante_kada_tinan}}{% else %} 0 {% endif %}</a></td>
+                  
+                </tr>
+                {% endfor %}
+                </table>
+              </div>
+            </div>
+            <!-- grafik kode -->
+                  <div class="card col-lg-7">
+                      <div class="card-body"><!-- Area Chart Estudante Feto No MAne-->
+                       <div class="col-lg-12 text-center">
+                        <div class="col-md">
+                         <div class="card text-center text-dark mb-4">
+                           <div class="card-header" id="s_boxs">
+                            <h6 class="card-title text-center">Grafiku Total Estudante Tuir Tinan</h6></div>
+                            <div id="publictinan" style="height: 250px;" class="echart"></div>
+                          </div>
+                        </div>
+                      </div>
+                     </div> 
+                    </div>
+                    
+                 </div>
+               </div>
+               <script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+              <script type="text/javascript">{% include 'js/tinanpublic.js' %}</script>
+              <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+              <script src="{% static 'js/apexcharts.min.js' %}"></script>
+              <script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+              <script src="{% static 'js/echarts.min.js' %}"></script>
+            </section>
+
+        {%endblock%}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

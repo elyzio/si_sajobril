@@ -1,0 +1,99 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<section>
+        <div class="container-fluid">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              
+              <li class="breadcrumb-item"><a href="{% url 'ListaDep' %}">Lista Departamento</a></li>
+              
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+          
+          <div class="row">
+            {% include 'conf_side/conf_list.html' %}
+           
+            <div class="col-lg-9">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <h4> Tabela Lista Periodu exame </h4>
+                  <div class="d-flex justify-content-between"> 
+
+                     <a href="{%url 'adisiona-periode-exame'%}" class="btn btn-sm btn-info mr-2" title="Add Data"> <i class="fa fa-plus-square"></i> Rejistu Periode</a>
+                     
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th>Periodu</th>
+                          <th width="15%">Asaun</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for pr in pr %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{pr.nome_periode}}</td>
+                         
+                          
+                          <td>
+                            <div class="d-flex">
+                              <div class="flex-fill"><a href="{% url 'update-periode' pr.id %}" class="btn btn-sm btn-primary" title="Update"><i class="fa fa-pencil"></i></a></div>
+                              <div class="flex-fill"> <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#delete-{{ pr.id }}" style="text-decoration: none"><i class="fa fa-trash"></i></button></div>
+                            </div>
+                           </td>
+
+                          <div class="modal fade" id="delete-{{ pr.id}}"><!-- modal -->
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Delete Periode</h4>
+                                  <button type="button" class="close" data-dismiss="modal">X</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                  Ita Boot hakarak hamoos dadus Periode ?
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                  <a href="{% url 'Delete-periode' pr.id %}" class="btn btn-info">Yes</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div><!-- endmodal -->
+                        </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

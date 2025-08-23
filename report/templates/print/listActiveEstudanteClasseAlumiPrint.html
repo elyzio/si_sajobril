@@ -1,0 +1,132 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <section>
+        <div class="container mt-5 border p-3">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+             
+              <li class="breadcrumb-item"><a href="#">Relatoriu Estudante</a></li>
+              
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+  
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example" class="table table-bordered ">
+                      <thead>
+                        <tr>
+                            <th>Nu</th>
+                            <th>Ano Academico</th>
+                            <th width="100px">EMIS</th>
+                            <th >Naran </th>
+                            <th>Sexo</th>
+                            <th>Departamento</th>
+                            <th>Classe</th>
+                            <th>Turma</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in objects %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td>{{data.Ano_Academinco}}</td>
+                          <td> {{ data.estudante.emis }}</td>
+                          <td>{{ data.estudante.naran }}</td>
+                          <td>{{ data.estudante.Sexo }}</td>
+                          <td>{{ data.Turma.classe.Departamento.nome_departamento }}</td>
+                          <td>{{ data.Turma.classe.name }}</td>
+                          <td>{{ data.Turma.Turma }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </section>
+    
+          
+{% endblock %}
+{% block scripts %}
+<link href="{% static 'main/datatables/css/searchBuilder.dataTables.min.css' %}" rel="stylesheet">
+<link href="{% static 'main/datatables/css/searchBuilder.bootstrap4.min.css' %}" rel="stylesheet">
+<link href="{% static 'main/datatables/css/buttons.dataTables.min.css' %}" rel="stylesheet">
+<style type="text/css">
+    .dtsb-searchBuilder{
+        background: #b9c7e6 !important;
+        padding: 5px
+    }
+    .dt-button, .dtsb-add {
+        background: white !important;
+    }
+</style>
+<script src="{% static 'main/datatables/js/dataTables.searchBuilder.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/searchBuilder.bootstrap4.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/jszip.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/pdfmake.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/vfs_fonts.js' %}"></script>
+<script src="{% static 'main/datatables/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'main/datatables/js/buttons.colVis.min.js' %}"></script>
+
+
+<script>
+$(document).ready( function () {
+    var table = $('#example').removeAttr('width').DataTable( {
+        "scrollY": "50vh",
+        "scrollX": true,
+        "scrollCollapse": true,
+        "paging": true,
+        searchBuilder: true,
+        buttons:[
+            {
+                extend: 'excelHtml5', autoFilter: true, sheetName: 'Exported data'
+            },
+            {
+                extend: 'print', autoPrint: true, orientation: 'landscape', pageSize: 'LEGAL',
+                exportOptions: { columns: ':visible' },
+                messageBottom: '<br/><br/><br/><table border=0 width=100%>\
+                    <tr><td colspan=2>Dili, __________, Fulan ____________ 20_______<br/><br/><br/><br/></td></tr>\
+                <tr><td>(______________________________________________)</td></tr>\
+                    </table>',
+                title: '',
+                customize: function ( win ) {
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<center><img src="http://localhost:8000/static/main/images/lologo.jpg" width="90%"/></center><br/>'
+                        );
+
+                    $(win.document.body).find( 'table' )
+                        .addClass( 'compact','table-bordered' )
+                        .css( 'font-size', 'inherit' );
+                }
+            },
+            'colvis',
+        ],
+        dom: 'Bfrtip',
+        "deferRender": true
+    });
+    table.searchBuilder.container().prependTo(table.table().container());
+} );
+</script>
+{% endblock %}

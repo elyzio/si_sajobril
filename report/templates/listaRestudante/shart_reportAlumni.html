@@ -1,0 +1,57 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<div class="col-sm-12">
+		<div class="card shadow-lg pt-3 rounded">
+			<div class="card-body text-center">
+				
+					<h2> <font color="black" face="Impact">RELATORIU GRAFIKU TOTAL ALUMNI </h2></font>
+					<hr>
+				
+			</div>
+      <!-- Area Chart Estudante Feto No MAne-->
+ <div class="row"> 
+  <!-- Area Chart Estudante Feto No MAne-->
+    <div class="col-lg-6 text-center">
+      <div class="col-md">
+          <div class="card text-center text-dark mb-5">
+            <div class="card-header" id="s_boxs">
+              <h6 class="card-title text-center">ESTUDANTE ALUMNI TUIR TINAN AKADEMIKU BAZEIA BA SEXU</h6></div>
+                   <div id="reportsChartalumniTinan" style="height: 400px;" class="echart"></div>
+            </div>
+          </div>
+        </div>
+
+    <div class="col-sm-6">
+    <div class="card shadow-lg pt-3 rounded">
+      <div class="card-header text-center">ESTUDANTE ALUMNI TUIR DEPARTAMENTO BASEIA BA TINAN</div>
+      <div class="card-body text-center">
+               <div id="departamentuAlumni" style="height: 250px;" class="echart"></div>
+      </div>    
+    </div> <!-- end card head  -->
+    </div>
+
+    <div class="col-sm-12">
+    <div class="card shadow-lg pt-3 rounded">
+      <div class="card-header text-center">ESTUDANTE ALUMNI  TUIR MUNISIPIU </div>
+      <div class="card-body text-center">
+               <div id="reportsChart8munAlumni" style="height: 250px;" class="echart"></div>
+      </div>    
+    </div> <!-- end card head  -->
+    </div>
+
+    </div>
+		</div> <!-- end card head  -->
+</div>
+<script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+<script type="text/javascript">{% include 'charts-js/chart-alumni-tinan.js' %}</script>
+<script type="text/javascript">{% include 'charts-js/charts-class-estudante-Alumni.js' %}</script>
+<script type="text/javascript">{% include 'charts-js/charts-mun-alumni.js' %}</script>
+<script type="text/javascript">{% include 'charts-js/chartClasse.js' %}</script>
+ <script type="text/javascript">{% include 'charts-js/departamentu.js' %}</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/apexcharts.min.js' %}"></script>
+<script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/echarts.min.js' %}"></script>
+{% endblock %}

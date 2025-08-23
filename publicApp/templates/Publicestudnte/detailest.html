@@ -1,0 +1,98 @@
+{% extends 'public_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+		<header class="page-header">
+            <div class="container-fluid">
+              <h2 class="no-margin-bottom"><center>DETALLU INFORMASAUN ESTUDANTE</center></h2><br>
+            </div>
+        </header>
+          <!-- Breadcrumb-->
+        <div class="breadcrumb-holder container-fluid d-flex justify-content-between">
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'index_public' %}">Home</a></li>
+              <li class="breadcrumb-item active">User Profile</li>
+            </ul> 
+            <button class="btn btn-outline-info btn-sm mr-2 mt-3 h6" style="height: 30px;color: blue;font-size: 0.7rem" onclick=self.history.back()><span class="fa fa-angle-left"></span> Back</button> 
+        </div>
+<section class="tables">   
+    <div class="container-fluid">
+    				{% if messages %}
+                        {% for message in messages %} 
+                            <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+		<div class="row">
+      <div class="col-xl-3 col-md-4 card shadow-lg pt-3 rounded">
+        <div class="card mb-4 box-shadow" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div class="card-body">
+            <img class="card-img" style="border-radius: 0px" height="250" width="315" src="{{est.image.url}}">
+            </div>
+            <div class="d-flex card-footer justify-content-between align-item-center">
+                <small class="text-muted text-center">Profile picture</small>
+            </div>
+        </div>
+      
+      </div> <!--end card-md-6-->
+      <div class="col-xl-8 col-md-8 ">
+        <div class="card shadow-lg pt-3 rounded">
+          <div class="card-header text-center text-bold"><h3>INFORASAUN PESSOAL</h3></div>
+         
+          <div class="card-body mb-5">
+
+          	<table class="table table-hover table-striped">
+          		<tr>
+          			<th>Data Resisto :</th><td>{{est.data_resisto}}</td>
+          		</tr>
+          		<tr>
+          			<th>Emis :</th><td>{{est.emis}}</td>
+          		</tr>
+          		<tr>
+          			<th>Naran Kompletu :</th><td>{{est.naran}}</td>
+          		</tr>
+          		<tr>
+          			<th>Fatin Moris :</th><td>{{est.municipality}} /{{est.administrativepost}} / {{est.village}} / {{est.aldeia}}</td>
+          		</tr>
+          	
+          		<tr>
+          			<th>Data Moris :</th><td>{{est.Data_moris}}</td>
+          		</tr>
+
+          			<tr>
+          			<th>Sexo :</th><td>{{est.Sexo}}</td>
+          		</tr>
+          		<tr>
+          			<th>Aman :</th><td>{{est.naran_aman}}</td>
+          		</tr>
+          		<tr>
+          			<th>Inan :</th><td>{{est.naran_inan}}</td>
+          		</tr>
+          		<tr>
+          			<th>Nu.Telefone : :</th><td>{{est.nu_telefone}}</td>
+          		</tr>
+          		<tr>
+          			<th>Religiaun :</th><td>{{est.religiaun}}</td>
+          		</tr>
+              <tr>
+                <th>Departamento :</th><td>{{detailest.Turma.classe.Departamento.nome_departamento}}</td>
+              </tr>
+              <tr>
+              <tr>
+                <th>Klasse :</th><td>{{detailest.Turma.classe.name}}</td>
+              </tr>
+              <tr>
+                <th>Turma :</th><td>{{detailest.Turma.Turma}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div> <!--end card-md-6-->
+    </div> <!--end row-->
+	</div>
+</section>
+
+{% endblock  %}

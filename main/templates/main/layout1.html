@@ -1,0 +1,55 @@
+{% load static %}
+{% include 'main/head.html' %}
+
+{% block head_link %} {% endblock head_link %}
+
+<!-- main CSS
+		============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/main.css' %}">
+<!-- style CSS
+            ============================================ -->
+<link rel="stylesheet" href="{% static 'notica/style.css' %}">
+<!-- responsive CSS
+            ============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/responsive.css' %}">
+<!-- modernizr JS
+            ============================================ -->
+<script src="{% static 'notica/js/vendor/modernizr-2.8.3.min.js' %}"></script>
+
+</head>
+{% include 'main/header.html' %}
+
+{% if user.is_authenticated %}
+    {% if user.groups.all.0.name == 'Director' %}
+        {% include 'main/nav.html' %}
+    {% elif user.groups.all.0.name == 'Secretario' %}
+        {% include 'main/navSec.html' %}
+    {% elif user.groups.all.0.name == 'kurikulum' %}
+        {% include 'main/nav.html' %}
+    {% elif user.groups.all.0.name == 'admin' %}
+        {% include 'main/nav.html' %}
+    {% elif user.groups.all.0.name == 'estudante' %}
+        {% include 'main/navest.html' %}
+    {% elif user.groups.all.0.name == 'professor' %}
+        {% include 'main/navProf.html' %}
+    {% endif %}
+{% endif %}
+<div class="main-content">
+{% block contents %} {% endblock contents %}
+</div>
+
+{% include 'main/footer.html' %}
+{% include 'main/script.html' %}
+
+
+{% block scripts %} {% endblock scripts %}
+
+<!-- main JS
+            ============================================ -->
+<script src="{% static 'notica/js/main.js' %}"></script>
+<!-- tawk chat JS
+                ============================================ -->
+<!-- <script src="{% static 'notica/js/tawk-chat.js' %}"></script> -->
+</body>
+
+</html>

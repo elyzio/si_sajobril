@@ -1,0 +1,119 @@
+{% extends 'public_base.html' %}
+{% load static %}
+{% block content %}
+     <div class="card">
+      <!-- /.row -->
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-users fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">{{totalEstudantes}}</div>
+                                            <div> Total Estudante</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-users fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">{{totalEstMane}}</div>
+                                            <div>Total Estudante Mane</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-users fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">{{totalEstFeto}}</div>
+                                            <div>Total Estudante Feto</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-users fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge">{{totalAlumni}}</div>
+                                            <div>Total Alumni</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+       <div class="row">
+             <div class="col-lg-5">
+              <div class="col-md">
+               <div class="card text-center text-dark mb-5">
+              <h3 align="center">Total Estudante Tuir Munisipiu</h3><hr/>
+                <div class="table-responsive">
+                <table id="example1" border="1"  class="table table-bordered  w-100">
+                    <tr class="text-center">
+                      <th rowspan="2">Nu</th>
+                      <th rowspan="2">Munisipiu</th>
+                      <th colspan="3">Total Estudante</th>
+                    </tr>
+                    <tr class="text-center"> 
+                      <td>Mane</td>
+                      <td>Feto</td>
+                      <td>Total</td>
+                    </tr>
+                    {% for xx in loopingestudantesexo %}
+                      <tr class="text-center">
+                        <td>{{forloop.counter}}</td>
+                        <th>{{xx.name}}</th> 
+                        <td><a href="{% url 'list_mun_M' xx.id%}">{% if xx.total_sexo_Mane %}{{xx.total_sexo_Mane}}{% else %} 0 {% endif %}</a></td>
+                        <td><a href="{% url 'list_mun_F' xx.id%}">{% if xx.total_Sexo_Feto %}{{xx.total_Sexo_Feto}}{% else %} 0 {% endif %}</a></td>
+                        <td><a href="{% url 'list_mun' xx.id %}" >{% if xx.total_estudante %}{{xx.total_estudante}}{% else %} 0 {% endif %}</a></td>
+                      </tr>
+                    {% endfor %}
+                        </table>
+                      </div>
+                    </div> 
+                   </div>
+                 </div>
+                <div class="col-lg-7 text-center">
+                   <!-- <div class="images"><img src="{% static 'main/images/logo/a.jpg' %}" style="height: 200px; width: 100%;"></div><br> -->
+                  <div class="col-md">
+                    <div class="card text-center text-dark mb-1">
+                      <div class="card-header" id="s_boxs">
+                        <h3 class="card-title text-center">Grafiku Estudante Tuir Munisipiu</h3>
+                      </div><hr><br><br><br><br><br><br><br>
+                             <div id="reportsChart8" style="height: 300px;" class="echart"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div> <!-- end card head  -->
+              </div> <!--end card-body-->
+            </div>
+            <script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+            <script type="text/javascript">{% include 'charts-js/charts-mun.js' %}</script>
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="{% static 'js/apexcharts.min.js' %}"></script>
+            <script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+            <script src="{% static 'js/echarts.min.js' %}"></script>
+            {% endblock %}

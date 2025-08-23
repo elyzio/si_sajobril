@@ -1,0 +1,144 @@
+{% extends 'main/layout1.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block head_link %}
+<!-- Data Table JS
+		============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/jquery.dataTables.min.css' %}">
+{% endblock head_link %}
+{% block contents %}
+
+<section>
+        <div class="container mt-5 border p-3">
+          <!-- Page Header-->
+          <!-- <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              
+              <li class="breadcrumb-item"><a href="#">Horario</a></li>
+              
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header> -->
+          
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <h4> {{ legend|upper }} : {{dep|upper}}</h4>
+                  <div class="text-center border">
+                    {% if group == "admin" or group == "Secretario"%}
+                     <a href="{% url 'add_hor' %}" class="btn btn-sm btn-outline-danger rounded-0" title="Add Data">Adisiona horariu <i class="fa fa-plus"></i></a>
+                    {% endif %}
+                  
+                    <a href="{% url 'e-active-Horario' %}" target="_blank" class="btn btn-sm btn-outline-danger rounded-0" title="Print Data">Print <i class="fa fa-print"></i></a>
+                   </div>
+                 
+                  
+                 </div>
+               
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="data-table-basic">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th>Professor</th>
+                          <th> Oras</th>
+                          <th>Loron </th>
+                          <th>Diciplina</th>
+                          <th>Classe</th>
+                          {% if group == "admin" or group == "Tesoreira" %}
+                          <th width="15%">Asaun</th>
+                          {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for hor in hr %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{hor.profesores}}</td>
+                          <td>{{hor.Horas.oras_hahu}}OTL--{{hor.Horas.oras_remata}} OTL</td>
+                          <td>{{hor.loron}}</td>
+                          <td>{{hor.Diciplina}}</td>
+                          <td>{{hor.turma}}</td>
+
+                          {% if group == "admin" %}
+                          <td>
+                            <div class="d-flex">
+                              <div class=""><a href="{% url 'updatehor' hor.id %}" class="btn btn-sm btn-primary rounded-0" title="Update"><i class="fa fa-pencil"></i></a></div>
+                              <div class=""> <button type="button" class="btn btn-sm btn-danger rounded-0" data-toggle="modal" data-target="#delete-{{ est.id }}" style="text-decoration: none"><i class="fa fa-trash"></i></button></div>
+                            </div>
+                           </td>
+
+                          <div class="modal fade" id="delete-{{ est.id}}"><!-- modal -->
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Delete Horario</h4>
+                                  <button type="button" class="close" data-dismiss="modal">X</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                  Ita Boot hakarak hamoos dadus horario {{hor.loron}}?
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                  <a href="{% url 'deletehor' hor.id %}" class="btn btn-info">Yes</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div><!-- endmodal -->
+                        {% endif %}
+                      </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
+                      <ol class="breadcrumb mb-2 mt-1">
+                    {% if group == "admin" or group == "kurikulum" or group == "Director" %}
+                            <li class="breadcrumb-item"><a href="{% url 'Listahor' %}">JERAL</a></li>  
+                    {% endif %}                
+                  
+                    {% if group == "admin" or group == "kurikulum" or group == "Director" %}
+                    {% for ii in deps %}
+                        <li class="breadcrumb-item"><a href="{% url 'HorKlasseList' ii.id %}">{{ii.classe.name}}--{{ ii.Turma }}</a></li>
+                    {% endfor %}
+                    {% endif %}
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {% if page == "form" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-end text-center">
+                  <div class="text-center border">
+                  </div>
+                </div>
+                <div class="card-body">
+                  {% csrf_token %}
+                  {% crispy form %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </section>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Data Table JS
+		============================================ -->
+<script src="{% static 'notica/js/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/data-table-act.js' %}"></script>
+{% endblock scripts %}

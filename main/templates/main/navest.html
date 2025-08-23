@@ -1,0 +1,123 @@
+{% load static %}
+
+<!-- Mobile Menu start -->
+<div class="mobile-menu-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="mobile-menu">
+                    <nav id="dropdown">
+                        <ul class="mobile-menu-nav">
+                            <li><a data-toggle="collapse" data-target="#Charts" href="#">Home</a>
+                                <ul class="collapse dropdown-header-top">
+                                    <li><a href="index.html">Dashboard One</a></li>
+                                    <li><a href="index-2.html">Dashboard Two</a></li>
+                                    <li><a href="index-3.html">Dashboard Three</a></li>
+                                    <li><a href="index-4.html">Dashboard Four</a></li>
+                                    <li><a href="analytics.html">Analytics</a></li>
+                                    <li><a href="widgets.html">Widgets</a></li>
+                                </ul>
+                            </li>
+                            <li><a data-toggle="collapse" data-target="#demoevent" href="#">Istoria</a>
+                                <ul id="demoevent" class="collapse dropdown-header-top">
+                                    <li><a href="inbox.html">Inbox</a></li>
+                                    <li><a href="view-email.html">View Email</a></li>
+                                    <li><a href="compose-email.html">Compose Email</a></li>
+                                </ul>
+                            </li>
+                            <li><a data-toggle="collapse" data-target="#democrou" href="#">Dadus</a>
+                                <ul id="democrou" class="collapse dropdown-header-top">
+                                    <li><a href="animations.html">Professores</a></li>
+                                    <li><a href="google-map.html">Estudante</a></li>
+                                    <li><a href="data-map.html">Orariu</a></li>
+                                    <li><a href="code-editor.html">Valor</a></li>
+                                </ul>
+                            </li>
+                            <li><a data-toggle="collapse" data-target="#demolibra" href="#">Relatoriu</a>
+                                <ul id="demolibra" class="collapse dropdown-header-top">
+                                    <li><a href="flot-charts.html">Flot Charts</a></li>
+                                    <li><a href="bar-charts.html">Bar Charts</a></li>
+                                    <li><a href="line-charts.html">Line Charts</a></li>
+                                    <li><a href="area-charts.html">Area Charts</a></li>
+                                </ul>
+                            </li>
+                            <li><a data-toggle="collapse" data-target="#demodepart" href="#">Konfigurasaun</a>
+                                <ul id="demodepart" class="collapse dropdown-header-top">
+                                    <li><a href="normal-table.html">Periodu Exame</a></li>
+                                    <li><a href="data-table.html">Tinan</a></li>
+                                    <li><a href="normal-table.html">Disciplina</a></li>
+                                    <li><a href="data-table.html">Departamentu</a></li>
+                                    <li><a href="normal-table.html">Classe</a></li>
+                                    <li><a href="data-table.html">Turma</a></li>
+                                    <li><a href="normal-table.html">Munisipiu</a></li>
+                                    <li><a href="normal-table.html">Postu Administrativu</a></li>
+                                    <li><a href="data-table.html">Suku</a></li>
+                                    <li><a href="normal-table.html">Aldeia</a></li>
+                                </ul>
+                            </li>
+                            <li><a data-toggle="collapse" data-target="#demo" href="#">Users</a>
+                                <ul id="demo" class="collapse dropdown-header-top">
+                                    <li><a href="form-elements.html">Form Elements</a></li>
+                                    <li><a href="form-components.html">Form Components</a></li>
+                                    <li><a href="form-examples.html">Form Examples</a></li>
+                                </ul>
+                            </li>
+                            <li><a data-toggle="collapse" data-target="#Miscellaneousmob" href="#">Account</a>
+                                <ul id="Miscellaneousmob" class="collapse dropdown-header-top">
+                                    <li><a href="#">Account</a>
+                                    </li>
+                                    <li><a href="{% url 'logout' %}">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Mobile Menu end -->
+<!-- Main Menu area start-->
+ <div class="main-menu-area">
+    <div class="left-sidebar-menu">
+        <ul class="nav flex-column notika-menu-wrap menu-it-icon-pro">
+            <li class="{{homeActive}}">
+                <a href="{% url 'home' %}"><i class="fa fa-home"></i> Home</a>
+            </li>
+
+            <li class="{{hisAct}}">
+                <a href="#"><i class="fa fa-pencil"></i> Kona Ba</a>
+                <ul class="notika-main-menu-dropdown">
+                    <li><a href="{% url 'lista-historia-eskola' %}">Kona Ba</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-bar-chart"></i> Relatoriu</a>
+                <ul class="notika-main-menu-dropdown">
+                    <li><a href="{% url 'report-student-stats' %}">Estudante</a>
+                    </li>
+                    <li><a href="{% url 'report-fun-stats' %}">Funsionariu</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="{% url 'DetailValoresEstudante' %}"><i class="fa fa-book"></i> Valor</a>
+            </li>
+            <li>
+                <a href="{% url 'ListahorEst' %}"><i class="fa fa-calendar"></i> Horariu</a>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-user"></i> {{user}}</a>
+                <ul class="notika-main-menu-dropdown">
+                    <li><a href="{% url 'manageAccount' %}">Account</a></li>
+                    <li><a href="{% url 'detalho_estudante' %}">Profile</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- Main Menu area End-->

@@ -1,0 +1,95 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <!-- Bootstrap CSS --> 
+    <title>lista Estudante iha Tinan {{estudante.naran}}</title>
+  </head>
+<body onload="javascript:window.print() " >
+  <div class="container mt-5 border p-3">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="">
+              <table id="example"  class="table w-100">
+                <tr>
+                  <th class="text-center"><img src="{% static 'main/images/lologo.jpg' %}" style="height: 120px; width: 900px;"></th>
+                </tr>
+              </table><hr>
+             <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example" class="table table-bordered ">
+                 <thead>
+                  <tr class="bg-info text-light">
+                  <th colspan="14" class="text-center">{{legend|upper}}
+                  </th>
+                  </tr>
+                   <tr>
+                        <th colspan="3">Prof Da Turma :____________</th>
+                        <th rowspan="2" colspan="11" class="text-center"> CSIL ATTENDENCE SHEET </th>
+                    </tr>
+                    <tr>
+                        <th colspan="3">Loron/Data :_____________</th>
+                    </tr>
+                  
+                        <tr>
+                            <th rowspan="3">Nu</th>
+                            <th width="100px" rowspan="3">EMIS</th>
+                            <th rowspan="3">Naran </th>
+                            <th rowspan="3">Sexo</th>
+                          </tr>
+                          <tr>
+                             <td>08:00-08:15 </td><td>08:15-9:00 </td><td>9:00-09:45 </td><td>10:00-10:45 </td><td>10:45-11:30</td><td>11:30-12:15 </td><td>13:00-13:45</td> <td>13:45-14:30</td><td>14:30-15:30 </td> 
+                             <th rowspan="3">Informasaun</th>
+                        </tr>
+                        <tr>
+                          <td>Prof.Da Turma</td><td>1St</td><td>2St</td><td>3St</td><td>4St</td><td>5St</td><td>6St</td><td>7St</td><td>8St</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in estudante10ano %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td> {{ data.estudante.emis }}</td>
+                          <td>{{ data.estudante.naran }}</td>
+                          <td>{{ data.estudante.Sexo }}</td>
+                          <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                          <td> </td>  
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+                <tr>
+                 
+                  <td colspan="4" > Prof/a da Turma <br><br><br><p>
+                  <b>  (______________________________________________) </b>
+                              
+                  </td>
+                </tr>
+              </table>
+            
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+{%endblock%}
+<script src="{% static 'main/js/jquery.min.js' %}"></script>
+<script src="{% static 'main/bootstrap/js/bootstrap.min.js' %}"></script>
+<!-- Datatable -->
+<link href="{% static 'main/datatables/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<script src="{% static 'main/datatables/js/jquery.dataTables.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'main/datatables/js/dataTables.bootstrap4.min.js' %}" type="text/javascript"></script>
+<link rel="stylesheet" href="{% static 'main/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'main/font-awesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/table-responsive.css' %}" media="screen">

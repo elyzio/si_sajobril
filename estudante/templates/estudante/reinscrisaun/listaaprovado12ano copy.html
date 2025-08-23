@@ -1,0 +1,110 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% block content %}
+<section>
+    <div class="container mt-5 border p-3">
+        <header>
+            <ol class="breadcrumb mb-1 mt-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Beranda</a></li>
+                {% if page == "form" %}
+                <li class="breadcrumb-item"><a href="#">Estudante</a></li>
+                {% endif %}
+                <li class="breadcrumb-item"><a href="{% url 'Listaestudante' %}">Lista Estudante</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+            </ol>
+        </header>
+        {% if messages %}
+        {% for message in messages %}
+        <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-body">
+                    <div class="d-flex justify-content-start">
+                        
+                        <a href="{% url 'list_students_aprovado' %}" class="btn btn-sm btn-info ml-2 mb-2"><i class="fa fa-list"></i>1O ANO</a>
+                            <a href="{% url 'ListEstudanteClassAprovado' %}" class="btn btn-sm btn-info ml-2 mb-2"><i class="fa fa-list"></i>11 ANO</a>
+                            <a href="{% url 'ListEstudanteClassAprovado12' %}"class="btn btn-sm btn-info ml-2 mb-2"><i class="fa fa-list"></i>12 ANO</a>
+            
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table id="example" class="table table-hover table-striped">
+                            <caption>LISTA DE ESTUDANTE APROVADOS</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nu</th>
+                                    <th class="text-center"><i class="fa fa-user"></i></th>
+                                    <th>EMIS</th>
+                                    <th>Naran</th>
+                                    <th>Sexu</th>
+                                    <th>Total Valores</th>
+                                    <th>Media</th>
+                                    <th class="text-center">#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in estudantes %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td class="text-center">
+                                        {% if data.estudante.image %}
+                                        <a href="{{ data.estudante.image.url }}" target="_blank"><img
+                                                src="{{ data.estudante.image.url }}" width="50px" height="50px"></a>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if group == "admin" or group == "Director" %}
+                                        <a href="{% url 'detailViewest' data.estudante.id %}">{% endif %}
+                                        {{ data.estudante.emis }}
+                                    </td>
+                                    <td>{{ data.estudante.naran }}</td>
+                                    <td>{{ data.estudante.Sexo }}</td>
+                                    <td>{{ data.estudante.sum_valor_final }}</td>
+                                   <td>{{ data.media|floatformat:2 }}</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <div class="flex-fill">
+                                                {% comment %} <a href="{% url 'updateClassestudante' data.estudante.id %}"
+                                                    class="btn btn-sm btn-warning" title="Update Klasse estudante"><i
+                                                        class="fa fa-edit"></i></a> {% endcomment %}
+                                                <a href="{% url 'updateClassestudante' data.estudante.id %}"
+                                                    class="btn btn-sm btn-success" title="Aprova"><i
+                                                        class="fa fa-check"></i> Aprova</a>
+                                                {% if data.estudante.is_approved %}
+                                                <span class="badge badge-success">Aprova Ona</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'estudante/estudentAprovalModal.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#example').DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true
+        });
+    });
+</script>
+{% endblock %}

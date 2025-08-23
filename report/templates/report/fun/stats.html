@@ -1,0 +1,119 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %}
+
+
+{% block contents %}
+
+<section class="container">
+    <header class="text-center font-weight-bold h5 mt-3 mb-3">Estatistiku Funsionariu</header>
+    <header>
+        <ol class="breadcrumb mb-1 mt-1">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Stats Funsionariu</li>
+        </ol>
+    </header>
+    <div class="row">
+        <!-- Staff by municipality - START --> 
+        <div class="col-lg-4 mb-3">
+            <div class="card rounded-0">
+                <div class="card-body">
+                    <div class="card-title text-center h5 font-weight-bold">Staff by Municipality</div>
+                    <table class="table table-hover table-striped d-sm-table">
+                        <thead>
+                            <tr>
+                                <th>Municipality</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in count_by_municipality %}
+                            <tr>
+                                <th>{{item.municipality__name}}</th>
+                                <td>{{item.total}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- Staff by municipality - END -->
+
+        <!-- Staff by Nivel Estudu - START -->
+        <div class="col-lg-4 mb-3">
+            <div class="card rounded-0">
+                <div class="card-body">
+                    <div class="card-title text-center h5 font-weight-bold">Staff by Nivel Estudu</div>
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nivel</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in count_by_nivel_estudu %}
+                            <tr>
+                                <th>{{item.nivel_estudu}}</th>
+                                <td>{{item.total}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- Staff by Nivel Estudu - END -->
+
+        <!-- Staff by Estatus - START -->
+        <div class="col-lg-4 mb-3">
+            <div class="card rounded-0">
+                <div class="card-body">
+                    <div class="card-title text-center h5 font-weight-bold">Staff by Estatus</div>
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Estatus</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in count_by_estatus %}
+                            <tr>
+                                <th>{{item.estatus}}</th>
+                                <td>{{item.total}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- Staff by Estatus - END -->
+
+        <!-- Staff by Gender - START -->
+        <div class="col-lg-4 mb-3">
+            <div class="card rounded-0">
+                <div class="card-body">
+                    <div class="card-title text-center h5 font-weight-bold">Staff by Gender</div>
+                    <canvas id="funByGender" class="mx-auto" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div> <!-- Staff by Gender - END -->
+
+        </div>
+
+        
+
+    </div>
+</section>
+
+
+{% endblock contents %}
+
+{% block scripts %}
+<!-- Charts JS
+		============================================ -->
+<script src="{% static 'notica/js/charts/Chart.js' %}"></script>
+
+<script>{% include 'report/fun/funByGender.js' %}</script>
+{% endblock scripts %}

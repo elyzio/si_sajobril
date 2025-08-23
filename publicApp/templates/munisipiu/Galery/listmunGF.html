@@ -1,0 +1,44 @@
+{% extends 'public_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section>
+     {% if page == "list" %}
+        <section class="post-block-section pt-40 pb-80">
+                <div class="row">
+                    <div class="card">
+                        <div class="card-header badge badge-danger"><h4 class="text-center">{{title|upper}}</h4>
+                        </div>
+                    <div class="col-lg-12 sm-padding">
+                       
+                                   
+                        <div class="post-block">
+                           <div class="post-block-inner">
+                               <div class="row ">
+                                  {% for data in listMun_GF%}
+
+                                    <div class="col-md-3 mt-1 xs-padding">
+                                        <div class="post-card">
+                                            <div class="grid-post-thumb">
+                                                {% if data.image %}<a href="{{data.image.url}}" target="_blank"><img src="{{data.image.url}}" width="200x" height="300px"></a>{%else%}{%endif%}
+                                            </div>
+                                            <div class="post-meta">
+                                                <h3><a href="{% url 'public_detailViewest' data.id%}" class="hover-line text-center">Emis :{{data.emis|safe}}</a></h3>  
+                                            </div>
+                                        </div>                   
+                                     </div>
+                                  {% endfor %}
+                </div>  
+               </div>
+               <ol class="breadcrumb mb-2 mt-1">
+                   <li class="breadcrumb-item"><a href="{% url 'list_mun_F' list_mun.id%}">Fila/</a><span class="badge badge-danger">{{title}}</span></li>  
+              </ol> 
+              </div><!-- /.post-block -->
+            </div><!-- /.col-lg-8 -->
+        </div>
+    </div>
+
+
+</section>
+{%endif%}
+{%endblock%}

@@ -1,0 +1,88 @@
+{% extends "main/layout1.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block head_link %}
+<!-- Data Table JS
+		============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/jquery.dataTables.min.css' %}">
+{% endblock head_link %}
+{% block contents %}
+  <section>
+
+        <div class="container mt-5 p-3">
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              {% if page == "form" %}
+              <li class="breadcrumb-item"><a href="#">Estudante</a></li>
+              {% endif %}
+              
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+          {% if page == "list" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-start mb-2">
+                    {% for i in Klasse %}
+                      <a href="{% url 'list-estudante-classe-Valor' i.name  %}" class="btn btn-sm btn-outline-danger ml-2 mb-2"><i class="fa fa-list"></i>  {{i.name}}</a>
+                     
+                    {% endfor %}
+                    
+                    </div>
+
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="data-table-basic">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th class="text-center"><i class="fa fa-user"></i></th>
+                          <th>Tinan</th>
+                           <th>EMIS</th>
+                          <th>Naran </th>
+                          <!-- <th>Tinan </th> -->
+                          <th>Seksu</th>
+                         
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in est %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td class="text-center">{% if data.image %}<a href="{{data.image.url}}" target="_blank"><img src="{{data.image.url}}" width="50px" height="50px"></a>{%else%}{%endif%}</td>
+                          <td>{{data.Ano_Resisto}}</td>
+                          <td>  {{ data.emis }}</td>
+                          <td>{{ data.naran }}</td>
+                          <td>{{ data.Sexo }}</td>
+                         
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                     
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {%endif%}
+          </div>
+
+{% endblock %}
+{% block scripts %}
+<!-- Data Table JS
+		============================================ -->
+<script src="{% static 'notica/js/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/data-table-act.js' %}"></script>
+{% endblock scripts %}

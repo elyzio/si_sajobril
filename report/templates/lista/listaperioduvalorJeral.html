@@ -1,0 +1,30 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %} 
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-info">
+            <h4 class="text-center">Lista Valores Jeral Iha Klass 10 Ano Turma {{title}}</h4>
+        </div>
+        <br>
+        <div class="card-body">
+            <div class="row">
+                {% for data in listPeriod %}
+                    <div class="col-sm-4 mb-4">
+                        <!-- Link wrapping the card -->
+                        <a href="{% url 'students_by_turma' selected_turma.id data.id %}" class="text-decoration-none">
+                            <div class="card bg-info">
+                                <div class="card-body">
+                                    <i class="fa fa-list fa-2x"></i>
+                                    <h5 class="mt-2">{{ data.nome_periode }}</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div><!-- end col -->
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

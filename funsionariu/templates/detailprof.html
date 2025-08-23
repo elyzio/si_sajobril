@@ -1,0 +1,202 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+<div class="container">
+	<header>
+		<div class="text-center font-weight-bold h4">{{title}}</div>
+	</header>
+	<header>
+		<ol class="breadcrumb mb-1 mt-1">
+			<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+			<li class="breadcrumb-item"><a href="{% url 'ListaFunsionariu' %}">Professor</a></li>
+			{% if page == 'form' %}
+			<li class="breadcrumb-item active">Update</li>
+			{% elif page == 'formprofT' %}
+			<li class="breadcrumb-item"><a href="{% url 'detailViewprof' id %}">Detail</a></li>
+			<li class="breadcrumb-item active">add turma</li>
+			{% else %}
+			<li class="breadcrumb-item active">Detail</li>
+			{% endif %}
+		</ol>
+	</header>
+
+	{% if page == list %}
+	<section class="student-profile py-4">
+		<div class="container">
+			{% if messages %}
+			{% for message in messages %}
+			<div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				{{ message }}
+			</div>
+			{% endfor %}
+			{% endif %}
+			<div class="row">
+				<div class="col-lg-12 text-right">
+					<button class="btn btn-outline-danger rounded-0 btn-sm mr-2 mt-3 h6"
+						style="height: 30px;color: red;font-size: 0.7rem" onclick="self.history.back()"><span
+							class="fa fa-angle-left"></span> Back</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="card shadow-lg rounded-0 mb-4">
+						<div class="card-body text-center">
+							{% if est.image %}
+							<img class="rounded-circle img-fluid" style="width: 200px; height: 200px;"
+								src="{{ est.image.url }}" alt="Profile Picture">
+							{% else %}
+							<img class="rounded-circle img-fluid" style="width: 200px; height: 200px;"
+								src="{% static 'main/images/imagesa.jpg' %}" alt="Profile Picture">
+							{% endif %}
+							<div class="d-flex justify-content-between">
+							<span class="mt-3 font-weight-bold">Username</span>
+							<span class="mt-3">{{ est.user.username }}</span>	
+							</div>
+							
+						</div>
+					</div>
+
+					<div class="card shadow-lg rounded-0 mb-4">
+						<div class="card-body">
+							<div class="d-flex justify-content-between font-weight-bold h5">
+								Turma Maneja
+								<div>
+								{% if mtr %}
+								<a href="{% url 'updateFunTurma' est.id mtr.id %}"
+										class="btn btn-outline-danger rounded-0 btn-sm"><i class="fa fa-edit"></i> </a>
+								{% else %}
+								<a href="{% url 'addFunTurma' est.id %}"
+										class="btn btn-outline-danger rounded-0 btn-sm"><i class="fa fa-plus"></i> </a>
+								{% endif %}
+									
+									
+								</div>
+							</div>
+							<table class="table table-hover table-striped">
+								<tbody>
+									<tr>
+										<th scope="row">Ano Akademiku</th>
+										<td>: {{mtr.ano}}</td>
+									</tr>
+									<tr>
+										<th>Departamentu</th>
+										<td>: {{mtr.turma.classe.Departamento}}</td>
+									</tr>
+									<tr>
+										<th>Klasse</th>
+										<td>: {{mtr.turma.classe.name}}</td>
+									</tr>
+									<tr>
+										<th>Turma</th>
+										<td>: {{mtr.turma.Turma}}</td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+
+				</div>
+				<div class="col-lg-8">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="card shadow-lg rounded-0 mb-4">
+								<div class="card-header">
+									<div class="d-flex justify-content-between">
+										<h4 class="text-center">Informasaun Funsionariu</h4>
+										<div>
+											<a href="{% url 'UpdateFunsionariu' est.id %}"
+												class="btn btn-outline-danger rounded-0 btn-sm"><i
+													class="fa fa-edit"></i> </a>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<table class="table table-hover table-striped">
+										<tr>
+											<th>Naran Kompletu :</th>
+											<td>{{est.naran}}</td>
+										</tr>
+										<tr>
+											<th>Sexo :</th>
+											<td>{{est.Sexo}}</td>
+										</tr>
+										<tr>
+											<th>Fatin Moris :</th>
+											<td>{{est.municipality}} /{{est.administrativepost}} / {{est.village}} /
+												{{est.aldeia}}
+											</td>
+										</tr>
+
+										<tr>
+											<th>Data Moris :</th>
+											<td>{{est.data_moris|default:''|date:"d/m/Y"}}</td>
+										</tr>
+										<tr>
+											<th>Hela fatin :</th>
+											<td>{{est.hela_fatin|default:''}}</td>
+										</tr>
+										<tr>
+											<th>Email :</th>
+											<td>{{est.email}}</td>
+										</tr>
+										<tr>
+											<th>Nu.Telefone :</th>
+											<td>{{est.nu_telefone}}</td>
+										</tr>
+										<tr>
+											<th>Estatus :</th>
+											<td>{{est.estatus}}</td>
+										</tr>
+										<tr>
+											<th>Area Estudu :</th>
+											<td>{{est.area_estudu}}</td>
+										</tr>
+										<tr>
+											<th>Nivel Estudu :</th>
+											<td>{{est.nivel_estudu}}</td>
+										</tr>
+										<tr>
+											<th>Pozisaun :</th>
+											<td>{{est.pozisaun}}</td>
+										</tr>
+										<tr>
+											<th>Estadu Civil :</th>
+											<td>{{est.estadu_civil}}</td>
+										</tr>
+
+									</table>
+
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	{% else %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header d-flex justify-content-between text-center font-weight-bold">
+					Formulariu
+					<button class="btn btn-outline-danger rounded-0 btn-sm"
+						style="height: 30px;color: red;font-size: 0.7rem" onclick="self.history.back()"><span
+							class="fa fa-angle-left"></span> Back</button>
+				</div>
+				<div class="card-body">
+					{% csrf_token %}
+					{% crispy form %}
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+</div>
+{% endblock contents %}

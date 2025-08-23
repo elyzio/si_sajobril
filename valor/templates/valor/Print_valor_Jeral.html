@@ -1,0 +1,102 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section>
+  <body onload="javascript:window.print() " >
+    <!-- <div class="container mt-5 border border-info p-3"> -->
+      <!-- Page Header-->
+      <header> 
+        <ol class="breadcrumb mb-1 mt-1">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+         
+          <li class="breadcrumb-item"><a href="#">Relatorio Estudante</a></li>
+          
+          <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+        </ol>
+      </header>
+    {% if messages %}
+        {% for message in messages %} 
+            <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                     <div class="d-flex justify-content-start">
+                    {% for i in Klasse %}
+                      <a href="" class="btn btn-sm btn-info ml-2 mb-2"style="background: linear-gradient(to bottom,#000080,#000080); text-decoration-color: #000000;"><i class="fa fa-list"></i>  {{i.name}}</a>
+                     
+                    {% endfor %}
+                    
+                    </div>
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped table-bordered">
+                      <thead>
+                        <tr>
+                            <th rowspan="2" class="text-center">Nu</th>
+                            <th rowspan="2" class="text-center">Naran </th>
+                            <th rowspan="2" class="text-center">Sexo</th> 
+                            <th colspan="13" class="text-center">Disiplina</th>
+                            <th rowspan="2" class="text-center">Total</th>
+                            <th rowspan="2" class="text-center">Media</th>
+                            <th rowspan="2" class="text-center">Prestasaun da classe</th> 
+                            
+                        </tr>
+                        <tr>
+                            <td>L.Tetun</td>
+                            <td>L.Portugues</td>
+                            <td>L.Ingles</td>
+                            <td>L.Melayu</td>
+                            <td>Edu. Civica</td>
+                            <td>Multimedia</td>
+                            <td>Religi&atildeo Moral</td>
+                            <td>Fizica</td>
+                            <td>Quimica</td>
+                            <td>Biologia</td>
+                            <td>Geologia</td>
+                            <td>Desporto</td>
+                            <td>Matematika</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in loopingturmValor %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td>{{ data.estudante.naran }}</td>
+                          <td>{{ data.Sexo}}</td>
+                          <td>{% if data.tot %}{{ data.tot}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot1 %}{{ data.tot1}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot12 %}{{ data.tot12}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot2 %}{{ data.tot2}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot3 %}{{ data.tot3}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot4 %}{{ data.tot4}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot5 %}{{ data.tot5}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot6 %}{{ data.tot6}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot7 %}{{ data.tot7}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot8 %}{{ data.tot8}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot9 %}{{ data.tot9}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot10 %}{{ data.tot10}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot11 %}{{ data.tot11}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot12 %}{{ data.tot12}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot13 %}{{ data.tot13}}{% else %} 0 {% endif %}</td>
+                          <td>{% if data.tot %}{{ data.tot}}{% else %} 0 {% endif %}</td>
+                          
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </body>
+          </section>   
+          
+{% endblock %}

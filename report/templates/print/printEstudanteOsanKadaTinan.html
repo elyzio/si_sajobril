@@ -1,0 +1,86 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <!-- Bootstrap CSS --> 
+    <title>lista Estudante iha Tinan {{estudante.naran}}</title>
+  </head>
+<body onload="javascript:window.print() " >
+  <div class="container mt-5 border border-danger p-3">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="">
+              <table id="example"  class="table w-100">
+                <tr>
+                  <th class="text-center"><img src="{% static 'main/images/lologo.jpg' %}" style="height: 120px; width: 900px;"></th>
+                </tr>
+              </table><hr>
+             <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example" class="table table-bordered ">
+                      <thead>
+                        <tr class="bg-warning text-light">
+                         <th colspan="11" class="text-center"style="background: linear-gradient(to bottom,SaddleBrown,#D2691E); text-decoration-color: #000000;">
+                          LISTA ESTUDANTE IHA TINAN {{tin|upper}}
+                         </th>
+                        </tr>
+                        <tr>
+                            <th>Nu</th>
+                            <th width="100px">EMIS</th>
+                            <th >Naran </th>
+                            <th>Sexo</th> 
+                            <th>Osan</th>  
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in est %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td> {{ data.emis }}</td>
+                          <td>{{ data.naran }}</td>
+                          <td>{{ data.Sexo }}</td>  
+                          <td>{{ data.Osan_resistu }}</td>  
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                      <tfoot>
+                        <tr class="bg-dark text-light"><td colspan="4">Total : </td><td>{{est_count}}</td></tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+                <tr>
+                 
+                  <td colspan="4" > Director da eskola <br><br><br>(______________________________________________) <p>
+                  <b> ( Frei Roberto Fernandes .OFM ) </b>
+                              
+                  </td>
+                </tr>
+              </table>
+            
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+{%endblock%}
+<script src="{% static 'main/js/jquery.min.js' %}"></script>
+<script src="{% static 'main/bootstrap/js/bootstrap.min.js' %}"></script>
+<!-- Datatable -->
+<link href="{% static 'main/datatables/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<script src="{% static 'main/datatables/js/jquery.dataTables.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'main/datatables/js/dataTables.bootstrap4.min.js' %}" type="text/javascript"></script>
+<link rel="stylesheet" href="{% static 'main/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'main/font-awesome/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/table-responsive.css' %}" media="screen">

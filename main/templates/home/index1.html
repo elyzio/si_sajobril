@@ -1,0 +1,97 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+
+{% block head_link %}
+<!-- jvectormap CSS
+		============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/jvectormap/jquery-jvectormap-2.0.3.css' %}">
+{% endblock head_link %}
+
+{% block contents %}
+
+<!-- Start Status area -->
+
+<div class="notika-status-area">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 bg-danger text-white">
+          <div class="row">
+            <div class="col-8">
+              <h5><span class="counter">{{total_estudante}}</span></h5>
+
+            </div>
+            <div class="col-4"><i class="fa fa-users fa-3x"></i></div>
+            <div class="small">TOTAL ESTUDANTE</div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 bg-danger text-white">
+          <div class="row">
+            <div class="col-8">
+              <h5><span class="counter">{{totalProfessores}}</span></h5>
+
+            </div>
+            <div class="col-4"><i class="fa fa-users fa-3x"></i></div>
+            <div class="small">TOTAL PROFESSORES</div>
+          </div>
+          <!-- <div class="sparkline-bar-stats1">9,4,8,6,5,6,4,8,3,5,9,5</div> -->
+
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 bg-danger text-white">
+          <div class="row">
+
+            <div class="col-8">
+              <h5><span class="counter">{{totalestudanteMane}}</span></h5>
+
+            </div>
+            <div class="col-4"><i class="fa fa-users fa-3x"></i></div>
+            <div class="small">TOTAL ESTUDANTE MANE</div>
+          </div>
+          <!-- <div class="sparkline-bar-stats1">9,4,8,6,5,6,4,8,3,5,9,5</div> -->
+
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 bg-danger text-white">
+          <div class="row">
+            <div class="col-8">
+              <h5><span class="counter">{{totalestudanteFeto}}</span></h5>
+
+            </div>
+            <div class="col-4"><i class="fa fa-users fa-3x"></i></div>
+            <div class="small">TOTAL ESTUDANTE FETO</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <div class="card rounded-0 mt-5">
+        <div class="card-body">
+          <div class="card-title text-center h3 font-weight-bold">Grafiku Estudante Tuir Klase</div>
+          <canvas id="genderByClassChart" width="800" height="400" class="mx-auto"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Status area-->
+
+
+
+{% endblock contents %}
+
+
+{% block scripts %}
+<!-- Charts JS
+		============================================ -->
+<script src="{% static 'notica/js/charts/Chart.js' %}"></script>
+<script src="{% static 'notica/js/charts/bar-chart.js' %}"></script>
+
+<script>{% include 'charts-js/home/chart-home.js' %}</script>
+{% endblock scripts %}

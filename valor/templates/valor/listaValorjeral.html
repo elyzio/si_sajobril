@@ -1,0 +1,78 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <section>
+        <div class="container mt-5 border border-info p-3">
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              {% if page == "form" %}
+              <li class="breadcrumb-item"><a href="#">Estudante</a></li>
+              {% endif %}
+              <li class="breadcrumb-item"><a href="">Relatoriu Estudante</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                <div class="card-body">
+                    <div class="d-flex justify-content-start">
+                    {% for i in Klasse %}
+                      <a href="{% url 'ListaVAlorClass' i.name  %}" class="btn btn-sm btn-info ml-2 mb-2"><i class="fa fa-list"></i>  {{i.name}}</a>  
+                    {% endfor %}
+                    </div>
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped">
+                      <thead>
+                        <tr>
+                            <th>Nu</th>
+                            <th>Naran </th>
+                            <th>Sexo</th>
+                            <th>Disiplina</th>
+                            <th>Valor</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                    {% for data in valorData %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td>{{ data.estudante.naran }}</td>
+                          <td>{{ data.estudante.Sexo }}</td>
+                          <td>{{ data.Diciplina }}</td>
+                          <td>{{ data.valor_final }}</td>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    <ol class="breadcrumb mb-2 mt-1">
+                    {% if group == "admin" or group == "Tesoreira" or group == "estudante" %}
+                            <li class="breadcrumb-item"><a href="{% url 'Listavalor' %}">JERAL</a></li>  
+                    {% endif %}
+                    {% if group == "admin" or group == "Tesoreira" %}
+                    {% for tnn in tinan %}
+                           <li class="breadcrumb-item"><a href="{% url 'est-valor-tin-list' tnn.id %}">{{ tnn.ano }}</a></li>
+                    {% endfor %}
+                    {% endif %}
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </section>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

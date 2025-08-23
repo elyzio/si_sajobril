@@ -1,0 +1,116 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block contents %}
+<section class="container">
+  <!-- Page Header-->
+  <header>
+    <ol class="breadcrumb mb-1 mt-1">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'Listavaloresprof' %}">Lista Valor</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{title|upper}}</li>
+    </ol>
+  </header>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    {{message}}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- lista pasjina views detalho nian -->
+  {% if page == "list" %}
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header text-center">
+          <b class="h5"> {{title|upper}} </b>
+        </div>
+        <div class="row pt-5 pl-5 pr-5">
+          <div class="col-lg-6">
+            <p><b>No.de Resisto :</b> {{vl_detail.emis}}</p>
+            <p><b>Nome do(a) aluno(a) :</b> {{vl_detail.naran}} </p>
+            <p><b>Ano Letivo :</b> {{detailestvalor.Ano_Academinco}} </p>
+          </div>
+          <div class="col-lg-6 d-flex justify-content-between">
+            <div class="row">
+              <div class="col-lg-9">
+                <p><b>Departamento:</b> {{detailestvalor.Turma.classe.Departamento.nome_departamento}}</p>
+                <p><b>Classe :</b> {{detailestvalor.Turma.classe.name}} </p>
+                <p><b>Turma :</b> {{detailestvalor.Turma.Turma}}</p>
+              </div>
+              <div class="col-lg-3 border">
+                {% if vl_detail.image %}
+                <img src="{{vl_detail.image.url}}"  class="img-fluid">
+                {% else %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="card-header">
+            <div class="d-flex justify-content-start mt-1  mr-2 ">
+              {% for i in period %}
+              <a href="{% url classlink i.id vl_detail.id %}" class="btn btn-sm btn-outline-danger rounded-0 ml-2 mb-2"><i
+                  class="fa fa-list"></i> {{i.nome_periode}}</a>
+              {% endfor %}
+              {% if group == "admin" or group == "kurikulum" or group == "professor" %}
+              <div class=" ml-2 mr-2 ">
+                <a href="{% url 'add_valor' vl_detail.id %}" class="btn btn-sm btn-outline-danger rounded-0 mb-2"><i
+                    class="fa fa-plus-square"></i> Adisiona Dadus Valor</a>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="my-4 row justify-content-center">
+            <!-- {% for v in objects %}  
+                <div class="col-sm-2 mt-3">
+                  <div class="card ">
+                    <div class="card-header bg-info text-center" style="color: white;">
+                       VALOR  {{v.0.nome_periode|upper}} </div>
+                      <div class="card-body">
+                          <h5>Total : {{v.1}}</h5>
+                          <h5>Media : {{v.2}}</h5>
+                    </div>
+                  </div>
+                </div> --><!--end col-->
+            <!-- {% endfor %}   -->
+
+            <div class="col-lg-12 text-center">
+              <div class="col-md">
+                <div class="card text-center text-dark mb-5">
+                  <div class="card-header" id="s_boxs">
+                    <h6 class="card-title text-center">Grafiku Valor Tuir Periode Exame </h6>
+                  </div>
+                  <div id="reportsChart18" style="height: 400px;" class="echart"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+<script type="text/javascript">{% include 'js_shrt/shrt-vl-klasse.js' %}</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/apexcharts.min.js' %}"></script>
+<script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/echarts.min.js' %}"></script>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+  $(document).ready(function () {
+    var table = $('#example').removeAttr('width').DataTable({
+
+    });
+  });
+</script>
+{% endblock %}

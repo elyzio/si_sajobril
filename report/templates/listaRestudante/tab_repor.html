@@ -1,0 +1,263 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% block content %}
+<section> 
+    <div class="container mt-2">
+        <!-- Page Header-->
+      <header> 
+          <ol class="breadcrumb mb-1 mt-1">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+          </ol>
+      </header>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card shadow-lg pt-1 rounded">
+            <div class="card-header justify-content-end text-center">
+               <h3>{{ title|upper }}</h3>
+            </div>
+        <div class="card-header d-flex justify-content-end text-center">
+          {% if group == admin %}
+         <div class="text-center border">
+            <a href="{% url 'report_shart' %}" class="btn btn-sm btn-dark" title="Relatoriu Tabular"><i class="fa fa-list"></i> Relatoriu Grafiku </a>
+          </div>
+          {% endif %}
+        </div>
+            <div class="card-body">
+              <hr/>
+             <div class="row d-flex justify-content-between">
+                <div class="col-sm-4">
+                  <div class="card bg-info">
+                    <div class="card-body text-white" >
+                      <center> TOTAL ESTUDANTE <h2 style="margin-bottom: 0;">
+                        <a href="{% url 'EReportListActiveEstudanteClasse' %}"target="_blank" style="color: white; text-decoration: underline;">{{ Total_estudante }}</a>
+                      </h2></center>
+                    </div>
+                  </div>
+                </div><!--end col-->
+               <div class="col-sm-4">
+                  <div class="card badge-info">
+                    <div class="card-body color: white;">
+                      <center> TOTAL ALUMNI <h2 style="margin-bottom: 0;">
+                        <a href="{% url 'ListaEstudanteAlumi' %}" style="color: white; text-decoration: underline;">{{totlAlumi}}</a>
+                      </h2></center>
+                    </div>
+                  </div>
+                </div><!--end col-->
+                  
+               <div class="col-sm-4 ">
+                  <div class="card bg-info">
+                    <div class="card-body text-white" >
+                      <center> TOTAL  PROFESSORES <h2 style="margin-bottom: 0;">
+                        <a href="{% url 'e-active-funsionariu' %}" target="_blank" style="color: white; text-decoration: underline;">{{ totalProfessores }}</a>
+                      </h2></center>
+                    </div>
+                  </div>
+                </div><!--end col-->
+              </div>
+              <hr/>
+
+             <div class="row">
+               <div class="col-sm-12">
+                  {% if request.user.groups.all.0.name == 'admin' or group == "Director" or group == "Secretario" %}
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 align="center">Lista Prezensial Tuir Classe no Turma</h5><hr/>
+                       <div class="table-responsive">
+                      <table class="table table-sm responsive table-bordered" style="width:100%">
+                       <thead>
+                          <tr class="text-center">
+                            <th rowspan="3">Turma</th>
+                            <th colspan="17">Ciencias e Tecnologia / Ciencias e Sociais</th>
+                          </tr>
+                          <tr class="text-center">
+                             
+                            <th colspan="{{loopingturm|length}}">10 Ano </th>
+                            <th colspan="{{loopingturm1|length}}">11 Ano </th>
+                            <th colspan="{{loopingturm2|length}}">12 Ano</th>
+                           
+                          </tr>
+                          <tr class="text-center">
+                            {% for xx in tur %}
+                            <td>{{xx.Turma}}</td>
+                            {%endfor%}
+                            {% for xx in tur1 %}
+                            <td>{{xx.Turma}}</td>
+                            {%endfor%}
+                            {% for xx in tur2 %}
+                            <td>{{xx.Turma}}</td>
+                            {%endfor%}
+                             
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+                           <tr class="text-center">
+                                <th  colspan ="1"class="px-2 py-1"><b>TOTAL :</b></th>
+                                {% for xx in loopingturm%}
+                                <th class="text-center"><a href="{% url 'select_estudante_turma_list' xx.id %}" target="_blank" title="Print Lista Prejensa">{{xx.tot}}</a></th> 
+                                  {%endfor%}
+                                {% for xx in loopingturm1%}
+                                <th class="text-center"><a href="{% url 'select_estudante_turma1_list' xx.id %}" target="_blank" title="Print Lista Prejensa">{{xx.tot1}}</a></th> 
+                                  {%endfor%}
+                                  {% for xx in loopingturm2%}
+                                <th class="text-center"><a href="{% url 'select_estudante_turma2_list' xx.id %}" target="_blank" title="Print Lista Prejensa">{{xx.tot2}}</a></th> 
+                                  {%endfor%}
+                                   
+                            </tr>
+                        </tbody>
+                       
+                      </table>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+               </div> <!--end col--> 
+              </div><!--end row-->
+                 <div class="row">
+               <div class="col-sm-12">
+              {% if request.user.groups.all.0.name == 'admin' or group == "Director" or group == "kurikulum"%}
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 align="center">Relatoriu Valor Estudante</h5><hr/>
+                       <div class="table-responsive">
+                      <table class="table table-sm responsive table-bordered" style="width:100%">
+                       <thead>
+                          <tr class="text-center">
+                            <th rowspan="3">Turma</th>
+                            <th colspan="17">Ciencias e Tecnologia / Ciencias e Sociais</th>
+                          </tr>
+                          <tr class="text-center">
+                            <th colspan="{{loopingturm|length}}">10 Ano </th>
+                            <th colspan="{{loopingturm1|length}}">11 Ano </th>
+                            <th colspan="{{loopingturm2|length}}">12 Ano</th>
+                          </tr>
+                          <tr class="text-center">
+                            {% for xx in tur %}
+                            <td><a href="{% url 'select_estudante_turma_listValor1' xx.id%}">{{xx.Turma}}</a></td>
+                            {%endfor%}
+                            {% for xx in tur1 %}
+                            <td><a href="{% url 'select_estudante_turma_listValor2' xx.id%}">{{xx.Turma}} </a></td>
+                            {%endfor%}
+                            {% for xx in tur2 %}
+                            <td><a href="{% url 'select_estudante_turma_listValor3' xx.id%}">{{xx.Turma}}</a></td>
+                            {%endfor%}
+                          </tr>
+                        </thead>
+                      </table>
+                      </div>
+                    </div>
+
+                  </div>
+                  {% endif %}
+                  <hr>
+                   <div class="row">
+               <div class="col-sm-12">
+                  {% if request.user.groups.all.0.name == 'admin' or group == "Director" or group == "Secretario" %}
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 align="center">Relatoriu Valor Estudante Tuir Classe no Turma</h5><hr/>
+                       <div class="table-responsive">
+                      <table class="table table-sm responsive table-bordered" style="width:100%">
+                       <thead>
+                          <tr class="text-center">
+                            <th rowspan="3">Turma</th>
+                            <th colspan="17">Ciencias e Tecnologia / Ciencias e Sociais</th>
+                          </tr>
+                          <tr class="text-center">
+                             
+                            <th colspan="{{loopingturm|length}}">10 Ano </th>
+                            <th colspan="{{loopingturm1|length}}">11 Ano </th>
+                            <th colspan="{{loopingturm2|length}}">12 Ano</th>
+                            
+                           
+                          </tr>
+                          <tr class="text-center">
+                            {% for xx in tur %}
+                            <td>{{xx.Turma}}</td>
+                            {%endfor%}
+                            {% for xx in tur1 %}
+                            <td>{{xx.Turma}}</td>
+                            {%endfor%}
+                            {% for xx in tur2 %}
+                            <td>{{xx.Turma}}</td>
+                            {%endfor%}
+                             
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+                           <tr class="text-center">
+                                <th  colspan ="1"class="px-2 py-1"><b>TOTAL :</b></th>
+                                {% for xx in loopingturm%}
+                                <th class="text-center"><a href="{% url 'listValorClassJeral' xx.id %}" title="Lista Jeral Valores Tuir Turma">{{xx.tot}}</a></th> 
+                                  {%endfor%}
+                                {% for xx in loopingturm1%}
+                                <th class="text-center"><a href="{% url 'listValorClassJeral' xx.id %}" title="Lista Jeral Valores Tuir Turma">{{xx.tot1}}</a></th> 
+                                  {%endfor%}
+                                  {% for xx in loopingturm2%}
+                                <th class="text-center"><a href="{% url 'listValorClassJeral' xx.id %}" title="Lista Jeral Valores Tuir Turma">{{xx.tot2}}</a></th> 
+                                  {%endfor%}
+                                  
+                            </tr>
+                        </tbody>
+                       
+                      </table>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+               </div> <!--end col-->
+              </div><!--end row-->>
+
+
+              <!-- Total Estudante Tuir Tinan -->
+               {% if request.user.groups.all.0.name == 'admin' or group == "Director" or group == "Tesoreira" %}
+                <div class="col-sm-12">
+                      <h5 align="center">Total Estudante Tuir Tinan</h5><hr/>
+                      <div class="table-responsive">
+                        <table id="#" class="table table-sm table-bordered" style="width:100%">
+                          <tr class="text-center">
+                            <th rowspan="2">Nu</th>
+                            <th rowspan="2">Tinan</th>
+                            <th colspan="3">Total estudante</th>
+                          </tr>
+                          <tr class="text-center"> 
+                            <th>Mane</th>
+                            <th>Feto</th>
+                            <th>Total</th>
+                          </tr>
+                          {% for xx in looping_total_estudante_ano %}
+                <tr class="text-center">
+                  <td>{{forloop.counter}}</td>
+                  <th>{{xx.ano}}</th> 
+                  <td>{% if request.user.groups.all.0.name == 'admin' or group == "Director" or group == "Secretario"%}<a href="{% url 'select_estudante_tinan_list_Mane' xx.id %}" target="_blank">{% endif %}{% if xx.total_sexo_Mane_tinan %}{{xx.total_sexo_Mane_tinan}}{% else %} 0 {% endif %}</a></td>
+                  <td>{% if request.user.groups.all.0.name == 'admin' or group == "Director" or group == "Secretario"%}<a href="{% url 'select_estudante_tinan_list_feto' xx.id%}" target="_blank">{% endif  %}{% if xx.total_sexo_Feto_tinan %}{{xx.total_sexo_Feto_tinan}}{% else %} 0 {% endif %}</a></td>
+                  <td>{% if request.user.groups.all.0.name == 'admin' or group == "Director" or group == "Secretario"%}<a href="{% url 'estudante-tinan-lista' xx.id %}" target="_blank">{% endif %}{% if xx.total_estudante_kada_tinan %}{{xx.total_estudante_kada_tinan}}{% else %} 0 {% endif %}</a></td>
+                 
+                </tr>
+                {% endfor %}
+                </table>
+              </div>
+            </div>
+            {%endif%}
+          <hr/>
+      
+        </div> <!--end card-->
+      </div> <!--end col-->
+    </div> <!--end row-->
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<!-- Charts-->
+<script type="text/javascript">
+  $(document).ready( function () {
+    var table = $('#example').removeAttr('width').DataTable( {
+      
+    });
+  } );
+</script>
+{% endblock %}

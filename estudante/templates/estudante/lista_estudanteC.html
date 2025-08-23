@@ -1,0 +1,260 @@
+{% extends "main/layout1.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block head_link %}
+<!-- Data Table JS
+		============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/jquery.dataTables.min.css' %}">
+{% endblock head_link %}
+{% block contents %}
+<section>
+
+  <div class="container mt-5 p-3">
+    <!-- <header>
+      <ol class="breadcrumb mb-1 mt-1">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+        {% if page == "form" %}
+        <li class="breadcrumb-item"><a href="#">Estudante</a></li>
+        {% endif %}
+        <li class="breadcrumb-item"><a href="{% url 'Listaestudante' %}">Lista Estudante</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+      </ol>
+    </header> -->
+    {% if messages %}
+    {% for message in messages %}
+    <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if page == "list" %}
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="d-flex justify-content-start">
+                  {% for i in KlasseList %}
+                  <a href="{% url 'list-estudante-classe' i.name  %}" class="btn rounded-0 btn-sm btn-outline-danger ml-2 mb-2"><i
+                      class="fa fa-list"></i> {{i.name}}</a>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="d-flex justify-content-end">
+                  {% if group == "Secretario" %}
+
+                  <a href="{%url 'add_estudante' %}" class="btn btn-sm btn-outline-danger ml-2 rounded-0 mb-2"><i class="fa fa-plus-square"></i>
+                    Resistu Novu Estudante</a>
+
+                  {% endif %}
+                  {% if group == "admin" or group == "Secretario" or group == "Director"%}
+                  <a href="{% url 'EReportListActiveEstudanteClasse'%}" class="btn btn-sm btn-outline-danger ml-2 rounded-0 mb-2"
+                    title="Print Data" target="_blank"><i class="fa fa-print"></i> Print</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="card-body">
+            
+            <div class="table-responsive">
+              {% for i in sumariuEstudante %}
+              <ol class="breadcrumb mb-2 mt-1">
+                {{i.0.nome_departamento}}:
+                {% for j in i.1 %}
+                <li class="breadcrumb-item mx-3"><a
+                    href="{% url 'ListEstDepClaTur' i.0.id klasse.name j.0.id  %}">{{j.0.Turma}} <span
+                      class="badge badge-warning">{{j.1}}</span></a></li>
+                {%endfor%}
+              </ol>
+              {%endfor%}
+              <table class="table table-striped" id="data-table-basic">
+                <thead>
+                  <tr>
+                    <th>Nu</th>
+                    <th class="text-center"><i class="fa fa-user"></i></th>
+                    <th>EMIS</th>
+                    <th>Naran </th>
+                    <th>Sexu</th>
+                    {% if group == "Secretario"%} <th class="text-center">#</th>{% endif %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in est %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td class="text-center">{% if data.estudante.image %}<a href="{{data.estudante.image.url}}"
+                        target="_blank"><img src="{{data.estudante.image.url}}" width="50px"
+                          height="50px"></a>{%else%}{%endif%}</td>
+                    <td> {% if group == "admin" or group == "Director" %}<a
+                        href="{% url 'detailViewest' data.estudante.id %}">{%endif%} {{ data.estudante.emis }}</td>
+                    <td>{{ data.estudante.naran }}</td>
+                    <td>{{ data.estudante.Sexo }}</td>
+
+                    {% if group == "Secretario"%}
+                    <td>
+                      <div class="d-flex">
+                        <div class="ml-2"><a href="{% url 'updateest' data.estudante.id %}"
+                            class="btn btn-sm btn-primary"
+                            style="background: linear-gradient(to bottom,#000080,#000080); text-decoration-color: #000000;"
+                            title="Update"><i class="fa fa-pencil"></i></a>
+                        </div>
+                        <div class="ml-2"><a href="{% url 'updateClassestudante' data.id %}"
+                            class="btn btn-sm btn-warning" title="Update Klasse estudante"><i
+                              class="fa fa-edit"></i></a>
+                        </div>
+                        <div class="ml-2">
+                          <div class="flex-fill"> <button type="button" class="btn btn-sm btn-danger"
+                              data-toggle="modal" data-target="#delete-{{ data.id }}"
+                              style="text-decoration: none"><i class="fa fa-trash"></i></button>
+                          </div>
+                        </div>
+                    </td>
+                    {% elif group == "Tesoreira" %}
+                    <th>
+                      <a class="btn btn-sm btn-outline-info sm-2" href="{% url 'details-Propinas' data.estudante.pk %}">
+                        <i class="fa fa-list">Propinas</i>
+                      </a>
+                    </th>
+
+                    {% elif group == "kurikulum"%}
+                    <th>
+                      <a class="btn btn-sm btn-warning sm-2" href="{% url 'detailViewest' data.estudante.id %}">
+                        <i class="fa fa-eye"></i>
+                      </a>
+                    </th>
+                    {% endif %}
+
+                    <div class="modal fade" id="delete-{{data.id}}" role="dialog">
+                      <div class="modal-dialog modals-default">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          </div>
+                          <div class="modal-body">
+                            <h2>Hamoos Estudante</h2>
+                            <p>Ita Boot hakarak hamoos dadus Estudante {{data.estudante.naran}}?</p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn rounded-0 btn-sm btn-secondary" data-dismiss="modal">Kansela</button>
+                            <a href="{% url 'deleteest' data.id %}" class="btn rounded-0 btn-sm btn-default">Hamoos</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {%endif%}
+    {% if page == "form" %}
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between text-center">
+          </div>
+          <div class="card-body">
+            {% csrf_token %}
+            {% crispy form %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </header>
+
+    <script src="{% static 'main/js/jquery.min.js'%}"> </script>
+    <script type="text/javascript">
+      $("#id_areamunicipality").change(function () {
+        var municipalityId = $(this).val();
+        $.ajax({
+          url: "{% url 'ajax_load_posts' %}",
+          data: {
+            'municipality': municipalityId
+          },
+          success: function (data) {
+            $("#id_areaadministrativepost").html(data);
+          }
+
+        });
+      });
+      $("#id_areaadministrativepost").change(function () {
+        var postId = $(this).val();
+        $.ajax({
+          url: "{% url 'ajax_load_villages' %}",
+          data: {
+            'post': postId
+          },
+          success: function (data) {
+            $("#id_areavillage").html(data);
+          }
+        });
+
+      });
+      $("#id_municipality").change(function () {
+        var municipalityId = $(this).val();
+        $.ajax({
+          url: "{% url 'ajax_load_posts' %}",
+          data: {
+            'municipality': municipalityId
+          },
+          success: function (data) {
+            $("#id_administrativepost").html(data);
+          }
+
+        });
+      });
+      $("#id_administrativepost").change(function () {
+        var postId = $(this).val();
+        $.ajax({
+          url: "{% url 'ajax_load_villages' %}",
+          data: {
+            'post': postId
+          },
+          success: function (data) {
+            $("#id_village").html(data);
+          }
+        });
+
+      });
+      $("#id_village").change(function () {
+        var villageId = $(this).val();
+        $.ajax({
+          url: "{% url 'ajax_load_aldeias' %}",
+          data: {
+            'village': villageId
+          },
+          success: function (data) {
+            $("#id_aldeia").html(data);
+          }
+        });
+
+      });
+      //load Imagen
+      function myFunction() {
+        var image = document.getElementById("output");
+        image.src = URL.createObjectURL(event.target.files[0]);
+      }
+
+    </script>
+    {%endif%}
+  </div>
+</section>
+{% endblock contents %}
+{% block scripts %}
+<!-- Data Table JS
+		============================================ -->
+<script src="{% static 'notica/js/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/data-table-act.js' %}"></script>
+{% endblock scripts %}

@@ -1,0 +1,32 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<div class="col-sm-12">
+		<div class="card shadow-lg pt-3 rounded">
+      
+      <div class="card-header d-flex justify-content-between">
+        <h4> <font color="black" face="Impact">GRAFIKU PROPINAS</h4></font>
+        <button class="btn btn-outline-info btn-sm mr-2 mt-3 h6" style="height: 30px;color: blue;font-size: 0.7rem" onclick=self.history.back()><span class="fa fa-angle-left"></span> Back</button>		
+      </div>
+    <div class="col-md-12 pb-5 mb-1">
+  
+  <!-- Area Chart Estudante Feto No MAne-->
+      <div class="col-md">
+          <div class="card text-center text-dark mb-5 mt-3">
+            <div class="card-header" id="s_boxs">
+              <h6 class="card-title text-center">Grafiku Total Propinas kada Tinan </h6></div>
+                   <div id="reportsChart14" style="height: 400px;" class="echart"></div>
+            </div>
+          </div>
+        </div>
+		   </div> <!-- end card head  -->
+	
+<script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+<script type="text/javascript">{% include 'charts-js/propinas/chrt-propin.js' %}</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/apexcharts.min.js' %}"></script>
+<script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/echarts.min.js' %}"></script>
+{% endblock %}

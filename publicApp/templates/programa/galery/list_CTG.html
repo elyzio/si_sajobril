@@ -1,0 +1,43 @@
+{% extends 'public_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section>
+     {% if page == "list" %}
+        <section class="post-block-section pt-40 pb-80">
+            <div class="col-lg-12 sm-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="card">
+                        <div class="card-header"><h4><a href="{% url 'list_progrmCT' list_tin.id %}">FILA/</a></li> <span class="badge badge-danger">{{title|upper}}</span></li>   </h4>
+                        </div>
+                        <div class="post-block">
+                           <div class="post-block-inner">
+                               <div class="row ">
+                                  {% for data in listCt_G%}
+
+                                    <div class="col-md-3 mt-1 xs-padding">
+                                        <div class="post-card">
+                                            <div class="grid-post-thumb">
+                                                {% if data.estudante.image %}<a href="{{data.estudante.image.url}}" target="_blank"><img src="{{data.estudante.image.url}}" width="200x" height="300px"></a>{%else%}{%endif%}
+                                            </div>
+                                            <div class="post-meta">
+                                                <h3><a href="{% url 'public_detailViewest' data.id%}" class="hover-line text-center">Emis :{{data.estudante.emis|safe}}</a></h3>  
+                                            </div>
+                                        </div>                   
+                                     </div>
+                                  {% endfor %}
+                                </div>  
+                            </div>
+                           <ol class="breadcrumb mb-2 mt-1">
+                                <li class="breadcrumb-item"><a href="{% url 'list_progrmCT' list_tin.id %}">Fila/</a></li> <span class="badge badge-danger">{{title}}</span></li>   
+                                
+                          </ol> 
+                  </div><!-- /.post-block -->
+                </div><!-- /.col-lg-8 -->
+           </div>
+        </div>
+    </div>
+</section>
+{%endif%}
+{%endblock%}

@@ -1,0 +1,17 @@
+	<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item"><a class="nav-link" href="{% url 'home' %}">HOME <i class="fa fa-home"></i></a></li>
+				<li class="nav-item"><a class="nav-link" href="{% url 'DetailValoresEstudante' %}">Lista Valores<i class="fa fa-pencil"></i></a></li>
+
+				<li class="nav-item"><a class="nav-link" href="{% url 'listaReport'%}"> <i class="fa fa-bar-chart fa-1x"></i> RELATORIU </a></li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ request.user.username|upper }}</a>
+					<div class="dropdown-menu" aria-labelledby="profile">
+						<a class="dropdown-item" href="{% url 'detalho_estudante' %}"><i class="fa fa-users"></i> Profile</a>
+						<a class="dropdown-item" href="{% url 'manageAccount' %}"><i class="fa fa-users"></i> Account</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
+					</div>
+				</li>
+			</ul>
+		</div>

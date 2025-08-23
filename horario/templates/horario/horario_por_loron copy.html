@@ -1,0 +1,132 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horário por Loron</title>
+    <style>
+        .container-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .inner-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .inner-table-container {
+            width: 33%;
+            vertical-align: top;
+        }
+      
+    </style>
+</head>
+<body>
+    <h1>Horário por Loron</h1>
+
+    <table class="container-table">
+        <tr>
+            <!-- Table for Professors -->
+            <td class="inner-table-container">
+                <h2>Professores</h2>
+                <table class="inner-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for professor in profesores %}
+                        <tr>
+                            <td>{{ professor.naran }}</td>
+                            <td>{{ professor.codeP }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+
+            <!-- Table for Horarios -->
+            <td class="inner-table-container">
+                <h2>Horários</h2>
+                <table class="inner-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Loron</th>
+                            <th rowspan="2">Oras</th>
+                            <th colspan="{{ tur|length }}">10 Ano</th>
+                            <th colspan="{{ tur1|length }}">11 Ano</th>
+                            <th colspan="{{ tur2|length }}">12 Ano</th>
+                        </tr>
+                        <tr class="text-center">
+                            {% for xx in tur %}
+                            <td>{{ xx.Turma }}</td>
+                            {% endfor %}
+                            {% for xx in tur1 %}
+                            <td>{{ xx.Turma }}</td>
+                            {% endfor %}
+                            {% for xx in tur2 %}
+                            <td>{{ xx.Turma }}</td>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                       
+                        <tr {% if horario.same_times %} class="same-times" {% endif %}>
+                            <td rowspan="13">DAY ONE</td>
+                            <td>{{horarios.oras_hahu}} - {{ horarios.oras_remata }}</td>
+                            <td>{{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }}</td>
+                            <td>{{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }} </td>
+                            <td>{{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }} </td>
+                            <td>{{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }} </td>
+                             <td>{{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }}</td>
+                             <td>{{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }} </td>
+                             <td> {{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }}  </td>
+                             <td>{{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }}</td>
+                              <td>{{ horario.profesores.codeP }}.{{ horario.Diciplina.code_dics }}</td>          
+                            </tr>
+                    </tbody>
+                </table>
+            </td>
+
+            <!-- Table for Disciplinas -->
+            <td class="inner-table-container">
+                <h2>Disciplinas</h2>
+                <table class="inner-table">
+                    <thead>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Disiplina</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for disciplina in disciplinas %}
+                        <tr>
+                            <td>{{ disciplina.code_dics }}</td>
+                            <td>{{ disciplina.Diciplina }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+{% endblock %}

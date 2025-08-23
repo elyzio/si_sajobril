@@ -1,0 +1,62 @@
+{% extends 'public_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section>
+        <section class="post-block-section pt-40 pb-80">
+                <div class="row">
+                    <div class="card">
+                        <div class="card-header"><h4 class="text-center"><span class="badge badge-danger">{{legend|upper}}</span></h4>
+                        </div>
+                    <div class="col-lg-12 sm-padding">
+                       
+                                   
+                        <div class="post-block">
+                           <div class="post-block-inner">
+                               <div class="row ">
+                                  {% for data in est%}
+
+                                    <div class="col-md-3 mt-1 xs-padding">
+                                        <div class="post-card">
+                                            <div class="grid-post-thumb">
+                                                {% if data.image %}<a href="{{data.image.url}}" target="_blank"><img src="{{data.image.url}}" width="200x" height="300px"></a>{%else%}{%endif%}
+                                            </div>
+                                            <div class="post-meta">
+                                                <h3><a href="{% url 'public_detailViewest' data.id%}" class="hover-line text-center">Emis :{{data.emis|safe}}</a></h3>  
+                                            </div>
+                                        </div>                   
+                                     </div>
+                                  {% endfor %}
+                </div>  
+               </div>
+               <ol class="breadcrumb mb-2 mt-1">
+                  <div class="page-links">
+                   {% if page.has_previous %}
+                    <a class="btn btn-outline-success mb-4" href="?page=1">Dahuluk</a>
+                   {% endif %}
+                   {% for num in page.paginator.page_range %}
+                    {% if page.number == num %}
+                        <a class="btn btn-success mb-4" href="?page={{ num }}">{{ num }}</a>
+                    {% elif num > page.number|add:'-3' and num < page.number|add:'3' %}
+                        <a class="btn btn-outline-success mb-4" href="?page={{ num }}">{{ num }}</a>
+                    {% endif %} 
+                   {% endfor %}
+                   {% if page.has_next %}
+                   <a class="btn btn-outline-success mb-4" href="?page={{ page.next_page_number }}">Tuirmai</a>
+                   <a class="btn btn-outline-success mb-4" href="?page={{ page.paginator.num_pages }}">Dahikus</a>
+                  {% endif %}
+                </div>
+                    <li class="breadcrumb-item"><a class="btn btn-outline-success mb-4" href="{% url 'publicEstGaleriList' %}">JERAL</a></li>  
+                    {% for tnn in tinanG%}
+                        <li class="breadcrumb-item"><a class="btn btn-outline-success mb-4" href="{% url 'publicGaleryEstTinList' tnn.id %}">{{ tnn.ano }}</a></li>
+                    {% endfor %}
+                   
+              </ol> 
+              </div><!-- /.post-block -->
+            </div><!-- /.col-lg-8 -->
+        </div>
+    </div>
+
+
+</section>
+{%endblock%}

@@ -1,0 +1,48 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head_link %}
+<!-- jvectormap CSS
+		============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/jvectormap/jquery-jvectormap-2.0.3.css' %}">
+{% endblock head_link %}
+
+{% block contents %}
+
+<div class="container">
+    <header class="text-center font-weight-bold h5 mt-3 mb-3">Relatoriu em Grafiku</header>
+    <header>
+        <ol class="breadcrumb rounded-0 mb-1 mt-1">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Report Graphic</li>
+        </ol>
+    </header>
+    <div class="row mt-3">
+        <div class="col-lg-6">
+            <div class="card rounded-0">
+                <div class="card-body">
+                    <div class="card-title text-center h5 font-weight-bold">Student By Gender</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+
+{% endblock contents %}
+
+{% block scripts %}
+<!-- Charts JS
+		============================================ -->
+<script src="{% static 'notica/js/charts/Chart.js' %}"></script>
+<script src="{% static 'notica/js/charts/bar-chart.js' %}"></script>
+
+
+
+{% endblock scripts %}

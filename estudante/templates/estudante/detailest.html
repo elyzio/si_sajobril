@@ -1,0 +1,87 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block contents %}
+<header class="page-header">
+    <div class="container">
+        <h2 class="no-margin-bottom"><center>DETALLU INFORMASAUN ESTUDANTE</center></h2><br>
+    </div>
+</header>
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder rounded-0 container d-flex justify-content-between">
+    <ul class="breadcrumb rounded-0">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'Listaestudante' %}">Estudante</a></li>
+        <li class="breadcrumb-item active">Detail</li>
+    </ul> 
+    <button class="btn rounded-0 btn-outline-danger btn-sm mr-2 mt-3 h6" style="height: 30px;color: red;font-size: 0.7rem" onclick=self.history.back()><span class="fa fa-angle-left"></span> Back</button> 
+</div>
+
+<section class="tables">   
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %} 
+                <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card shadow-lg pt-3 rounded-0">
+                    <div class="card-body">
+                        <table class="table table-hover table-striped">
+                            <tr>
+                                <td rowspan="12" class="text-center">
+                                    {% if est.image %}
+                                    <img class="card-img" style="border-radius: 5px; width: 100%; height: 700px; max-width: 200px; max-height: 240px;" src="{{est.image.url}}">
+                                    {% else %}
+                                    <img class="card-img" style="border-radius: 5px; width: 100%; height: 700px; max-width: 200px; max-height: 240px;" src="{% static 'main/images/imagesa.jpg' %}">
+                                    {% endif %}
+                                </td>
+                                <th>Data Resisto :</th><td>{{est.data_resisto}}</td>
+                            </tr>
+                            <tr>
+                                <th>Emis :</th><td>{{est.emis}}</td>
+                            </tr>
+                            <tr>
+                                <th>Naran Kompletu :</th><td>{{est.naran}}</td>
+                            </tr>
+                            <tr>
+                                <th>Fatin Moris :</th><td>{{est.municipality}} /{{est.administrativepost}} / {{est.village}} / {{est.aldeia}}</td>
+                            </tr>
+                            <tr>
+                                <th>Data Moris :</th><td>{{est.Data_moris}}</td>
+                            </tr>
+                            <tr>
+                                <th>Sexo :</th><td>{{est.Sexo}}</td>
+                            </tr>
+                            <tr>
+                                <th>Aman :</th><td colspan="2">{{est.naran_aman}}</td>
+                            </tr>
+                            <tr>
+                                <th>Inan :</th><td colspan="2">{{est.naran_inan}}</td>
+                            </tr>
+                            <tr>
+                                <th>Nu.Telefone :</th><td colspan="2">{{est.nu_telefone|default:''}}</td>
+                            </tr>
+                            <tr>
+                                <th>Departamento :</th><td colspan="2">{{detailest.Turma.classe.Departamento.nome_departamento}}</td>
+                            </tr>
+                            <tr>
+                                <th>Klasse :</th><td colspan="2">{{detailest.Turma.classe.name}}</td>
+                            </tr>
+                            <tr>
+                                <th>Turma :</th><td colspan="2">{{detailest.Turma.Turma}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock contents  %}

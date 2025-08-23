@@ -1,0 +1,32 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% include 'main/head.html' %}
+</head>
+
+<body class="bg-danger">
+	<div class="container mt-4 p-3">
+		<div class="row justify-content-center">
+
+			<div class="col-sm-4">
+				<div class="card border-danger shadow-lg pt-1">
+					<!-- <div class="card-header bg-info text-center" style="color: white">
+						LOGIN
+					</div> -->
+					<div class="card-body">
+						<form method="POST">
+							{% csrf_token %}
+							{{ form|crispy }}
+							<div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+								<button class="btn btn-sm btn-outline-danger rounded-0" type="submit">Log In <i
+										class="fa fa-sign-in"></i></button>
+							</div>
+						</form>
+					</div> <!--end card-body-->
+				</div> <!--end card-->
+			</div> <!--end col-->
+		</div> <!--end row-->
+	</div>
+	{% include 'main/script.html' %}
+</body>
+
+</html>

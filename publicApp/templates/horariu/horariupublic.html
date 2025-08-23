@@ -1,0 +1,231 @@
+{% extends 'public_base.html' %}
+{% load static %}
+{% block content %}
+
+<section>
+        <div class="container mt-5 border border-info p-3">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              
+              <li class="breadcrumb-item"><a href="#">Orario</a></li>
+              <li> 
+              <a href="{% url 'PrintHorario' %}" target="_blank" class="btn btn-sm btn-outline-danger" title="Print Data">Print <i class="fa fa-print"></i></a>
+            </li>
+              
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+            </div>
+          </header>
+          <div class="card">
+          <div class="card-header text-center">
+            <h1>Orariu Prosesu Aprendizajen </h1><hr></div>
+        
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <h4>  DAY ONE </h4>
+                 </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-bordered table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th>Professor</th>
+                          <th> Oras</th>
+                          <th>Disciplina</th>
+                          <th>Classe</th>          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for hor in datahorS %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{hor.profesores}}</td>
+                          <td> At :{{hor.oras_hahu}}OTL--{{hor.oras_remata}} OTL</td>
+                          <td>{{hor.Diciplina}}</td>
+                          <td>{{hor.turma}}</td>
+                      </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <h4> DAY TWO </h4>
+                 </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example1"  class="table table-bordered table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th>Professor</th>
+                          <th> Oras</th>
+                          <th>Disciplina</th>
+                          <th>Classe</th>          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for hor in datahorT %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{hor.profesores}}</td>
+                          <td> At :{{hor.oras_hahu}}OTL--{{hor.oras_remata}} OTL</td>
+                          <td>{{hor.Diciplina}}</td>
+                          <td>{{hor.turma}}</td>
+                      </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br><br><br>
+            <div class="col-lg-6 mt-3">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <h4> DAY TREE</h4><hr>
+                 </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example2"  class="table table-bordered table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th>Professor</th>
+                          <th> Oras</th>
+                          <th>Disciplina</th>
+                          <th>Classe</th>          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for hor in datahorQ %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{hor.profesores}}</td>
+                          <td> At :{{hor.oras_hahu}}OTL--{{hor.oras_remata}} OTL</td>
+                          <td>{{hor.Diciplina}}</td>
+                          <td>{{hor.turma}}</td>
+                      </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 mt-3">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <h4> DAY FOUR </h4>
+                 </div>
+                 <hr>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example3"  class="table table-bordered table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th>Professor</th>
+                          <th> Oras</th>
+                          <th>Disciplina</th>
+                          <th>Classe</th>          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for hor in datahorQui %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{hor.profesores}}</td>
+                          <td> At :{{hor.oras_hahu}}OTL--{{hor.oras_remata}} OTL</td>
+                          <td>{{hor.Diciplina}}</td>
+                          <td>{{hor.turma}}</td>
+                      </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br><hr>
+            <div class="col-lg-12 mt-3">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center">
+                  <h4> DAY FIVE </h4>
+                 </div><hr>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example4"  class="table table-bordered table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th>Professor</th>
+                          <th> Oras</th>
+                          <th>Disciplina</th>
+                          <th>Classe</th>          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for hor in datahorSE %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{hor.profesores}}</td>
+                          <td> At :{{hor.oras_hahu}}OTL--{{hor.oras_remata}} OTL</td>
+                          <td>{{hor.Diciplina}}</td>
+                          <td>{{hor.turma}}</td>
+                      </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+    $(document).ready( function () {
+        var table = $('#example1').removeAttr('width').DataTable( {
+            
+        });
+    } );
+    $(document).ready( function () {
+        var table = $('#example2').removeAttr('width').DataTable( {
+            
+        });
+    } );
+    $(document).ready( function () {
+        var table = $('#example3').removeAttr('width').DataTable( {
+            
+        });
+    } );
+    $(document).ready( function () {
+        var table = $('#example4').removeAttr('width').DataTable( {
+            
+        });
+    } );
+    $(document).ready( function () {
+        var table = $('#example5').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

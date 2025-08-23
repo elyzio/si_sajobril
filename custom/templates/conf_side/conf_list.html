@@ -1,0 +1,26 @@
+<div class="col-md-3 mb-3">
+	<input class="form-control mb-1" id="myInput" type="text" placeholder="Search..">
+	<ul class="list-group" id="myList">
+		<a href="{% url 'Lista-periode' %}"><li class="list-group-item">Dadus periode exame<i class="badge badge-warning float-right"></i></li></a>
+		<a href="{% url 'ListaAno' %}"><li class="list-group-item">Dadus Tinan<i class="badge badge-warning float-right"></i></li></a>
+		<a href="{% url 'ListaDics' %}"><li class="list-group-item">Dadus Disiplina<i class="badge badge-warning float-right"></i></li></a>
+	    <a href="{% url 'ListaDep' %}"><li class="list-group-item">Dadus Departamento<i class="badge badge-warning float-right">{{Count_departamento}}</i></li></a>
+	    <a href="{% url 'ListaClasse' %}"><li class="list-group-item">Dadus Classe<i class="badge badge-warning float-right">{{Count_classe}}</i></li></a>
+	    <a href="{% url 'listaTurma' %}"><li class="list-group-item">Dadus Turma<i class="badge badge-warning float-right">{{Count_turma}}</i></li></a>
+	    <a href="{% url 'listaMunisipiu' %}"><li class="list-group-item">Dadus Munisipiu<i class="badge badge-warning float-right">{{totalMunisipiu}}</i></li></a>
+	    <a href="{% url 'listaPostu' %}"><li class="list-group-item">Dadus Postu Administrativu<i class="badge badge-warning float-right">{{totalPostu}}</i></li></a>
+	    <a href="{% url 'listaSuku' %}"><li class="list-group-item">Dadus Suku<i class="badge badge-warning float-right">{{totalSuku}}</i></li></a>
+	    <a href="{% url 'listaAldeia' %}"><li class="list-group-item">Dadus Aldeia<i class="badge badge-warning float-right">{{totalAldeia}}</i></li></a>
+	</ul>
+</div>
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myList li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>

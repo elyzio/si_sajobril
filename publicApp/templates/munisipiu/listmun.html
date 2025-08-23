@@ -1,0 +1,69 @@
+{% extends 'public_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <section>
+
+
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'public_List_estudnte_munisipiu' %}">Lista Munisipiu</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><span class="badge badge-danger">{{title}}</span></li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+          {% if page == "list" %}
+      
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between text-center"><a href="{% url 'list_mun_G' list_mun.id %}" class="btn btn-sm btn-primary mb-2"><i class="fa fa-image"></i> Foto</a> 
+                </div> 
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped">
+                      <thead>
+                        <tr>
+                          <th>Nu</th>
+                          <th class="text-center"><i class="fa fa-user"></i></th>
+                           <th>EMIS</th>
+                          <th>Naran </th>
+                          <th>Seksu</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in listMun %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td class="text-center">{% if data.image %}<a href="{{data.image.url}}" target="_blank"><img src="{{data.image.url}}" width="50px" height="50px"></a>{%else%}{%endif%}</td>
+                          <td> <a href="{% url 'public_detailViewest' data.id %}"> {{ data.emis }} </a></td>
+                          <td>{{ data.naran }}</td>
+                          <td>{{ data.Sexo }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {%endif%}
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

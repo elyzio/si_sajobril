@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SIA-LOIOLA</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'public/datatablesPublic.min.css' %}" rel="stylesheet">
+    <link href="{% static 'public/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'css/metisMenu.min.css' %}" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="{% static 'css/timeline.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/startmin.css' %}" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="{% static 'css/morris.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <!-- Include Navigation -->
+        {% include 'navpublic.html' %}
+
+        <!-- Include Sidebar -->
+        {% include 'sidebarP.html' %}
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header text-center">SISTEMA INFORMASAUN AKADEMIKA ESKOLA COLEGIO SANTO INACIO DE LOIOLA</h3>
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
+
+                <!-- Content Block -->
+                {% block content %}
+                {% endblock %}
+                <!-- /.block -->
+
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Footer -->
+    <footer class="page-footer font-small mt-5">
+        <div class="container-fluid text-center text-md-left">
+            <!-- Copyright -->
+            <div class="row">
+                <div class="col-lg-12 footer-copyright py-3">
+                    © 2024 Copyright LOIOLA
+                    <a href="#">KASAIT, LIKISA, TIMOR-LESTE</a>
+                </div>
+            </div>
+            <!-- /Copyright -->
+        </div>
+    </footer>
+    <!-- /Footer -->
+
+    <!-- Datatable -->
+    <script src="{% static 'public/datatablespublic.min.js' %}"></script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
+    <script src="{% static 'public/jqueryPublic.min.js'%}"></script>
+    <script src="{% static 'public/jquery.dataTablespublic.min.js'%}"></script>
+    <script src="{% static 'public/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Additional Scripts -->
+    {% block scripts %}
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static 'js/metisMenu.min.js' %}"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="{% static 'js/raphael.min.js' %}"></script>
+    <script src="{% static 'js/morris.min.js' %}"></script>
+    <script src="{% static 'js/morris-data.js' %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'js/startmin.js' %}"></script>
+    {% endblock %}
+    <!-- /Scripts -->
+</body>
+
+</html>

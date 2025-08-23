@@ -1,0 +1,72 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="col-sm-12">
+    <div class="card shadow-lg pt-3 rounded">
+      <div class="card-header d-flex justify-content-end text-center">
+         <div class="text-center border">
+          
+            <!--<a href="{% url 'shartMunisipiu' %}" class="btn btn-sm btn-info" title="Relatoriu Tabular"><i class="fa fa-bar-chart"></i> Relatoriu Grafiku Munisipiu</a> -->
+             <!-- <a href="{% url 'shartvalor' %}" class="btn btn-sm btn-dark" title="Relatoriu Tabular"><i class="fa fa-bar-chart"></i> Relatoriu Grafiku valor</a> -->
+          </div>
+        </div>
+      <div class="card-body text-center">
+        
+          <h3> <font color="black" face="Impact">RELATORIU GRAFIKU TOTAL ESTUDANTE</h3></font>
+          <hr>
+        
+      </div>
+      <!-- Area Chart Estudante Feto No MAne-->
+ <div class="row"> 
+  <!-- Area Chart Estudante Feto No MAne-->
+    <div class="col-lg-6 text-center">
+      <div class="col-md">
+          <div class="card text-center text-dark mb-5">
+            <div class="card-header" id="s_boxs">
+              <h6 class="card-title text-center">TOTAL ESTUDANTE TUIR TINAN AKADEMIKU BAZEIA BA SEXU</h6></div>
+                   <div id="reportsChart1" style="height: 400px;" class="echart"></div>
+            </div>
+          </div>
+        </div>
+
+    <div class="col-sm-6">
+    <div class="card shadow-lg pt-3 rounded">
+      <div class="card-header text-center">TOTAL ESTUDANTE DEPARTAMENTU BAZEIA BA TINAN AKADEMIKU</div>
+      <div class="card-body text-center">
+               <div id="departamentu" style="height: 250px;" class="echart"></div>
+      </div>    
+    </div> <!-- end card head  -->
+    </div>
+
+  <div class="col-sm-12">
+    <div class="card shadow-lg pt-3 rounded">
+      <div class="card-header text-center">GRAFIKU TOTAL ESTUDANTE CLASSE NO TURMA</div>
+      <div class="card-body text-center">
+               <div id="chartClasse" style="height: 250px;" class="echart"></div>
+      </div>    
+    </div> <!-- end card head  -->
+    </div>
+    
+  <div class="col-sm-12">
+    <div class="card shadow-lg pt-3 rounded">
+      <div class="card-header text-center">GRAFIKU TOTAL ESTUDANTE TUIR MUNISIPIU </div>
+      <div class="card-body text-center">
+               <div id="reportsChart8" style="height: 250px;" class="echart"></div>
+      </div>    
+    </div> <!-- end card head  -->
+    </div>
+    </div>
+    </div> <!-- end card head  -->
+</div>
+<script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+<script type="text/javascript">{% include 'charts-js/charts-estudnte-ano.js' %}</script>
+<script type="text/javascript">{% include 'charts-js/charts-class-estudante.js' %}</script>
+<script type="text/javascript">{% include 'charts-js/charts-mun.js' %}</script>
+<script type="text/javascript">{% include 'charts-js/chartClasse.js' %}</script>
+ <script type="text/javascript">{% include 'charts-js/departamentu.js' %}</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/apexcharts.min.js' %}"></script>
+<script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/echarts.min.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% load static %}
+
+<body>
+    <div class="header-top-area">
+        <!-- <div class="container"> -->
+        <div class="row">
+            <div class="col-sm-2 col-xs-2"
+                style="background-color: white; margin-left: 5px; height: 60px; border: 1px solid #ddd;">
+                <div class="logo-area">
+                    <a href=""><img src="{% static 'notica/img/logo/sajobril5.png' %}" class=""
+                            style="margin-bottom: -10px; margin-top: -10px;" alt="" /></a>
+                    <!-- <a href="#"><img src="{% static 'notica/img/sajobril.png' %}" style="width: 2rem;" class="img-fluid" alt="" /></a> -->
+                    <!-- <div class="text-white h5 font-weight-bold">{{title}}</div> -->
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 d-flex align-items-center">
+                <div class="text-white h5 font-weight-bold ">
+                    PAJINA {{user.groups.first.name|upper}}
+                </div>
+            </div>
+
+            
+        </div>
+        <!-- </div> -->
+    </div>
+    <!-- End Header Top Area -->

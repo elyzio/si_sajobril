@@ -1,0 +1,28 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+	<div class="col-sm-12">
+		<div class="card shadow-lg pt-3 rounded">
+      <div class="card-header d-flex justify-content-between text-center"><h4>GRAFIKU TOTAL ESTUDANTE TUIR MUNISIPIU</h4>
+         <div class="text-center border">
+            <a href="{% url 'report_shart' %}" class="btn btn-sm btn-outline-info" title="Relatoriu Tabular"><i class="fa fa-list"></i>Back</a>
+          </div>
+        </div>
+			<div class="card-body text-center">
+               <div id="reportsChart8" style="height: 250px;" class="echart"></div>
+			</div>		
+		</div> <!-- end card head  -->
+    </div>
+		 
+
+
+<script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+<script type="text/javascript">{% include 'charts-js/charts-mun.js' %}</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/apexcharts.min.js' %}"></script>
+<script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/echarts.min.js' %}"></script>
+{% endblock %}

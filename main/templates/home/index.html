@@ -1,0 +1,20 @@
+{% extends 'main/layout.html' %} 
+{% load static %}
+
+{% block content %}
+	{% if user.is_authenticated %}
+		{% if user.groups.all.0.name == 'Tesoreira' %}
+			{% include 'home/indexTesoreira.html' %}
+		{% elif user.groups.all.0.name == 'Secretario' %}
+			{% include 'home/indexSecretraria.html' %}
+		{% elif user.groups.all.0.name == 'Director' %}
+			{% include 'home/indexDir.html' %}
+		{% elif user.groups.all.0.name == 'kurikulum' %}
+			{% include 'home/indexprofessores.html' %}
+		{% elif user.groups.all.0.name == 'admin' %}
+			{% include 'home/indexAdminNacional.html' %}
+		{% elif user.groups.all.0.name == 'estudante' %}
+			{% include 'home/indexestudante.html' %}
+		{% endif %}
+	{% endif %}
+{% endblock %}

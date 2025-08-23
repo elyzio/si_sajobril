@@ -1,0 +1,83 @@
+{% load static %}
+<div class="col-sm-12">
+  <div class="text-center strong">
+    <h4>SISTEM GESTAO DE ESCOLA SAO JOAO DE BRITO LIQUICA</h4>
+  </div>
+  <div class="card border-0">
+
+    <div class="card-body">
+      <div class="row d-flex justify-content-between">
+        <div class="col-sm-3 ">
+          <div class="card badge-danger">
+            <div class="card-header"><center><h5 style="margin-bottom: 0; color: white;"> TOTAL ESTUDANTE</h5></center></div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-8"><h2 class="text-white">{{total_estudante}}</h2>
+                </div>
+                <div class="col-4"><i class="fa fa-users fa-3x"></i></div>
+              </div>
+            </div>
+          </div>
+        </div><!--end col-->
+
+        <div class="col-sm-3">
+          <div class="card badge-danger">
+            <div class="card-header"><center><h5 style="margin-bottom: 0; color: white;"> TOTAL ALUMNI </h5></center></div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-8"><h2 class="text-white">{{totlAlumi}}</h2>
+                </div>
+                <div class="col-4"><i class="fa fa-users fa-3x"></i></div>
+              </div>
+            </div>
+          </div>
+        </div><!--end col-->
+        <div class="col-sm-3">
+          <div class="card badge-danger">
+            <div class="card-header"><center><h5 style="margin-bottom: 0; color: white;"> TOTAL ESTUDANTE MANE </h5></center></div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-8"><h2 class="text-white">{{totalestudanteMane}}</h2>
+                </div>
+                <div class="col-4"><i class="fa fa-users fa-3x"></i></div>
+              </div>
+            </div>
+          </div>
+        </div><!--end col-->
+        <div class="col-sm-3">
+          <div class="card badge-danger">
+            <div class="card-header"><center><h5 style="margin-bottom: 0; color: white;"> TOTAL ESTUDANTE FETO </h5></center></div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-8"><h2 class="text-white">{{totalestudanteFeto}}</h2>
+                </div>
+                <div class="col-4"><i class="fa fa-users fa-3x"></i></div>
+              </div>
+            </div>
+          </div>
+        </div><!--end col-->
+      </div>
+      <br> <br>
+      <div class="card col-lg-12">
+
+        <div class="col-lg-12 text-center">
+          <div class="col-md">
+            <div id="s_boxs">
+              <h6 class="card-title text-center">Grafiku Total Estudante Tuir Tinan</h6>
+            </div>
+            <div id="reportsChart1" style="height: 250px;" class="echart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+<script type="text/javascript">{% include 'charts-js/charts-estudnte-ano.js' %}</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/apexcharts.min.js' %}"></script>
+<script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/echarts.min.js' %}"></script>

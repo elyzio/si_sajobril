@@ -1,0 +1,465 @@
+from django.shortcuts import render,redirect,get_object_or_404
+from .models import *
+from valor.models import *
+from Turma.models import *
+from .forms import *
+from custom.utils import *
+from custom.models import *
+from departamento.models import departamento
+from funsionariu.models import FunsionarioTurma, Funsionariu
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from users.decorators import allowed_users
+from django.conf import settings
+from .filters import estFilter
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User,Group
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum
+
+@login_required()
+@allowed_users(allowed_roles=['admin','Tesoreira','Director','Secretario','kurikulum','professor'])
+def Listaestudante(request):
+	group = request.user.groups.all()[0].name
+	est = Estudante.objects.all()		
+	deps = departamento.objects.all().order_by('id')
+	tinan = Ano.objects.all()
+	KlasseLista = classe.objects.distinct().values('name').all()
+	Klasse = list()
+	for a in KlasseLista:
+		getClasse = classe.objects.filter(name=a['name']).last()
+		Klasse.append(getClasse)
+	context = {
+        'rejDadus':'active',
+        'rejDadus2':'in active',
+		# 'est':est, 
+		'Klasse':Klasse,
+		'est':est, 'deps': deps, 'group': group, 'tinan': tinan,"page":"list",
+		'title': 'Lista Estudante', 'legend': 'Lista Estudante'
+	}
+	return render(request,'estudante/lista_estudante.html',context)
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Tesoreira','Director','Secretario','kurikulum','professor'])
+def ListEstudanteClass(request, id):
+    group = request.user.groups.all()[0].name
+    ano_act = Ano.objects.filter(is_active=True).first()
+    klasse = classe.objects.filter(name=id).last()
+    KlasseLista = classe.objects.distinct().values('name').all()
+    KlasseList = list()
+    for a in KlasseLista:
+        getClasse = classe.objects.filter(name=a['name']).last()
+        KlasseList.append(getClasse)
+    est = DetailEst.objects.filter(Turma_id__classe__name=klasse.name,is_active=True,Ano_Academinco=ano_act).all().order_by('estudante__naran')
+	
+    sumariuEstudante = list()
+    depList = departamento.objects.all()
+    for x in depList:
+        tur = turma.objects.filter(classe__name=klasse.name,classe__Departamento=x)
+        estTurma = list()
+        for y in tur:
+            totEst = DetailEst.objects.filter(Turma=y,Turma_id__classe__name=klasse.name,is_active=True, Ano_Academinco=ano_act).count()
+            estTurma.append([y,totEst])
+        sumariuEstudante.append([x,estTurma])
+	# print("sumariuEstudante:",sumariuEstudante)
+    context = {
+        'rejDadus':'active',
+        'rejDadus2':'in active',
+		'sumariuEstudante':sumariuEstudante,'est':est,'KlasseList':KlasseList,'klasse': klasse,
+		'group': group,"page":"list",
+		'title': f'Lista Estudante Klasse {klasse.name}', 'legend': f'Lista Estudante Klasse {klasse.name}'
+	}
+    return render(request, 'estudante/lista_estudanteC.html', context)
+
+@login_required
+@allowed_users(allowed_roles=['admin','Tesoreira','Director','Secretario','kurikulum','professor'])
+def ListEstDepClaTur(request, idDep,klasse,idTur):
+	group = request.user.groups.all()[0].name
+	klasse = classe.objects.filter(name=klasse).last()
+	tur = turma.objects.get(id=idTur)
+	dep = departamento.objects.get(id=idDep)
+
+	KlasseLista = classe.objects.distinct().values('name').all()
+	KlasseList = list()
+	for a in KlasseLista:
+		getClasse = classe.objects.filter(name=a['name']).last()
+		KlasseList.append(getClasse)
+	est = DetailEst.objects.filter(Turma_id__classe_id__Departamento=dep,Turma_id__classe__name=klasse.name,Turma=tur,is_active=True).all().order_by('estudante__naran')
+	
+	sumariuEstudante = list()
+	depList = departamento.objects.all()
+	for x in depList:
+		tur = turma.objects.filter(classe__name=klasse.name,classe__Departamento=x)
+		print("tur:",tur)
+		estTurma = list()
+		for y in tur:
+			totEst = DetailEst.objects.filter(Turma=y,Turma_id__classe__name=klasse.name,is_active=True).count()
+			estTurma.append([y,totEst])
+		sumariuEstudante.append([x,estTurma])
+	print("sumariuEstudante:",sumariuEstudante)
+	context = {
+		'sumariuEstudante':sumariuEstudante,'est':est,'KlasseList':KlasseList,'klasse': klasse,
+		'group': group,"page":"list",
+		'title': f'Lista Estudante Klasse {klasse.name}', 'legend': f'Lista Estudante Klasse {klasse.name}'
+	}
+	return render(request, 'estudante/lista_estudanteC.html', context)
+
+@login_required
+@allowed_users(allowed_roles=['admin','Tesoreira','Director','Secretario','kurikulum','professor'])
+def EstTinList(request, pk):
+	group = request.user.groups.all()[0].name 
+	tin = get_object_or_404(Ano, pk=pk)
+	est = DetailEst.objects.filter(Ano_Academinco=tin).all().order_by('Ano_Academinco')
+	# tinan = Ano.objects.all()
+	context = {'est': est, 'group': group,"page":"list",
+		'title': 'Lista Estudante', 'legend': 'Lista Estudante'
+	}
+	return render(request, 'estudante/lista_estudante.html', context)
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def add_estudante(request):
+    if request.method == "POST":
+        form = est_Form(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            username = instance.emis  # or any other unique identifier
+            password = 'sajobril2025'  # Generate or assign a default password
+            # Check if username already exists
+            if User.objects.filter(username=username).exists():
+                messages.error(request, f'Username {username} already exists.')
+            else:
+                user = User.objects.create_user(username=username, password=password)
+                instance.user = user
+
+                # Add user to the "Students" group
+                student_group, created = Group.objects.get_or_create(name='estudante')
+                user.groups.add(student_group)
+                
+                instance.save()
+                n = instance.naran
+                messages.success(request, f'Estudante {n} foi adicionado com sucesso.')
+                return redirect('Listaestudante')
+    else:
+        form = est_Form()
+
+    context = {
+        'rejDadus':'active',
+        'rejDadus2':'in active',
+        'form': form, 
+        "page": "form",
+        'title': 'Aumenta Estudante',
+        'legend': 'Aumenta Estudante'
+    }
+    return render(request, 'estudante/lista_estudante.html', context)
+
+@login_required()
+@allowed_users(allowed_roles=['admin','Secretario'])
+def updateest(request,hashid):
+	group = request.user.groups.all()[0].name
+	est = get_object_or_404(Estudante,id=hashid)
+	if request.method == 'POST':
+		form = est_Form(request.POST,request.FILES,instance=est)
+		if form.is_valid():
+			instance = form.save()
+			messages.info(request, f'Estudante is updated Successfully.')
+			return redirect('Listaestudante')
+	else:
+		form = est_Form(instance=est)
+	context = {
+        'rejDadus':'active',
+        'rejDadus2':'in active',
+		'sukuActive':"active",
+		'page':"form",
+		'group': group, 
+		'form': form, 
+	}
+	return render(request, 'estudante/lista_estudante.html', context)
+
+
+@login_required()
+@allowed_users(allowed_roles=['admin','Secretario'])
+def deleteest(request, id_est):
+	est = get_object_or_404(DetailEst, id=id_est)
+	naran = est.estudante.naran
+	est.delete()
+	messages.warning(request, f'Estudante {naran} is Deleted Successfully.')
+	return redirect('Listaestudante')
+
+@login_required()
+@allowed_users(allowed_roles=['admin','Director','Secretario','estudante','professor'])
+def detailViewest(request, id_est):
+	est = Estudante.objects.get(id = id_est)
+	detailest=DetailEst.objects.filter(estudante=est, is_active=True).last()
+	context = {
+		'est':est,'detailest':detailest,
+	}
+	return render(request, 'estudante/detailest.html', context)
+
+#Report 
+
+@login_required
+@allowed_users(allowed_roles=['admin','Secretario'])
+def EReportListActiveEstudante(request):
+	objects = Estudante.objects.all()
+
+	context ={
+        'rejDadus':'active',
+        'rejDadus2':'in active',
+		"title":f"Pajina Relatoriu Lista Estudnate",
+		"report_active":"active",
+		"objects":objects,
+		
+	}
+	return render(request, "estudante/listActiveEstudante.html",context)
+
+@login_required
+@allowed_users(allowed_roles=['admin','Director','Secretario','kurikulum','professor'])
+def EReportListActiveEstudanteClasse(request):
+	objects = DetailEst.objects.all()
+
+	context ={
+        'rejDadus':'active',
+        'rejDadus2':'in active',
+		"title":f"Pajina Relatoriu Lista Estudnate",
+		"report_active":"active",
+		"objects":objects,
+		
+	}
+	return render(request, "estudante/listActiveEstudanteClassePrint.html",context)
+
+
+# registo classe estudante	
+@login_required
+@allowed_users(allowed_roles=['admin','Secretario'])
+def add_classe_estudante(request ,id1):
+	group = request.user.groups.all()[0].name
+	if request.method == 'POST':
+		get_student = Estudante.objects.get(id=id1)
+		form = est_classe_Form(request.POST,request.FILES)
+		if form.is_valid():
+			instance = form.save(commit=False)
+			instance.estudante = get_student
+			instance.save()
+			id1 = instance.estudante.id
+			messages.success(request, f'Classe is Added Successfully.')
+			return redirect('Listaestudante')
+	else:
+		form = est_classe_Form()
+	context = {
+        'rejDadus':'active',
+        'rejDadus2':'in active',
+		"group":group,
+		'aldeiaActive':"active",
+		'page':"form",
+		'form': form, 
+	}
+	return render(request, 'estudante/form_estudante_classe.html', context)
+
+##
+###
+###################
+############
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def updateClassestudante(request, idEst): 
+    
+    detail_est = DetailEst.objects.filter(id=idEst).first()
+    estudante = get_object_or_404(Estudante, id=detail_est.estudante.id)
+    # detail_est = DetailEst.objects.filter(estudante=estudante).first() 
+    
+    if request.method == 'POST':
+        form = est_classe_Form(request.POST, instance=detail_est)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Classe do Estudante foi atualizada com sucesso.')
+            return redirect('list_students_aprovado')
+    else:
+        form = est_classe_Form(instance=detail_est)
+
+    context = {
+        'rejDadus':'active',
+        'rejDadus2':'in active',
+        'form': form,
+        'page':'list',
+        'page':'form',
+        'estudante': estudante
+    }
+    return render(request, 'estudante/lista_estudante.html', context)
+
+ 
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario', 'Tesoreira', 'Director', 'kurikulum','professor'])
+def list_students_aprovado(request):
+    group = request.user.groups.all()[0].name
+    # print(group)
+    KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
+    ano_act = Ano.objects.filter(is_active=True).first()
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    # estudantes = Estudante.objects.all()
+    students_with_media = []  # Initialize the list here
+    object_disc = 13
+    for est in estudantes:
+        list_valor = valor_est.objects.filter(Tinan_periode=ano_act,estudante=est.estudante, periode__nome_periode='III Periodu', Turma_id__classe__name='10 Ano')
+        # list_valor = valor_est.objects.filter(estudante=est, periode__nome_periode='III Periodu', Turma_id__classe__name='10 Ano')
+        sum_valor_final = list_valor.aggregate(Sum('valor_final')).get('valor_final__sum')
+        if sum_valor_final:
+            media = float(sum_valor_final) / float(object_disc)
+        else:
+            media = 0
+
+        val_approv = valor_est.objects.filter(Tinan_periode=ano_act,estudante=est.estudante, Turma_id__classe__name='10 Ano', is_approved=True).count()
+        if val_approv > 30:
+            aprovadu = 1
+        else:
+            aprovadu = 0
+        
+        # Only include students with media above 5.4
+        if media > 5.4:
+            students_with_media.append({
+                'estudante': est,
+                'media': media,
+                'aprovadu':aprovadu,
+            })
+        
+        # Assign sum_valor_final and media to each Estudante object
+        est.sum_valor_final = sum_valor_final
+        est.media = media
+    
+    context = {
+        'group': group,
+        'estudantes': students_with_media,  # Use filtered list here
+        'KlasseLista': KlasseLista,
+        "page": "list",
+        'title': f"LISTA ESTUDANTE QUE TINHA VALORES MEDIA >= 5.5",
+    }
+    return render(request, "estudante/list_students_aprovado.html", context)
+
+def Aprova_estudante_classe(request, id1):
+    det_est = get_object_or_404(DetailEst, id=id1)
+    valor = valor_est.objects.filter(estudante=det_est.estudante,Turma=det_est.Turma)
+    # student = get_object_or_404(valor_est, id=id1)
+    # student.is_approved = True
+    # student.save()
+    for val in valor:
+         val.is_approved = True
+         val.save()
+    messages.success(request, f'Dados do estudante aprovados com sucesso.')
+    return redirect('list_students_aprovado')
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario', 'Tesoreira', 'Director', 'kurikulum','professor'])
+def ListEstudanteClassAprovado(request):
+    group = request.user.groups.all()[0].name
+    KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
+    ano_act = Ano.objects.filter(is_active=True).first()
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    # estudantes = Estudante.objects.all()
+    # ano_act = Ano.objects.filter(is_active=True).first()
+    students_with_media = []  # Initialize the list here
+    object_disc = 13 
+    for est in estudantes:
+        list_valor = valor_est.objects.filter(Tinan_periode=ano_act,estudante=est.estudante, periode__nome_periode='III Periodu', Turma_id__classe__name='11 Ano')
+        sum_valor_final = list_valor.aggregate(Sum('valor_final')).get('valor_final__sum')
+        if sum_valor_final:
+            media = float(sum_valor_final) / float(object_disc)
+        else:
+            media = 0
+        
+        val_approv = valor_est.objects.filter(Tinan_periode=ano_act,estudante=est.estudante, Turma_id__classe__name='10 Ano', is_approved=True).count()
+        if val_approv > 30:
+            aprovadu = 1
+        else:
+            aprovadu = 0
+        
+        # Only include students with media above 5.4
+        if media > 5.4:
+            students_with_media.append({
+                'estudante': est,
+                'media': media,
+                'aprovadu':aprovadu
+            })
+        
+        # Assign sum_valor_final and media to each Estudante object
+        est.sum_valor_final = sum_valor_final
+        est.media = media
+    
+    context = {
+        'group': group,
+        'estudantes': students_with_media,  # Use filtered list here
+        'KlasseLista': KlasseLista,
+        "page": "list",
+        'title': f"LISTA ESTUDANTE QUE TINHA VALORES MEDIA >= 5.5 KLASSE 11 ANO ",
+    }
+    return render(request, "estudante/reinscrisaun/lista_estudanteCAprovado.html", context)
+
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario', 'Tesoreira', 'Director', 'kurikulum','professor'])
+def ListEstudanteClassAprovado12(request):
+    group = request.user.groups.all()[0].name
+    KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
+    ano_act = Ano.objects.filter(is_active=True).first()
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    # estudantes = Estudante.objects.all()
+    students_with_media = []  # Initialize the list here
+    object_disc = 13 
+    for est in estudantes:
+        list_valor = valor_est.objects.filter(Tinan_periode=ano_act,estudante=est.estudante, periode__nome_periode='III Periodu', Turma_id__classe__name='12 Ano')
+        sum_valor_final = list_valor.aggregate(Sum('valor_final')).get('valor_final__sum')
+        if sum_valor_final:
+            media = float(sum_valor_final) / float(object_disc)
+        else:
+            media = 0
+
+        val_approv = valor_est.objects.filter(Tinan_periode=ano_act,estudante=est.estudante, Turma_id__classe__name='10 Ano', is_approved=True).count()
+        if val_approv > 30:
+            aprovadu = 1
+        else:
+            aprovadu = 0
+        
+        # Only include students with media above 5.4
+        if media > 5.4:
+            students_with_media.append({
+                'estudante': est,
+                'media': media,
+                'aprovadu':aprovadu,
+            })
+        
+        # Assign sum_valor_final and media to each Estudante object
+        est.sum_valor_final = sum_valor_final
+        est.media = media
+    
+    context = {
+        'group': group,
+        'estudantes': students_with_media,  # Use filtered list here
+        'KlasseLista': KlasseLista,
+        "page": "list",
+        'title': f"LISTA ESTUDANTE QUE TINHA VALORES MEDIA >= 5.5 KALSSE 12 ANO ",
+    }
+    return render(request, "estudante/reinscrisaun/listaaprovado12ano.html", context)
+
+
+# # # Pofessor # # #
+# # # 
+#
+#######
+@login_required
+@allowed_users(allowed_roles=['professor'])
+def ListEstTurma(request):
+    user = request.user
+    prof = Funsionariu.objects.get(user = user)
+    profturma = FunsionarioTurma.objects.filter(funsionario = prof.id).last()
+    if profturma:  
+        list_est = DetailEst.objects.filter(Turma = profturma.turma, Ano_Academinco = profturma.ano)
+    else:
+        list_est = DetailEst.objects.none()
+    context = {
+        'title': 'Lista Estudante da Turma',
+        'est':list_est,
+        'page':'list',
+        'profturma':profturma,
+    }
+    return render(request, 'estudante/turma/lista_estudanteTurma.html',context)

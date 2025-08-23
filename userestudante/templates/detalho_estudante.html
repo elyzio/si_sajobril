@@ -1,0 +1,156 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block head_link %}
+<!-- Data Table JS
+		============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/jquery.dataTables.min.css' %}">
+{% endblock head_link %}
+{% block contents %}
+<header class="page-header container">
+    <!-- Breadcrumb-->
+    <div class="">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">User Profile</li>
+        </ul>
+
+    </div>
+</header>
+
+
+
+<section class="student-profile py-4">
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col-lg-6 text-left">
+                <a href="{% url 'atualizar_dados' %}" class="btn btn-outline-danger rounded-0 btn-sm"><i
+                        class="fa fa-edit"></i> Atualizar Dados
+                </a>
+            </div>
+            <div class="col-lg-6 text-right">
+                <button class="btn btn-outline-danger rounded-0 btn-sm mr-2 mt-3 h6"
+                    style="height: 30px;color: red;font-size: 0.7rem" onclick="self.history.back()"><span
+                        class="fa fa-angle-left"></span> Back</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card shadow-lg rounded mb-4">
+                    <div class="card-body text-center">
+                        {% if est.image %}
+                        <img class="rounded-circle img-fluid" style="width: 200px; height: 200px;"
+                            src="{{ est.image.url }}" alt="Profile Picture">
+                        {% else %}
+                        <img class="rounded-circle img-fluid" style="width: 200px; height: 200px;"
+                            src="{% static 'main/images/imagesa.jpg' %}" alt="Profile Picture">
+                        {% endif %}
+                        <h5 class="mt-3">{{ est.naran }}</h5>
+                        <p class="text-muted">{{ est.emis }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow-lg rounded mb-6">
+                            <div class="card-header">
+                                <h4>Detalhes Pessoais</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Data de Registro:</th>
+                                            <td>{{ est.data_resisto|date:"d/m/Y" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Data de Nascimento:</th>
+                                            <td>{{ est.Data_moris|date:"d/m/Y" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Sexo:</th>
+                                            <td>{{ est.get_Sexo_display }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Telefone:</th>
+                                            <td>{{ est.nu_telefone }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card shadow-lg rounded mb-4">
+                            <div class="card-header">
+                                <h4 class="text-center">Detalhes Acadêmicos</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Departamento:</th>
+                                            <td>{{ detailestvalor.Turma.classe.Departamento.nome_departamento }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Classe:</th>
+                                            <td>{{ detailestvalor.Turma.classe.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Turma:</th>
+                                            <td>{{ detailestvalor.Turma.Turma }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card shadow-lg rounded mb-4">
+                            <div class="card-header">
+                                <h4 class="text-center">Detalhes Municipais</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Munisipio:</th>
+                                            <td>{{ est.municipality}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Postu:</th>
+                                            <td>{{ est.administrativepost }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Suco:</th>
+                                            <td>{{ est.village }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock contents %}
+
+{% block scripts %}
+<!-- Data Table JS
+		============================================ -->
+<script src="{% static 'notica/js/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/data-table-act.js' %}"></script>
+{% endblock scripts %}

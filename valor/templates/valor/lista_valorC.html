@@ -1,0 +1,55 @@
+<!-- customer_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Detail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Detail</h1>
+    <div class="card">
+        <p><strong>Name:</strong> {{ customer.name }}</p>
+        <p><strong>Email:</strong> {{ customer.email }}</p>
+    </div>
+
+    <h2>Orders:</h2>
+    {% for order in orders %}
+        <div class="card">
+            <ul>
+                <li><strong>Product:</strong> {{ order.product.name }}</li>
+                <li><strong>Quantity:</strong> {{ order.quantity }}</li>
+                <li><strong>Total Price:</strong> {{ order.total_price }}</li>
+                <!-- Tambahkan informasi pesanan lainnya sesuai kebutuhan -->
+            </ul>
+        </div>
+    {% endfor %}
+</body>
+</html>

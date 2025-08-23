@@ -1,0 +1,175 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block head_link %}
+<!-- Data Table JS
+		============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/jquery.dataTables.min.css' %}">
+{% endblock head_link %}
+{% block contents %}
+<section class="container">
+  <!-- Page Header-->
+  <header>
+    <ol class="breadcrumb mb-1 mt-1">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+      {% if group == "admin" %}
+      <li class="breadcrumb-item"><a href="{% url 'Listavalor' %}">Detalho Valor</a></li>
+      {% elif group == "professor" %}
+      <li class="breadcrumb-item"><a href="{% url 'details-valorPr' estudante.id %}">Detalho Valor</a></li>
+      {% endif %}
+      {% if page == "form" or page == "detail" %}
+      <li class="breadcrumb-item"><a href="">Dadus Valor </a></li>
+      {%endif%}
+      <li class="breadcrumb-item active" aria-current="page">{{title|upper}}</li>
+
+    </ol>
+
+  </header>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    {{message}}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- lista pasjina views detalho nian -->
+  {% if page == "list" %}
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header   d-flex justify-content-between">
+          <div class="row">
+            <div class="col-lg-8">
+              <b class="h5"> {{title|upper}} NO : {{period.nome_periode|upper}}</b>
+            </div>
+            <div class="col-lg-4">
+              <div class="text-decoration ">
+                <a href="{% url 'ValorEstudatePeriod' period.id estudante.id %}"
+                  class="btn btn-sm btn-outline-danger rounded-0" title="Valor 10 Ano"><i class="fa fa-file-text"></i>
+                  10 Ano</a>
+                <a href="{% url 'ValorEstudantePeriod1' period.id estudante.id %}"
+                  class="btn btn-sm btn-outline-danger rounded-0" title="Valor 11 Ano"><i class="fa fa-file-text"></i>
+                  11 Ano</a>
+                <a href="{% url 'ValorEstudantePeriod2' period.id estudante.id %}"
+                  class="btn btn-sm btn-outline-danger rounded-0" title="Valor 12 Ano"><i class="fa fa-file-text"></i>
+                  12 Ano</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" mt-2 d-flex justify-content-start">
+          {% for i in periodlist %}
+          <a href="{% url 'ValorEstudantePeriod2' i.id estudante.id %}"
+            class="btn btn-sm btn-outline-danger rounded-0 ml-2 mb-2"><i class="fa fa-list"></i> {{i.nome_periode}}</a>
+          {% endfor %}
+
+        </div>
+
+        <hr>
+        <div class="row pt-2 pl-5 pr-5">
+          <!-- Tabela 11 Ano -->
+          <div class="col-lg-12 mb-4">
+            <div class="table-responsive">
+              <a target="_blank" href="{% url 'ValorEstudatePeriod-Print2' period.id estudante.id %}"
+                class="btn btn-sm btn-outline-danger rounded-0 mb-2 ml-2"><i class="fa fa-print"></i> Print
+                {{period.nome_periode}}</a>
+              {% if group == "professor" and page_class == 12 %}
+              <a href="{% url 'add_valor1' estudante.id period.id %}"
+                class="btn btn-sm btn-outline-danger rounded-0 ml-2 mb-2"><i class="fa fa-plus"></i> Add Valor</a>
+              {% endif %}
+              <table id="example2" border="1" class="table table-bordered  w-100">
+                <thead>
+                  <!-- <tr class="text-light" style="background: linear-gradient(to bottom,SaddleBrown,#D2691E); color: white;"> -->
+                  <tr>
+                    <th colspan="12" class="text-center">LISTA TABELA VALOR 12 ANO</th>
+                  </tr>
+                  <tr>
+                    <th rowspan="2" class="text-center">No</th>
+                    <!-- <th rowspan="2" class="text-center">KLasse</th> -->
+                    <th rowspan="2" class="text-center">Disciplina</th>
+                    <th colspan="2" class="text-center">Valores </th>
+                    {% if group == "admin" or group == "kurikulum" or group == "professor" %}
+                    <th rowspan="2" class="text-center">#</th>
+                    {% endif %}
+                  </tr>
+                  <tr>
+                    <th>Nu</th>
+                    <th>ex</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in list_valor_12ano %}
+                  <tr>
+                    <td scope="row"> {{forloop.counter}} </td>
+                    <!-- <td scope="row"> {{data.Klasse.name}} </td> -->
+                    <td>{{data.Diciplina}}</td>
+                    <td>{{data.valor_final}}</td>
+                    <td>{{data.por_extenso}}</td>
+
+                    {% if group == "admin" or group == "kurikulum" or group == "professor" %}
+                    <td>
+                      <div class="d-flex">
+                        <div class="flex-fill"><a href="{% url 'updatevalor' data.id %}" class="btn btn-sm btn-primary"
+                            title="Update"><i class="fa fa-edit"></i></a></div>
+                        <div class="flex-fill"> <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
+                            data-target="#delete-{{ data.id }}" style="text-decoration: none"><i
+                              class="fa fa-trash"></i></button>
+                        </div>
+                      </div>
+                    </td>
+                    {% endif %}
+                    <div class="modal fade" id="delete-{{ data.id}}"><!-- modal -->
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <!-- Modal Header -->
+                          <div class="modal-header">
+                            <h4 class="modal-title">Delete dadus Valor</h4>
+                            <button type="button" class="close" data-dismiss="modal">X</button>
+                          </div>
+                          <!-- Modal body -->
+                          <div class="modal-body">
+                            Ita Boot hakarak hamoos Valor husi estudante {{estudante.naran|upper}} ?
+                          </div>
+                          <!-- Modal footer -->
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                            <a href="{% url 'deletevalor' data.id %}" class="btn btn-outline-danger rounded-0">Yes</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div><!-- endmodal -->
+                  </tr>
+                  {% endfor %}
+
+                  <!-- table footer -->
+                <tfoot>
+                  <tr>
+                    <th colspan="3" class="px-2 py-1"><b>TOTAL :</b></th>
+                    <th colspan="4">{{sum_valor_final2}}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="3" class="px-2 py-1"><b>MEDIA :</b></th>
+                    <th colspan="3">{{media2|floatformat:2}}</th>
+                    <th class="text-center" style="background:#d5f5e3; color: black;">{{dis|upper}}</th>
+                  </tr>
+                </tfoot>
+                <!-- endtablefooter -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!--end list -->
+</section>
+{% endif %}
+{% endblock contents %}
+{% block scripts %}
+<!-- Data Table JS
+		============================================ -->
+<script src="{% static 'notica/js/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/data-table-act.js' %}"></script>
+{% endblock scripts %}

@@ -1,0 +1,155 @@
+{% extends "main/layout.html" %}
+{% load static %}
+
+{% block content %}
+<section> 
+    <div class="container mt-2">
+        <!-- Page Header-->
+        <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+            </ol>
+        </header>
+        
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card shadow-lg pt-1 rounded">
+                    <div class="card-header justify-content-end text-center">
+                        <h3>{{ title|upper }}</h3>
+                    </div>
+                      <div class="row">
+                     <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 align="center">LISTA TOTAL PROFESSORES TUIR DEPARTAMENTU</h5>
+                                <hr/>
+                                <div class="table-responsive">
+                                    <table class="table table-sm responsive table-bordered" style="width:100%">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th rowspan="2">NU</th>
+                                                <th rowspan="2">DEPARTAMENTO</th>
+                                                <th rowspan="2">TOTAL PROFESSORES</th>
+                                            </tr>
+                                         
+                                        </thead>
+                                        <tbody>
+                                            {% for xx in loopingProfDep %}
+                                            <tr class="text-center">
+                                                <td>{{ forloop.counter }}</td>
+                                                <td class="text-left">{{ xx.name }}</td>
+                                                <td>{{ xx.Total }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end col -->
+                     <div class="col-sm-6">
+                        <div class="card shadow-lg pt-3 rounded">
+                          <div class="card-header text-center">GRAFIKU TOTAL PROFESSORES IHA DEPARTAMENTU</div>
+                          <div class="card-body text-center">
+                                   <div id="reportsChartProfDep" style="height: 250px;" class="echart"></div>
+                          </div>    
+                        </div> <!-- end card head  -->
+                        </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 align="center">LISTA TOTAL PROFESSORES TUIR MUNISIPIU</h5>
+                                <hr/>
+                                <div class="table-responsive">
+                                    <table class="table table-sm responsive table-bordered" style="width:100%">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th rowspan="2">NU</th>
+                                                <th rowspan="2">NOME</th>
+                                                <th colspan="2">SEXO</th>
+                                                <th rowspan="2">TOTAL</th>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <th>MANE</th>
+                                                <th>FETO</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for xx in loopingProfessoresMun %}
+                                            <tr class="text-center">
+                                                <td>{{ forloop.counter }}</td>
+                                                <td class="text-left"><a href="">{{ xx.name }}</a></td>
+                                                <td>{{ xx.total_sexo_Mane }}</td>
+                                                <td>{{ xx.total_Sexo_Feto }}</td>
+                                                <td>{{ xx.totalProfessores }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end col -->
+                    <br><br>
+                    <div class="col-sm-6">
+                       <div class="card">
+                            <div class="card-body">
+                               <h5 align="center">RELATORIU GRAFIKU TOTAL PROFESSORES </h5>
+                               <hr>
+                            <div style="width: 100%; margin: auto;">
+                            <canvas id="myPieChart"></canvas>
+                          </div>
+                        </div>
+                    </div>
+                   </div>
+
+                </div><!-- end card -->
+            </div> <!-- end col -->
+        </div> <!-- end row -->
+    </div> <!-- end container -->
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Mane', 'Feto'],
+                datasets: [{
+                    label: 'Professors by Gender',
+                    data: [{{ TotalProfessoresM }}, {{ TotalProfessora }}],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)', // Blue color for Male
+                        'rgba(255, 99, 132, 0.5)', // Red color for Female
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                title: {
+                    display: true,
+                    text: 'Distribution of Professors by Gender'
+                }
+            }
+        });
+    });
+</script>
+<script src="{% static 'Charts/chart.js/chart.min.js' %}"></script>
+<script type="text/javascript"> {% include 'charts-js/charts-Prof-dep.js' %}</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/apexcharts.min.js' %}"></script>
+<script src="{% static 'Charts/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/echarts.min.js' %}"></script>
+{% endblock %}
+

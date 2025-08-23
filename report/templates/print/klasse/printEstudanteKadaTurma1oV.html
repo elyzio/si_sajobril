@@ -1,0 +1,154 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <!-- Bootstrap CSS --> 
+    <title>lista Estudante iha Tinan {{estudante.naran}}</title>
+  </head>
+<body >
+  <div class="container mt-5 border p-3">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="">
+              <table id="kk"  class="table w-100">
+                <tr>
+                  <th class="text-center"><img src="{% static 'main/images/lologo.jpg' %}" style="height: 120px; width: 900px;"></th>
+                </tr>
+              </table><hr>
+             <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example" class="table table-bordered ">
+                 <thead>
+                  <tr class="bg-info text-light">
+                  <th colspan="7" class="text-center">{{legend|upper}}
+                  </th>
+                  </tr>
+                   <tr>
+                        <th colspan="6">Prof Da Turma :____________________________</th>
+                        
+                    </tr>
+                    <tr>
+                        <th colspan="6">Loron/Data :____________________________</th>
+                    </tr>
+                  
+                        <tr>
+                            <th>Nu</th>
+                            <th width="100px">EMIS</th>
+                            <th>Naran </th>
+                            <th>Sexo</th> 
+                            <th  class="text-center"> Total Valores </th>
+                            <th> Media </th>
+                            <th>Observasaun</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in estudante_valor_final %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td> {{ data.emis }}</td>
+                          <td>{{ data.naran }}</td>
+                          <td>{{ data.Sexo }}</td>
+                          <td>{{ data.valor_final_sum }}</td>
+                          <td>{{ data.average_valor_final|floatformat:2 }}</td>
+                          <td>{% if data.status == 'Aprovado' %}
+                                    <span class="badge bg-success">{{ data.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-warning">{{ data.status }}</span>
+                                {% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br><br>
+              <div class="row">
+                <div class="col-sm-4">
+                      <div class="table-responsive">
+                        <table id="#" class="table table-sm table-bordered" style="width:100%">
+                          <tr class="text-center">
+                            <th colspan="2">Total Estudante Aprovado/Reprovado </th> 
+                          </tr>
+                       
+                <tr class="text-center">
+                  <th>Aprovado</th> 
+                  <td><a href="" target="_blank">{{passed_count}}</a></td>
+                </tr>
+                 <tr class="text-center">
+                  <th>Reprovado</th> 
+                  <td><a href="" target="_blank">{{not_passed_count}}</a></td>
+                </tr>
+                
+                </table>
+              </div>
+            </div>
+               <div class="col-sm-4">
+                      <div class="table-responsive">
+                        <table id="#" class="table table-sm table-bordered" style="width:100%">
+                          <tr class="text-center">
+                            <th colspan="2">Media Estudante  </th> 
+                          </tr>
+                       
+                <tr class="text-center">
+                  <th>Aprovado</th> 
+                  <td><a href="" target="_blank">5.5- 10</a></td>
+                </tr>
+                 <tr class="text-center">
+                  <th>Reprovado</th> 
+                  <td><a href="" target="_blank">1-5.4</a></td>
+                </tr>
+                
+                </table>
+              </div>
+            </div>
+             <div class="col-sm-4">
+                <div class="table-responsive">
+                  <table id="#" class="table table-sm table-bordered" style="width:100%">
+                    <tr class="text-center">
+                      <th colspan="4">Top 3 Estudante</th> 
+                    </tr>
+                    <tr>
+                    <th>Nu</th>
+                    <th>Emis</th>
+                    <th>Naran</th>
+                    <th>Valor Final</th>
+                  </tr>
+                    <tbody>
+                      {% for student in top_students %}
+                      <th scope="row">{{ forloop.counter }}</th>
+                      <td> {{ student.emis }}</td>
+                      <td>{{ student.naran }}</td>
+                      <td>{{ student.valor_final_sum }}</td>
+                    </tbody>
+                   {% endfor %}
+                 </table>
+                </div>
+              </div>      
+            </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+{%endblock%}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

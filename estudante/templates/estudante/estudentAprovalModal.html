@@ -1,0 +1,39 @@
+<!-- <div class="modal fade" id="aprova-{{ objects.id}}">
+  <div class="modal-dialog">
+    <div class="modal-content"> 
+      <div class="modal-header">
+        <h4 class="modal-title">Konfirmasaun Aprova Estudantes</h4>
+        <button type="button" class="close" data-dismiss="modal">X</button>
+      </div>
+      
+        {% csrf_token %}
+      <div class="modal-body">
+        Ita Boot hakarak Aprova dadus estudantes {{ estudantes.naran | upper }} ?
+      </div>
+        <div class="text-center my-2">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Lae</button>
+          <a href="" class="btn btn-info">Sim</a>
+        </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="modal fade" id="aprova-{{objects.id}}" role="dialog">
+  <div class="modal-dialog modals-default">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4 class="modal-title">Konfirmasaun Aprova Estudantes</h4>
+        {% csrf_token %}
+        <p>Ita Boot hakarak Aprova dadus estudantes {{ estudantes.naran | upper }} ?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn rounded-0 btn-sm btn-secondary" data-dismiss="modal">Kansela</button>
+        
+        <a href="" class="btn rounded-0 btn-sm btn-default">Sim</a>
+      </div>
+    </div>
+  </div>
+</div>
