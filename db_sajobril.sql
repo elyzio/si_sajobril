@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 21, 2025 at 05:44 PM
+-- Generation Time: Aug 25, 2025 at 03:25 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -315,7 +315,11 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (105, 'Can add funsionario turma', 27, 'add_funsionarioturma'),
 (106, 'Can change funsionario turma', 27, 'change_funsionarioturma'),
 (107, 'Can delete funsionario turma', 27, 'delete_funsionarioturma'),
-(108, 'Can view funsionario turma', 27, 'view_funsionarioturma');
+(108, 'Can view funsionario turma', 27, 'view_funsionarioturma'),
+(109, 'Can add transfer student', 28, 'add_transferstudent'),
+(110, 'Can change transfer student', 28, 'change_transferstudent'),
+(111, 'Can delete transfer student', 28, 'delete_transferstudent'),
+(112, 'Can view transfer student', 28, 'view_transferstudent');
 
 -- --------------------------------------------------------
 
@@ -6553,6 +6557,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (17, 'Disiplina', 'diciplina'),
 (15, 'estudante', 'detailest'),
 (14, 'estudante', 'estudante'),
+(28, 'estudante', 'transferstudent'),
 (26, 'funsionariu', 'depfun'),
 (27, 'funsionariu', 'funsionarioturma'),
 (24, 'funsionariu', 'funsionariu'),
@@ -6634,7 +6639,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (48, 'sessions', '0001_initial', '2025-08-21 16:34:32.684368'),
 (49, 'valor', '0001_initial', '2025-08-21 16:34:33.951428'),
 (50, 'valor', '0002_valor_est_is_approved', '2025-08-21 16:34:34.027790'),
-(51, 'valor', '0003_periode_is_active', '2025-08-21 16:34:34.094460');
+(51, 'valor', '0003_periode_is_active', '2025-08-21 16:34:34.094460'),
+(52, 'estudante', '0008_transferstudent', '2025-08-25 15:22:02.638264');
 
 -- --------------------------------------------------------
 
@@ -7065,6 +7071,29 @@ INSERT INTO `estudante_estudante` (`id`, `data_resisto`, `emis`, `naran`, `Data_
 (175, '2025-01-04', '408167', 'Neúzia E M Purificação', '2009-10-26', 'Feto', 'Agapito dos Santos', 'Yolenta Hoar Klau', '74443221', '', 5, 45, 1615, 9, 324, 0, 208),
 (176, '2025-01-04', '408144', 'Nídia A da Silva Castro', '2010-05-07', 'Feto', 'Jonino Albino Castro', 'Maria F da Silva', '73434566', '', 5, 44, 1571, 9, 315, 0, 209),
 (177, '2025-01-05', '408004', 'Quevin Pereira Sampaio', '2010-11-07', 'Mane', 'Zetó Vidigal Sampaio', 'Isaúra dos S Pereira', '74343566', '', 5, 45, 1633, 9, 326, 0, 210);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `estudante_transferstudent`
+--
+
+CREATE TABLE `estudante_transferstudent` (
+  `id` bigint NOT NULL,
+  `transfer_type` varchar(3) NOT NULL,
+  `from_school` varchar(100) DEFAULT NULL,
+  `to_school` varchar(100) DEFAULT NULL,
+  `transfer_date` date NOT NULL,
+  `request_date` datetime(6) NOT NULL,
+  `reason` longtext,
+  `status` varchar(10) NOT NULL,
+  `approval_date` datetime(6) DEFAULT NULL,
+  `notes` longtext,
+  `approved_by_id` int DEFAULT NULL,
+  `estudante_id` bigint NOT NULL,
+  `from_turma_id` bigint DEFAULT NULL,
+  `to_turma_id` bigint DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -7612,6 +7641,16 @@ ALTER TABLE `estudante_estudante`
   ADD KEY `estudante_estudante_aldeia_id_bbea2db9_fk_custom_aldeia_id` (`aldeia_id`);
 
 --
+-- Indexes for table `estudante_transferstudent`
+--
+ALTER TABLE `estudante_transferstudent`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `estudante_transferst_approved_by_id_a02b7464_fk_auth_user` (`approved_by_id`),
+  ADD KEY `estudante_transferst_estudante_id_05e19646_fk_estudante` (`estudante_id`),
+  ADD KEY `estudante_transferst_from_turma_id_4192c70a_fk_Turma_tur` (`from_turma_id`),
+  ADD KEY `estudante_transferstudent_to_turma_id_95c4ec57_fk_Turma_turma_id` (`to_turma_id`);
+
+--
 -- Indexes for table `funsionariu_depfun`
 --
 ALTER TABLE `funsionariu_depfun`
@@ -7729,7 +7768,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
@@ -7801,13 +7840,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `estudante_detailest`
@@ -7820,6 +7859,12 @@ ALTER TABLE `estudante_detailest`
 --
 ALTER TABLE `estudante_estudante`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
+
+--
+-- AUTO_INCREMENT for table `estudante_transferstudent`
+--
+ALTER TABLE `estudante_transferstudent`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `funsionariu_depfun`
@@ -7967,6 +8012,15 @@ ALTER TABLE `estudante_estudante`
   ADD CONSTRAINT `estudante_estudante_municipality_id_c46a32b4_fk_custom_mu` FOREIGN KEY (`municipality_id`) REFERENCES `custom_municipality` (`id`),
   ADD CONSTRAINT `estudante_estudante_user_id_b06d8979_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   ADD CONSTRAINT `estudante_estudante_village_id_d002f50c_fk_custom_village_id` FOREIGN KEY (`village_id`) REFERENCES `custom_village` (`id`);
+
+--
+-- Constraints for table `estudante_transferstudent`
+--
+ALTER TABLE `estudante_transferstudent`
+  ADD CONSTRAINT `estudante_transferst_approved_by_id_a02b7464_fk_auth_user` FOREIGN KEY (`approved_by_id`) REFERENCES `auth_user` (`id`),
+  ADD CONSTRAINT `estudante_transferst_estudante_id_05e19646_fk_estudante` FOREIGN KEY (`estudante_id`) REFERENCES `estudante_estudante` (`id`),
+  ADD CONSTRAINT `estudante_transferst_from_turma_id_4192c70a_fk_Turma_tur` FOREIGN KEY (`from_turma_id`) REFERENCES `turma_turma` (`id`),
+  ADD CONSTRAINT `estudante_transferstudent_to_turma_id_95c4ec57_fk_Turma_turma_id` FOREIGN KEY (`to_turma_id`) REFERENCES `turma_turma` (`id`);
 
 --
 -- Constraints for table `funsionariu_funsionarioturma`
