@@ -119,3 +119,87 @@ class est_classe_Form(forms.ModelForm):
 			HTML(""" <div class="text-left mt-4"> <button class="btn btn-sm btn-labeled btn-info" type="submit" title="Save"><span class="btn-label"><i class='fa fa-save'></i></span> Save</button>"""),
 			HTML("""  <button class="btn btn-sm btn-labeled btn-secondary" onclick=self.history.back()><span class="btn-label"><i class="fa fa-window-close"></i></span> Cancel</button></div>""")
 		)
+
+
+class InternalTransferForm(forms.ModelForm):
+	transfer_date = forms.DateField(label='Data Transfer', widget=DateInput())
+	
+	class Meta:
+		model = TransferStudent
+		fields = ['to_turma', 'transfer_date', 'reason']
+		labels = {
+			'to_turma': 'Ba Turma',
+			'transfer_date': 'Data Transfer',
+			'reason': 'Razaun'
+		}
+		widgets = {
+			'reason': forms.Textarea(attrs={'rows': 3})
+		}
+	
+	def __init__(self, *args, **kwargs):
+		current_turma = kwargs.pop('current_turma', None)
+		super().__init__(*args, **kwargs)
+		
+		# Exclude current turma from choices
+		if current_turma:
+			self.fields['to_turma'].queryset = turma.objects.exclude(id=current_turma.id)
+		
+		self.helper = FormHelper()
+		self.helper.form_method = 'post'
+		self.helper.layout = Layout(
+			Row(
+				Column('to_turma', css_class='form-group col-md-6 mb-0'),
+				Column('transfer_date', css_class='form-group col-md-6 mb-0'),
+				css_class='form-row'
+			),
+			Row(
+				Column('reason', css_class='form-group col-md-12 mb-0'),
+			),
+			HTML(""" <div class="text-left mt-4"> <button class="btn btn-sm btn-labeled btn-success" type="submit" title="Save"><span class="btn-label"><i class='fa fa-exchange'></i></span> Transfer Internal</button>"""),
+			HTML("""  <button class="btn btn-sm btn-labeled btn-secondary" onclick=self.history.back()><span class="btn-label"><i class="fa fa-window-close"></i></span> Cancel</button></div>""")
+		)
+
+
+class ExternalTransferForm(forms.ModelForm):
+	transfer_date = forms.DateField(label='Data Transfer', widget=DateInput())
+	
+	class Meta:
+		model = TransferStudent
+		fields = ['transfer_type', 'from_school', 'to_school', 'to_turma', 'transfer_date', 'reason']
+		labels = {
+			'transfer_type': 'Tipu Transfer',
+			'from_school': 'Husi Eskola',
+			'to_school': 'Ba Eskola',
+			'to_turma': 'Ba Turma (se transfer IN)',
+			'transfer_date': 'Data Transfer',
+			'reason': 'Razaun'
+		}
+		widgets = {
+			'reason': forms.Textarea(attrs={'rows': 3}),
+			'transfer_type': forms.Select(choices=[('IN', 'Transfer In'), ('OUT', 'Transfer Out')])
+		}
+	
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.helper.form_method = 'post'
+		self.helper.layout = Layout(
+			Row(
+				Column('transfer_type', css_class='form-group col-md-6 mb-0'),
+				Column('transfer_date', css_class='form-group col-md-6 mb-0'),
+				css_class='form-row'
+			),
+			Row(
+				Column('from_school', css_class='form-group col-md-6 mb-0'),
+				Column('to_school', css_class='form-group col-md-6 mb-0'),
+				css_class='form-row'
+			),
+			Row(
+				Column('to_turma', css_class='form-group col-md-6 mb-0'),
+			),
+			Row(
+				Column('reason', css_class='form-group col-md-12 mb-0'),
+			),
+			HTML(""" <div class="text-left mt-4"> <button class="btn btn-sm btn-labeled btn-warning" type="submit" title="Save"><span class="btn-label"><i class='fa fa-plane'></i></span> Transfer External</button>"""),
+			HTML("""  <button class="btn btn-sm btn-labeled btn-secondary" onclick=self.history.back()><span class="btn-label"><i class="fa fa-window-close"></i></span> Cancel</button></div>""")
+		)

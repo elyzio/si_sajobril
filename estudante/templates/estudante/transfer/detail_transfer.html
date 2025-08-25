@@ -1,0 +1,195 @@
+{% extends "main/layout1.html" %}
+{% load static %}
+
+{% block contents %}
+<section>
+  <div class="container mt-5 border-0 p-3">
+    <header>
+      <ol class="breadcrumb mb-1 mt-1">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'list_transfers' %}">Transfer</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+      </ol>
+    </header>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-lg-8">
+                <h5 class="card-title">{{title}}</h5>
+              </div>
+              <div class="col-lg-4 text-right">
+                <a href="{% url 'list_transfers' %}" class="btn btn-sm btn-secondary">
+                  <i class="fa fa-arrow-left"></i> Fila ba Lista
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="row">
+              <!-- Student Information -->
+              <div class="col-md-6">
+                <h6 class="text-primary">Informasaun Estudante</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td><strong>Naran:</strong></td>
+                    <td>{{transfer.estudante.naran}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>EMIS:</strong></td>
+                    <td>{{transfer.estudante.emis}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sexo:</strong></td>
+                    <td>{{transfer.estudante.Sexo}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Data Moris:</strong></td>
+                    <td>{{transfer.estudante.Data_moris|date:"d/m/Y"}}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Transfer Information -->
+              <div class="col-md-6">
+                <h6 class="text-primary">Informasaun Transfer</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td><strong>Tipu Transfer:</strong></td>
+                    <td>
+                      <span class="badge badge-{% if transfer.transfer_type == 'IN' %}success{% else %}warning{% endif %}">
+                        {{transfer.get_transfer_type_display}}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Data Transfer:</strong></td>
+                    <td>{{transfer.transfer_date|date:"d/m/Y"}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Data Request:</strong></td>
+                    <td>{{transfer.request_date|date:"d/m/Y H:i"}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Status:</strong></td>
+                    <td>
+                      <span class="badge badge-{% if transfer.status == 'APPROVED' %}success{% elif transfer.status == 'REJECTED' %}danger{% else %}warning{% endif %}">
+                        {{transfer.get_status_display}}
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Transfer Details -->
+            <div class="row">
+              <div class="col-md-12">
+                <h6 class="text-primary">Detalhe Transfer</h6>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card border-warning">
+                      <div class="card-header bg-warning text-white">
+                        <h6 class="mb-0">Husi</h6>
+                      </div>
+                      <div class="card-body">
+                        {% if transfer.from_school %}
+                          <p><strong>Eskola:</strong> {{transfer.from_school}}</p>
+                        {% endif %}
+                        {% if transfer.from_turma %}
+                          <p><strong>Turma:</strong> {{transfer.from_turma}}</p>
+                        {% endif %}
+                        {% if not transfer.from_school and not transfer.from_turma %}
+                          <p class="text-muted">Laiha informasaun</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="card border-success">
+                      <div class="card-header bg-success text-white">
+                        <h6 class="mb-0">Ba</h6>
+                      </div>
+                      <div class="card-body">
+                        {% if transfer.to_school %}
+                          <p><strong>Eskola:</strong> {{transfer.to_school}}</p>
+                        {% endif %}
+                        {% if transfer.to_turma %}
+                          <p><strong>Turma:</strong> {{transfer.to_turma}}</p>
+                        {% endif %}
+                        {% if not transfer.to_school and not transfer.to_turma %}
+                          <p class="text-muted">Laiha informasaun</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% if transfer.reason %}
+            <hr>
+            <div class="row">
+              <div class="col-md-12">
+                <h6 class="text-primary">Razaun</h6>
+                <div class="alert alert-light">
+                  {{transfer.reason}}
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if transfer.status != 'PENDING' %}
+            <hr>
+            <div class="row">
+              <div class="col-md-12">
+                <h6 class="text-primary">Informasaun Aprovassaun</h6>
+                <table class="table table-borderless">
+                  <tr>
+                    <td><strong>Aprova/Rejeita husi:</strong></td>
+                    <td>{{transfer.approved_by.username}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Data:</strong></td>
+                    <td>{{transfer.approval_date|date:"d/m/Y H:i"}}</td>
+                  </tr>
+                  {% if transfer.notes %}
+                  <tr>
+                    <td><strong>Nota:</strong></td>
+                    <td>{{transfer.notes}}</td>
+                  </tr>
+                  {% endif %}
+                </table>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            {% if transfer.status == 'PENDING' and user.groups.all.0.name == 'admin' or user.groups.all.0.name == 'Secretario' %}
+            <hr>
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <a href="{% url 'approve_transfer' transfer.id %}" class="btn btn-success"
+                   onclick="return confirm('Aprova transfer ne\'e?')">
+                  <i class="fa fa-check"></i> Aprova Transfer
+                </a>
+                <a href="{% url 'reject_transfer' transfer.id %}" class="btn btn-danger ml-2"
+                   onclick="return confirm('Rejeita transfer ne\'e?')">
+                  <i class="fa fa-times"></i> Rejeita Transfer
+                </a>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock contents %}

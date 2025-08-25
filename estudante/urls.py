@@ -27,4 +27,14 @@ urlpatterns = [
 	# professor
     path('lista-student/turma', ListEstTurma, name='listEstTurma'),
     path('aprova-student/<id1>', Aprova_estudante_classe, name='aprova-classe'),
+    
+    # Transfer functionality
+    path('transfers/', list_transfers, name='list_transfers'),
+    path('transfer/internal/<int:estudante_id>/', create_internal_transfer, name='create_internal_transfer'),
+    path('transfer/external/<int:estudante_id>/', create_external_transfer, name='create_external_transfer'),
+    path('transfer/detail/<int:transfer_id>/', transfer_detail, name='transfer_detail'),
+    path('transfer/approve/<int:transfer_id>/', approve_transfer, name='approve_transfer'),
+    path('transfer/reject/<int:transfer_id>/', reject_transfer, name='reject_transfer'),
+    path('transferred-out/', transferred_out_students, name='transferred_out_students_all'),
+    path('transferred-out/<int:year_id>/', transferred_out_students, name='transferred_out_students'),
 ]

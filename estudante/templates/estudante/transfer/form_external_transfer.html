@@ -1,0 +1,90 @@
+{% extends "main/layout1.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+<section>
+  <div class="container mt-5 border-0 p-3">
+    <header>
+      <ol class="breadcrumb mb-1 mt-1">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'list_transfers' %}">Transfer</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+      </ol>
+    </header>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card border-warning">
+          <div class="card-header bg-warning text-white">
+            <h5 class="card-title mb-0"><i class="fa fa-plane"></i> {{title}}</h5>
+          </div>
+          
+          <div class="card-body">
+            <!-- Student Info -->
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <div class="alert alert-info">
+                  <strong>Estudante:</strong> {{estudante.naran}}<br>
+                  <strong>EMIS:</strong> {{estudante.emis}}<br>
+                  {% if current_turma %}
+                    <strong>Turma Atual:</strong> {{current_turma}}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-warning">
+              <i class="fa fa-info-circle"></i> <strong>Transfer External:</strong> 
+              <br>• <strong>Transfer IN:</strong> Estudante mai husi eskola seluk
+              <br>• <strong>Transfer OUT:</strong> Estudante ba eskola seluk
+            </div>
+
+            <!-- Transfer Form -->
+            {% crispy form %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'notica/js/jquery.min.js' %}"></script>
+<script>
+$(document).ready(function() {
+    // Show/hide fields based on transfer type
+    function toggleFields() {
+        var transferType = $('#id_transfer_type').val();
+        
+        if (transferType == 'OUT') {
+            // Transfer OUT - show to_school, hide others
+            $('#div_id_to_school').show();
+            $('#div_id_from_school').hide();
+            $('#div_id_to_turma').hide();
+        } else if (transferType == 'IN') {
+            // Transfer IN - show from_school and to_turma
+            $('#div_id_from_school').show();
+            $('#div_id_to_turma').show();
+            $('#div_id_to_school').hide();
+        }
+    }
+    
+    // Initial toggle
+    toggleFields();
+    
+    // Toggle on change
+    $('#id_transfer_type').change(function() {
+        toggleFields();
+    });
+});
+</script>
+{% endblock contents %}

@@ -50,6 +50,14 @@
                   <a href="{% url 'list_students_aprovado' %}"
                     class="btn btn-sm btn-outline-danger rounded-0 mb-2 ml-2"><i class="fa fa-plus-square"></i>
                     Re-inscrisao Estudante</a>
+                  {% if group == "admin" or group == "Secretario" %}
+                  <a href="{% url 'list_transfers' %}"
+                    class="btn btn-sm btn-outline-info rounded-0 mb-2 ml-2"><i class="fa fa-exchange"></i>
+                    Lista Transfer</a>
+                  <a href="{% url 'transferred_out_students_all' %}"
+                    class="btn btn-sm btn-outline-danger rounded-0 mb-2 ml-2"><i class="fa fa-user-times"></i>
+                    Transfer Out</a>
+                  {% endif %}
 
                   {% endif %}
                   {% if group == "admin" or group == "Secretario" or group == "Director"%}
@@ -95,6 +103,22 @@
                         <div class=""><a href="{% url 'add-classe-estudante' data.id %}"
                             class="btn btn-sm btn-dark rounded-0 ml-1 mb-2"><i class="fa fa-plus-square"></i> Classe</a>
                         </div>
+                        {% if group == "admin" or group == "Secretario" %}
+                        <div class="dropdown">
+                          <button class="btn btn-sm btn-info dropdown-toggle rounded-0 ml-1 mb-2" type="button" 
+                                  id="transferDropdown{{data.id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-exchange"></i> Transfer
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="transferDropdown{{data.id}}">
+                            <a class="dropdown-item" href="{% url 'create_internal_transfer' data.id %}">
+                              <i class="fa fa-exchange text-success"></i> Internal Transfer
+                            </a>
+                            <a class="dropdown-item" href="{% url 'create_external_transfer' data.id %}">
+                              <i class="fa fa-plane text-warning"></i> External Transfer
+                            </a>
+                          </div>
+                        </div>
+                        {% endif %}
                         <div class=""><a href="{% url 'updateest' data.id %}" class="btn btn-sm rounded-0 ml-1 btn-warning"
                             title="Update"><i class="fa fa-edit"></i></a>
                         </div>

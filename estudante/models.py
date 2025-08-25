@@ -49,3 +49,33 @@ class DetailEst(models.Model):
 	def __str__(self):
 		template = '{0.estudante.naran},{0.Turma.Turma} '
 		return template.format(self)
+
+
+class TransferStudent(models.Model):
+	TRANSFER_TYPE = (
+		('IN', 'Transfer In'),
+		('OUT', 'Transfer Out'),
+	)
+	
+	STATUS_CHOICES = (
+		('PENDING', 'Pending'),
+		('APPROVED', 'Approved'),
+		('REJECTED', 'Rejected'),
+	)
+	
+	estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE, related_name='transfers')
+	transfer_type = models.CharField(max_length=3, choices=TRANSFER_TYPE)
+	from_school = models.CharField(max_length=100, null=True, blank=True)
+	to_school = models.CharField(max_length=100, null=True, blank=True)
+	from_turma = models.ForeignKey(turma, on_delete=models.SET_NULL, null=True, blank=True, related_name='transfers_from')
+	to_turma = models.ForeignKey(turma, on_delete=models.SET_NULL, null=True, blank=True, related_name='transfers_to')
+	transfer_date = models.DateField()
+	request_date = models.DateTimeField(auto_now_add=True)
+	reason = models.TextField(null=True, blank=True)
+	status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+	approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_transfers')
+	approval_date = models.DateTimeField(null=True, blank=True)
+	notes = models.TextField(null=True, blank=True)
+	
+	def __str__(self):
+		return f"{self.estudante.naran} - {self.get_transfer_type_display()} ({self.status})"

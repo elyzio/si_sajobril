@@ -18,6 +18,7 @@ from django.contrib.auth.models import User,Group
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
+from django.utils import timezone
 
 @login_required()
 @allowed_users(allowed_roles=['admin','Tesoreira','Director','Secretario','kurikulum','professor'])
@@ -452,10 +453,22 @@ def ListEstTurma(request):
     user = request.user
     prof = Funsionariu.objects.get(user = user)
     profturma = FunsionarioTurma.objects.filter(funsionario = prof.id).last()
+    
     if profturma:  
-        list_est = DetailEst.objects.filter(Turma = profturma.turma, Ano_Academinco = profturma.ano)
+        # Get active students (exclude those transferred out)
+        transferred_out_ids = TransferStudent.objects.filter(
+            transfer_type='OUT',
+            status='APPROVED'
+        ).values_list('estudante_id', flat=True)
+        
+        list_est = DetailEst.objects.filter(
+            Turma=profturma.turma, 
+            Ano_Academinco=profturma.ano,
+            is_active=True
+        ).exclude(estudante_id__in=transferred_out_ids)
     else:
         list_est = DetailEst.objects.none()
+        
     context = {
         'title': 'Lista Estudante da Turma',
         'est':list_est,
@@ -463,3 +476,209 @@ def ListEstTurma(request):
         'profturma':profturma,
     }
     return render(request, 'estudante/turma/lista_estudanteTurma.html',context)
+
+
+# Transfer Student Functions
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def list_transfers(request):
+    group = request.user.groups.all()[0].name
+    transfers = TransferStudent.objects.all().order_by('-request_date')
+    
+    context = {
+        'rejDadus': 'active',
+        'rejDadus2': 'in active',
+        'transfers': transfers,
+        'group': group,
+        'page': 'list',
+        'title': 'Lista Transfer Estudante',
+        'legend': 'Lista Transfer Estudante'
+    }
+    return render(request, 'estudante/transfer/lista_transfer.html', context)
+
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def create_internal_transfer(request, estudante_id):
+    group = request.user.groups.all()[0].name
+    estudante = get_object_or_404(Estudante, id=estudante_id)
+    
+    # Get student's current turma
+    current_detail = DetailEst.objects.filter(estudante=estudante, is_active=True).first()
+    current_turma = current_detail.Turma if current_detail else None
+    
+    if request.method == 'POST':
+        form = InternalTransferForm(request.POST, current_turma=current_turma)
+        if form.is_valid():
+            transfer = form.save(commit=False)
+            transfer.estudante = estudante
+            transfer.transfer_type = 'IN'  # Internal transfer
+            transfer.from_turma = current_turma
+            transfer.save()
+            
+            messages.success(request, f'Transfer internal ba {estudante.naran} kria tiha ona.')
+            return redirect('list_transfers')
+    else:
+        form = InternalTransferForm(current_turma=current_turma)
+    
+    context = {
+        'rejDadus': 'active',
+        'rejDadus2': 'in active',
+        'form': form,
+        'estudante': estudante,
+        'current_turma': current_turma,
+        'group': group,
+        'page': 'form',
+        'title': f'Transfer Internal - {estudante.naran}',
+        'legend': f'Transfer Internal - {estudante.naran}'
+    }
+    return render(request, 'estudante/transfer/form_internal_transfer.html', context)
+
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def create_external_transfer(request, estudante_id):
+    group = request.user.groups.all()[0].name
+    estudante = get_object_or_404(Estudante, id=estudante_id)
+    
+    # Get student's current turma
+    current_detail = DetailEst.objects.filter(estudante=estudante, is_active=True).first()
+    current_turma = current_detail.Turma if current_detail else None
+    
+    if request.method == 'POST':
+        form = ExternalTransferForm(request.POST)
+        if form.is_valid():
+            transfer = form.save(commit=False)
+            transfer.estudante = estudante
+            
+            # Set from_turma for OUT transfers
+            if transfer.transfer_type == 'OUT':
+                transfer.from_turma = current_turma
+            
+            transfer.save()
+            
+            messages.success(request, f'Transfer external ba {estudante.naran} kria tiha ona.')
+            return redirect('list_transfers')
+    else:
+        form = ExternalTransferForm()
+    
+    context = {
+        'rejDadus': 'active',
+        'rejDadus2': 'in active',
+        'form': form,
+        'estudante': estudante,
+        'current_turma': current_turma,
+        'group': group,
+        'page': 'form',
+        'title': f'Transfer External - {estudante.naran}',
+        'legend': f'Transfer External - {estudante.naran}'
+    }
+    return render(request, 'estudante/transfer/form_external_transfer.html', context)
+
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def approve_transfer(request, transfer_id):
+    transfer = get_object_or_404(TransferStudent, id=transfer_id)
+    transfer.status = 'APPROVED'
+    transfer.approved_by = request.user
+    transfer.approval_date = timezone.now()
+    
+    # Handle internal transfers - update DetailEst
+    if transfer.transfer_type == 'IN' and transfer.to_turma:
+        # Update student's active class
+        current_detail = DetailEst.objects.filter(
+            estudante=transfer.estudante, 
+            is_active=True
+        ).first()
+        
+        if current_detail:
+            if transfer.from_turma:  # Internal transfer
+                current_detail.Turma = transfer.to_turma
+                current_detail.save()
+            else:  # External transfer IN
+                # Create new DetailEst for incoming student
+                new_detail = DetailEst.objects.create(
+                    estudante=transfer.estudante,
+                    Turma=transfer.to_turma,
+                    Ano_Academinco=Ano.objects.filter(is_active=True).first(),
+                    is_active=True
+                )
+    
+    elif transfer.transfer_type == 'OUT':
+        # Deactivate current enrollment for outgoing student
+        current_detail = DetailEst.objects.filter(
+            estudante=transfer.estudante, 
+            is_active=True
+        ).first()
+        if current_detail:
+            current_detail.is_active = False
+            current_detail.save()
+    
+    transfer.save()
+    messages.success(request, f'Transfer ba {transfer.estudante.naran} aprova tiha ona.')
+    return redirect('list_transfers')
+
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def reject_transfer(request, transfer_id):
+    transfer = get_object_or_404(TransferStudent, id=transfer_id)
+    transfer.status = 'REJECTED'
+    transfer.approved_by = request.user
+    transfer.approval_date = timezone.now()
+    transfer.save()
+    
+    messages.warning(request, f'Transfer ba {transfer.estudante.naran} rejeita tiha ona.')
+    return redirect('list_transfers')
+
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def transfer_detail(request, transfer_id):
+    transfer = get_object_or_404(TransferStudent, id=transfer_id)
+    
+    context = {
+        'transfer': transfer,
+        'title': 'Detail Transfer',
+        'legend': 'Detail Transfer'
+    }
+    return render(request, 'estudante/transfer/detail_transfer.html', context)
+
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def transferred_out_students(request, year_id=None):
+    group = request.user.groups.all()[0].name
+    
+    if year_id:
+        ano = get_object_or_404(Ano, id=year_id)
+    else:
+        ano = Ano.objects.filter(is_active=True).first()
+    
+    # Get students who have approved OUT transfers
+    transferred_out = TransferStudent.objects.filter(
+        transfer_type='OUT',
+        status='APPROVED'
+    ).order_by('-approval_date')
+    
+    # Filter by year if specified
+    if ano:
+        transferred_out = transferred_out.filter(
+            estudante__detailest__Ano_Academinco=ano
+        ).distinct()
+    
+    anos = Ano.objects.all().order_by('-ano')
+    
+    context = {
+        'rejDadus': 'active',
+        'rejDadus2': 'in active',
+        'transferred_students': transferred_out,
+        'current_ano': ano,
+        'anos': anos,
+        'group': group,
+        'page': 'list',
+        'title': f'Estudante Transfer Out - {ano.ano if ano else "All"}',
+        'legend': f'Estudante Transfer Out - {ano.ano if ano else "All"}'
+    }
+    return render(request, 'estudante/transfer/transferred_out_students.html', context)
