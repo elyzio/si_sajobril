@@ -3,6 +3,24 @@
 {% load widget_tweaks %}
 {% load custom_filters %}
 
+{% block head_link %}
+<style>
+.hover-underline:hover {
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+.text-decoration-none:hover {
+    text-decoration: none !important;
+}
+.clickable-row:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+.text-orange {
+    color: #fd7e14;
+}
+</style>
+{% endblock head_link %}
 
 {% block contents %}
 
@@ -54,9 +72,141 @@
                 </div>
             </div>
         </div><!-- Chart Student by gender - FINISH -->
-
-
     </div>
+
+    <!-- Second Row - Alumni and Transfer Statistics -->
+    <div class="row mt-4">
+        <!-- Alumni Statistics - START -->
+        <div class="col-lg-4">
+            <div class="card rounded-0 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fa fa-graduation-cap"></i> Alumni Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h3 class="text-success">{{alumni_count}}</h3>
+                                <p class="mb-0">Total Alumni</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                {% for gender in alumni_by_gender %}
+                                    <div class="mb-1">
+                                        <span class="badge badge-{% if gender.estudante__Sexo == 'Mane' %}primary{% else %}pink{% endif %}">
+                                            {{gender.estudante__Sexo}}: {{gender.count}}
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- Alumni Statistics - FINISH -->
+
+        <!-- Transfer Statistics - START -->
+        <div class="col-lg-4">
+            <div class="card rounded-0 border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fa fa-exchange"></i> Transfer Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            {% if transfer_in_approved > 0 %}
+                            <a href="{% url 'students-transferred-in' %}" class="text-decoration-none">
+                                <h4 class="text-success hover-underline">{{transfer_in_approved}}</h4>
+                            </a>
+                            {% else %}
+                            <h4 class="text-success">{{transfer_in_approved}}</h4>
+                            {% endif %}
+                            <small>Transfer IN</small>
+                        </div>
+                        <div class="col-4">
+                            {% if transfer_out_approved > 0 %}
+                            <a href="{% url 'students-transferred-out' %}" class="text-decoration-none">
+                                <h4 class="text-danger hover-underline">{{transfer_out_approved}}</h4>
+                            </a>
+                            {% else %}
+                            <h4 class="text-danger">{{transfer_out_approved}}</h4>
+                            {% endif %}
+                            <small>Transfer OUT</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-warning">{{transfer_pending}}</h4>
+                            <small>Pending</small>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h5 class="text-primary">{{internal_transfers}}</h5>
+                            <small>Internal</small>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="text-orange">{{external_transfers}}</h5>
+                            <small>External</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- Transfer Statistics - FINISH -->
+
+        <!-- Student Summary - START -->
+        <div class="col-lg-4">
+            <div class="card rounded-0 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fa fa-users"></i> Student Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <a href="{% url 'students-active' %}" class="text-decoration-none">
+                            <h3 class="text-primary hover-underline">{{active_students_count}}</h3>
+                        </a>
+                        <p class="mb-2">Active Students</p>
+                        <hr>
+                        <div class="row">
+                            <div class="col-6">
+                                <a href="{% url 'students-alumni' %}" class="text-decoration-none">
+                                    <h5 class="text-success hover-underline">{{alumni_count}}</h5>
+                                </a>
+                                <small>Graduated</small>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'students-transferred-out' %}" class="text-decoration-none">
+                                    <h5 class="text-danger hover-underline">{{transfer_out_approved}}</h5>
+                                </a>
+                                <small>Transferred Out</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- Student Summary - FINISH -->
+    </div>
+
+    <!-- Transfer Chart Row -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card rounded-0">
+                <div class="card-body">
+                    <div class="card-title text-center h5 font-weight-bold">Transfer Overview</div>
+                    <canvas id="transferChart" width="400" height="200" class="mx-auto"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card rounded-0">
+                <div class="card-body">
+                    <div class="card-title text-center h5 font-weight-bold">Student Status Overview</div>
+                    <canvas id="studentStatusChart" width="400" height="200" class="mx-auto"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 </section>
 
 
@@ -68,4 +218,64 @@
 <script src="{% static 'notica/js/charts/Chart.js' %}"></script>
 
 <script>{% include 'report/student/studentByGender.js' %}</script>
+
+<script>
+// Transfer Overview Chart
+const transferCtx = document.getElementById('transferChart').getContext('2d');
+const transferChart = new Chart(transferCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Transfer IN', 'Transfer OUT', 'Pending', 'Internal', 'External'],
+        datasets: [{
+            data: [
+                {{transfer_in_approved}}, 
+                {{transfer_out_approved}}, 
+                {{transfer_pending}},
+                {{internal_transfers}},
+                {{external_transfers}}
+            ],
+            backgroundColor: [
+                '#28a745', // green
+                '#dc3545', // red  
+                '#ffc107', // yellow
+                '#007bff', // blue
+                '#fd7e14'  // orange
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'bottom'
+        }
+    }
+});
+
+// Student Status Overview Chart
+const statusCtx = document.getElementById('studentStatusChart').getContext('2d');
+const statusChart = new Chart(statusCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Active Students', 'Alumni', 'Transferred Out'],
+        datasets: [{
+            data: [
+                {{active_students_count}}, 
+                {{alumni_count}}, 
+                {{transfer_out_approved}}
+            ],
+            backgroundColor: [
+                '#007bff', // blue
+                '#28a745', // green
+                '#dc3545'  // red
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'bottom'
+        }
+    }
+});
+</script>
 {% endblock scripts %}

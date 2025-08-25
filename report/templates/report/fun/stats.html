@@ -3,117 +3,380 @@
 {% load widget_tweaks %}
 {% load custom_filters %}
 
+{% block head_link %}
+<style>
+.hover-underline:hover {
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+.text-decoration-none:hover {
+    text-decoration: none !important;
+}
+.clickable-row:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+</style>
+{% endblock head_link %}
 
 {% block contents %}
 
-<section class="container">
-    <header class="text-center font-weight-bold h5 mt-3 mb-3">Estatistiku Funsionariu</header>
+<section class="container-fluid">
+    <header class="text-center font-weight-bold h4 mt-3 mb-3">📊 Comprehensive Staff Statistics</header>
     <header>
         <ol class="breadcrumb mb-1 mt-1">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
             <li class="breadcrumb-item active" aria-current="page">Stats Funsionariu</li>
         </ol>
     </header>
-    <div class="row">
-        <!-- Staff by municipality - START --> 
-        <div class="col-lg-4 mb-3">
+
+    <!-- Overview Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <a href="{% url 'staff-all' %}" class="text-decoration-none">
+                        <h2 class="text-primary hover-underline">{{total_staff}}</h2>
+                    </a>
+                    <p class="mb-0">Total Staff</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <a href="{% url 'staff-with-classes' %}" class="text-decoration-none">
+                        <h2 class="text-success hover-underline">{{teachers_with_classes}}</h2>
+                    </a>
+                    <p class="mb-0">Active Teachers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <a href="{% url 'staff-without-classes' %}" class="text-decoration-none">
+                        <h2 class="text-warning hover-underline">{{staff_without_classes}}</h2>
+                    </a>
+                    <p class="mb-0">Non-Teaching Staff</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h2 class="text-info">{{count_by_municipality|length}}</h2>
+                    <p class="mb-0">Municipalities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- First Row - Basic Demographics -->
+    <div class="row mb-4">
+        <!-- Staff by Gender Chart -->
+        <div class="col-lg-4">
             <div class="card rounded-0">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fa fa-users"></i> Staff by Gender</h5>
+                </div>
                 <div class="card-body">
-                    <div class="card-title text-center h5 font-weight-bold">Staff by Municipality</div>
-                    <table class="table table-hover table-striped d-sm-table">
+                    <canvas id="funByGender" class="mx-auto" width="300" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Age Distribution Chart -->
+        <div class="col-lg-4">
+            <div class="card rounded-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fa fa-birthday-cake"></i> Age Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="ageChart" width="300" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employment Status Chart -->
+        <div class="col-lg-4">
+            <div class="card rounded-0">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="fa fa-briefcase"></i> Employment Status</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" width="300" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row - Professional Information -->
+    <div class="row mb-4">
+        <!-- Education Levels -->
+        <div class="col-lg-6">
+            <div class="card rounded-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fa fa-graduation-cap"></i> Education Levels</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="educationChart" width="400" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class Assignments -->
+        <div class="col-lg-6">
+            <div class="card rounded-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fa fa-chalkboard-teacher"></i> Teachers by Class</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="classAssignmentChart" width="400" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Third Row - Detailed Tables -->
+    <div class="row mb-4">
+        <!-- Staff by Municipality -->
+        <div class="col-lg-4">
+            <div class="card rounded-0">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fa fa-map-marker"></i> By Municipality</h5>
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-sm table-hover">
                         <thead>
                             <tr>
                                 <th>Municipality</th>
-                                <th>#</th>
+                                <th class="text-right">#</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in count_by_municipality %}
-                            <tr>
-                                <th>{{item.municipality__name}}</th>
-                                <td>{{item.total}}</td>
+                            <tr class="clickable-row" data-href="{% if item.municipality__id %}{% url 'staff-by-municipality' item.municipality__id %}{% endif %}">
+                                <td>{{item.municipality__name|default:"Not Specified"}}</td>
+                                <td class="text-right">
+                                    {% if item.municipality__id %}
+                                    <a href="{% url 'staff-by-municipality' item.municipality__id %}" class="badge badge-primary text-decoration-none">{{item.total}}</a>
+                                    {% else %}
+                                    <span class="badge badge-secondary">{{item.total}}</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div> <!-- Staff by municipality - END -->
-
-        <!-- Staff by Nivel Estudu - START -->
-        <div class="col-lg-4 mb-3">
-            <div class="card rounded-0">
-                <div class="card-body">
-                    <div class="card-title text-center h5 font-weight-bold">Staff by Nivel Estudu</div>
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>Nivel</th>
-                                <th>#</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in count_by_nivel_estudu %}
-                            <tr>
-                                <th>{{item.nivel_estudu}}</th>
-                                <td>{{item.total}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div> <!-- Staff by Nivel Estudu - END -->
-
-        <!-- Staff by Estatus - START -->
-        <div class="col-lg-4 mb-3">
-            <div class="card rounded-0">
-                <div class="card-body">
-                    <div class="card-title text-center h5 font-weight-bold">Staff by Estatus</div>
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>Estatus</th>
-                                <th>#</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in count_by_estatus %}
-                            <tr>
-                                <th>{{item.estatus}}</th>
-                                <td>{{item.total}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div> <!-- Staff by Estatus - END -->
-
-        <!-- Staff by Gender - START -->
-        <div class="col-lg-4 mb-3">
-            <div class="card rounded-0">
-                <div class="card-body">
-                    <div class="card-title text-center h5 font-weight-bold">Staff by Gender</div>
-                    <canvas id="funByGender" class="mx-auto" width="400" height="200"></canvas>
-                </div>
-            </div>
-        </div> <!-- Staff by Gender - END -->
-
         </div>
 
-        
+        <!-- Staff by Position -->
+        <div class="col-lg-4">
+            <div class="card rounded-0">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="fa fa-user-tie"></i> By Position</h5>
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th class="text-right">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in count_by_position %}
+                            <tr>
+                                <td>{{item.pozisaun|default:"Not Specified"}}</td>
+                                <td class="text-right">
+                                    {% if item.pozisaun %}
+                                    <a href="{% url 'staff-by-position' item.pozisaun %}" class="badge badge-warning text-decoration-none">{{item.total}}</a>
+                                    {% else %}
+                                    <span class="badge badge-secondary">{{item.total}}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
+        <!-- Staff by Study Area -->
+        <div class="col-lg-4">
+            <div class="card rounded-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fa fa-book"></i> By Study Area</h5>
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Study Area</th>
+                                <th class="text-right">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in count_by_study_area %}
+                            <tr>
+                                <td>{{item.area_estudu|default:"Not Specified"}}</td>
+                                <td class="text-right">
+                                    {% if item.area_estudu %}
+                                    <a href="{% url 'staff-by-study-area' item.area_estudu %}" class="badge badge-success text-decoration-none">{{item.total}}</a>
+                                    {% else %}
+                                    <span class="badge badge-secondary">{{item.total}}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
 
+    <!-- Fourth Row - Civil Status and Department -->
+    <div class="row mb-4">
+        <!-- Civil Status -->
+        <div class="col-lg-6">
+            <div class="card rounded-0">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fa fa-heart"></i> Civil Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="civilStatusChart" width="400" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Department Distribution -->
+        <div class="col-lg-6">
+            <div class="card rounded-0">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fa fa-building"></i> Department Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="departmentChart" width="400" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
 
 {% endblock contents %}
 
 {% block scripts %}
-<!-- Charts JS
-		============================================ -->
+<!-- Charts JS -->
 <script src="{% static 'notica/js/charts/Chart.js' %}"></script>
 
 <script>{% include 'report/fun/funByGender.js' %}</script>
+
+<script>
+// Age Distribution Chart
+const ageCtx = document.getElementById('ageChart').getContext('2d');
+new Chart(ageCtx, {
+    type: 'bar',
+    data: {
+        labels: ['20-30', '31-40', '41-50', '51+'],
+        datasets: [{
+            data: [
+                {{age_ranges.age_20_30}},
+                {{age_ranges.age_31_40}},
+                {{age_ranges.age_41_50}},
+                {{age_ranges.age_51_plus}}
+            ],
+            backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#dc3545']
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: { display: false },
+        scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+    }
+});
+
+// Employment Status Chart
+const statusCtx = document.getElementById('statusChart').getContext('2d');
+new Chart(statusCtx, {
+    type: 'pie',
+    data: {
+        labels: [{% for item in count_by_estatus %}'{{item.estatus}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for item in count_by_estatus %}{{item.total}}{% if not forloop.last %},{% endif %}{% endfor %}],
+            backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1']
+        }]
+    },
+    options: { responsive: true, legend: { position: 'bottom' } }
+});
+
+// Education Levels Chart
+const educationCtx = document.getElementById('educationChart').getContext('2d');
+new Chart(educationCtx, {
+    type: 'horizontalBar',
+    data: {
+        labels: [{% for item in count_by_nivel_estudu %}'{{item.nivel_estudu}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for item in count_by_nivel_estudu %}{{item.total}}{% if not forloop.last %},{% endif %}{% endfor %}],
+            backgroundColor: '#007bff'
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: { display: false },
+        scales: { xAxes: [{ ticks: { beginAtZero: true } }] }
+    }
+});
+
+// Class Assignment Chart
+const classCtx = document.getElementById('classAssignmentChart').getContext('2d');
+new Chart(classCtx, {
+    type: 'doughnut',
+    data: {
+        labels: [{% for item in staff_by_class %}'{{item.turma__classe__name}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for item in staff_by_class %}{{item.total_teachers}}{% if not forloop.last %},{% endif %}{% endfor %}],
+            backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#dc3545']
+        }]
+    },
+    options: { responsive: true, legend: { position: 'bottom' } }
+});
+
+// Civil Status Chart
+const civilCtx = document.getElementById('civilStatusChart').getContext('2d');
+new Chart(civilCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for item in count_by_civil_status %}'{{item.estadu_civil}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for item in count_by_civil_status %}{{item.total}}{% if not forloop.last %},{% endif %}{% endfor %}],
+            backgroundColor: '#dc3545'
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: { display: false },
+        scales: { yAxes: [{ ticks: { beginAtZero: true } }] }
+    }
+});
+
+// Department Chart
+const deptCtx = document.getElementById('departmentChart').getContext('2d');
+new Chart(deptCtx, {
+    type: 'pie',
+    data: {
+        labels: [{% for item in count_by_department %}'{{item.departamento__name|default:"Not Assigned"}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for item in count_by_department %}{{item.total}}{% if not forloop.last %},{% endif %}{% endfor %}],
+            backgroundColor: ['#343a40', '#6c757d', '#495057', '#212529']
+        }]
+    },
+    options: { responsive: true, legend: { position: 'bottom' } }
+});
+</script>
 {% endblock scripts %}

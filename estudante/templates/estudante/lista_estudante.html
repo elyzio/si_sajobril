@@ -5,6 +5,19 @@
 <!-- Data Table JS
 		============================================ -->
 <link rel="stylesheet" href="{% static 'notica/css/jquery.dataTables.min.css' %}">
+<style>
+.hover-underline:hover {
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+.text-decoration-none:hover {
+    text-decoration: none !important;
+}
+.badge-orange {
+    color: #fff;
+    background-color: #fd7e14;
+}
+</style>
 {% endblock head_link %}
 {% block contents %}
 <section>
@@ -33,7 +46,7 @@
         <div class="card">
           <div class="card-header">
             <div class="row">
-              <div class="col-lg-6">
+              <div class="col-lg-5">
                 <div class="d-flex justify-content-start mt-2">
                   {% for i in Klasse %}
                   <a href="{% url 'list-estudante-classe' i.name  %}"
@@ -41,15 +54,17 @@
                   {% endfor %}
                 </div>
               </div>
-              <div class="col-lg-6">
-                {% if group == "Secretario" %}
+              <div class="col-lg-7">
                 <div class="d-flex justify-content-end">
+                  {% if group == "Secretario" %}
                   <a href="{%url 'add_estudante' %}" class="btn btn-sm btn-outline-danger rounded-0 mb-2 ml-2"><i
                       class="fa fa-plus-square"></i>
                     Resistu Novu Estudante</a>
                   <a href="{% url 'list_students_aprovado' %}"
                     class="btn btn-sm btn-outline-danger rounded-0 mb-2 ml-2"><i class="fa fa-plus-square"></i>
                     Re-inscrisao Estudante</a>
+                  {% endif %}
+                  
                   {% if group == "admin" or group == "Secretario" %}
                   <a href="{% url 'list_transfers' %}"
                     class="btn btn-sm btn-outline-info rounded-0 mb-2 ml-2"><i class="fa fa-exchange"></i>
@@ -59,12 +74,10 @@
                     Transfer Out</a>
                   {% endif %}
 
-                  {% endif %}
                   {% if group == "admin" or group == "Secretario" or group == "Director"%}
                   <a href="{% url 'EReportListActiveEstudanteClasse'%}"
                     class="btn btn-sm btn-outline-danger ml-2 rounded-0 mb-2" title="Print Data" target="_blank"><i
                       class="fa fa-print"></i> Print</a>
-
                   {% endif %}
 
                 </div>
@@ -73,6 +86,89 @@
 
 
           </div>
+          
+          <!-- Transfer Statistics for Year-Specific View -->
+          {% if current_year %}
+          <div class="card-body border-bottom">
+            <div class="row text-center">
+              <div class="col-md-2">
+                <div class="mb-2">
+                  <a href="{% url 'year-all-registered' current_year.id %}" class="text-decoration-none">
+                    <h5 class="text-primary mb-0 hover-underline">{{total_original_students}}</h5>
+                  </a>
+                  <small class="text-muted">Total Registered</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-2">
+                  <a href="{% url 'est-tin-list' current_year.id %}" class="text-decoration-none">
+                    <h5 class="text-success mb-0 hover-underline">{{active_from_year}}</h5>
+                  </a>
+                  <small class="text-muted">Currently Active</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-2">
+                  {% if transfers_in > 0 %}
+                  <a href="{% url 'year-transferred-in' current_year.id %}" class="text-decoration-none">
+                    <h5 class="text-info mb-0 hover-underline">{{transfers_in}}</h5>
+                  </a>
+                  {% else %}
+                  <h5 class="text-info mb-0">{{transfers_in}}</h5>
+                  {% endif %}
+                  <small class="text-muted">Transferred IN</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-2">
+                  {% if transfers_out > 0 %}
+                  <a href="{% url 'year-transferred-out' current_year.id %}" class="text-decoration-none">
+                    <h5 class="text-warning mb-0 hover-underline">{{transfers_out}}</h5>
+                  </a>
+                  {% else %}
+                  <h5 class="text-warning mb-0">{{transfers_out}}</h5>
+                  {% endif %}
+                  <small class="text-muted">Transferred OUT</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-2">
+                  {% if alumni_from_year > 0 %}
+                  <a href="{% url 'year-alumni' current_year.id %}" class="text-decoration-none">
+                    <h5 class="text-danger mb-0 hover-underline">{{alumni_from_year}}</h5>
+                  </a>
+                  {% else %}
+                  <h5 class="text-danger mb-0">{{alumni_from_year}}</h5>
+                  {% endif %}
+                  <small class="text-muted">Alumni</small>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="mb-2">
+                  {% if transfers_pending > 0 %}
+                  <a href="{% url 'year-pending-transfers' current_year.id %}" class="text-decoration-none">
+                    <h5 class="text-secondary mb-0 hover-underline">{{transfers_pending}}</h5>
+                  </a>
+                  {% else %}
+                  <h5 class="text-secondary mb-0">{{transfers_pending}}</h5>
+                  {% endif %}
+                  <small class="text-muted">Pending</small>
+                </div>
+              </div>
+            </div>
+            {% if internal_transfers > 0 or external_transfers > 0 %}
+            <div class="row text-center mt-2 pt-2 border-top">
+              <div class="col-md-6">
+                <span class="badge badge-primary">Internal: {{internal_transfers}}</span>
+              </div>
+              <div class="col-md-6">
+                <span class="badge badge-orange">External: {{external_transfers}}</span>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+          
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-striped" id="data-table-basic">
@@ -101,30 +197,24 @@
                     <td>
                       <div class="d-flex">
                         <div class=""><a href="{% url 'add-classe-estudante' data.id %}"
-                            class="btn btn-sm btn-dark rounded-0 ml-1 mb-2"><i class="fa fa-plus-square"></i> Classe</a>
+                            class="btn btn-xs btn-dark rounded-0 ml-1 mb-1" title="Add Classe"><i class="fa fa-plus-square"></i></a>
                         </div>
                         {% if group == "admin" or group == "Secretario" %}
-                        <div class="dropdown">
-                          <button class="btn btn-sm btn-info dropdown-toggle rounded-0 ml-1 mb-2" type="button" 
-                                  id="transferDropdown{{data.id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-exchange"></i> Transfer
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="transferDropdown{{data.id}}">
-                            <a class="dropdown-item" href="{% url 'create_internal_transfer' data.id %}">
-                              <i class="fa fa-exchange text-success"></i> Internal Transfer
-                            </a>
-                            <a class="dropdown-item" href="{% url 'create_external_transfer' data.id %}">
-                              <i class="fa fa-plane text-warning"></i> External Transfer
-                            </a>
-                          </div>
+                        <div class=""><a href="{% url 'create_internal_transfer' data.id %}"
+                            class="btn btn-xs btn-success rounded-0 ml-1 mb-1" title="Internal Transfer">
+                            <i class="fa fa-exchange"></i></a>
+                        </div>
+                        <div class=""><a href="{% url 'create_external_transfer' data.id %}"
+                            class="btn btn-xs btn-warning rounded-0 ml-1 mb-1" title="External Transfer">
+                            <i class="fa fa-plane"></i></a>
                         </div>
                         {% endif %}
-                        <div class=""><a href="{% url 'updateest' data.id %}" class="btn btn-sm rounded-0 ml-1 btn-warning"
+                        <div class=""><a href="{% url 'updateest' data.id %}" class="btn btn-xs rounded-0 ml-1 btn-info"
                             title="Update"><i class="fa fa-edit"></i></a>
                         </div>
                         <div class="">
-                          <button type="button" class="btn btn-sm rounded-0 ml-1 btn-danger" data-toggle="modal"
-                            data-target="#delete-{{ data.id }}" style="text-decoration: none"><i
+                          <button type="button" class="btn btn-xs rounded-0 ml-1 btn-danger" data-toggle="modal"
+                            data-target="#delete-{{ data.id }}" style="text-decoration: none" title="Delete"><i
                               class="fa fa-trash"></i></button>
 
                         </div>

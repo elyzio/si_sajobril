@@ -171,7 +171,7 @@
             {% endif %}
 
             <!-- Action Buttons -->
-            {% if transfer.status == 'PENDING' and user.groups.all.0.name == 'admin' or user.groups.all.0.name == 'Secretario' %}
+            {% if transfer.status == 'PENDING' and user.groups.all.0.name in 'admin,Secretario' %}
             <hr>
             <div class="row">
               <div class="col-md-12 text-center">

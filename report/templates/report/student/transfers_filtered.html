@@ -1,0 +1,150 @@
+{% extends 'main/layout1.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head_link %}
+<!-- Data Table JS
+============================================ -->
+<link rel="stylesheet" href="{% static 'notica/css/jquery.dataTables.min.css' %}">
+<style>
+.back-link:hover {
+    text-decoration: underline !important;
+}
+</style>
+{% endblock head_link %}
+
+{% block contents %}
+
+<section class="container-fluid">
+    <header class="text-center font-weight-bold h4 mt-3 mb-3">🔄 {{title}}</header>
+    <header>
+        <ol class="breadcrumb mb-1 mt-1">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'report-student-stats' %}">Stats Estudante</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{filter_value}}</li>
+        </ol>
+    </header>
+
+    <!-- Summary Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h2 class="text-info">{{transfers|length}}</h2>
+                    <p class="mb-0">{{filter_value}}</p>
+                    <a href="{% url 'report-student-stats' %}" class="btn btn-sm btn-outline-info mt-2 back-link">
+                        <i class="fa fa-arrow-left"></i> Back to Statistics
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fa fa-exchange"></i> Transfer List</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="data-table-basic">
+                            <thead>
+                                <tr>
+                                    <th>Nu</th>
+                                    <th>Student Name</th>
+                                    <th>EMIS</th>
+                                    <th>Gender</th>
+                                    <th>Transfer Type</th>
+                                    <th>From School</th>
+                                    <th>To School</th>
+                                    <th>Transfer Date</th>
+                                    <th>Status</th>
+                                    <th>Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transfer in transfers %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td class="font-weight-bold">{{ transfer.estudante.naran }}</td>
+                                    <td>{{ transfer.estudante.emis }}</td>
+                                    <td>
+                                        {% if transfer.estudante.Sexo == 'Mane' %}
+                                        <span class="badge badge-primary">{{ transfer.estudante.Sexo }}</span>
+                                        {% else %}
+                                        <span class="badge badge-pink">{{ transfer.estudante.Sexo }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if transfer.transfer_type == 'IN' %}
+                                        <span class="badge badge-success">Transfer IN</span>
+                                        {% else %}
+                                        <span class="badge badge-warning">Transfer OUT</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ transfer.from_school|default:transfer.from_turma|default:"N/A" }}</td>
+                                    <td>{{ transfer.to_school|default:transfer.to_turma|default:"N/A" }}</td>
+                                    <td>{{ transfer.transfer_date|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {% if transfer.status == 'APPROVED' %}
+                                        <span class="badge badge-success">{{ transfer.status }}</span>
+                                        {% elif transfer.status == 'PENDING' %}
+                                        <span class="badge badge-warning">{{ transfer.status }}</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">{{ transfer.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ transfer.reason|default:"N/A"|truncatechars:30 }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="10" class="text-center text-muted">No transfers found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock contents %}
+
+{% block scripts %}
+<!-- Data Table JS -->
+<script src="{% static 'notica/js/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/buttons.flash.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/jszip.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/pdfmake.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/vfs_fonts.js' %}"></script>
+<script src="{% static 'notica/js/data-table/buttons.html5.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/buttons.print.min.js' %}"></script>
+<script src="{% static 'notica/js/data-table/buttons.colVis.min.js' %}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#data-table-basic').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
+        ],
+        responsive: true,
+        pageLength: 25,
+        order: [[1, 'asc']] // Sort by student name
+    });
+});
+</script>
+
+<style>
+.badge-pink {
+    color: #fff;
+    background-color: #e83e8c;
+}
+</style>
+{% endblock scripts %}

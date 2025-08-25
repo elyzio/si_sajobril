@@ -54,4 +54,25 @@ urlpatterns = [
 	path('Student/', ReportStudentStats, name="report-student-stats"),
 	path('Funsionariu/', ReportFunStats, name="report-fun-stats"),
 	
+	# Staff filtered views
+	path('staff/all/', AllStaff, name="staff-all"),
+	path('staff/gender/<str:gender>/', StaffByGender, name="staff-by-gender"),
+	path('staff/municipality/<int:municipality_id>/', StaffByMunicipality, name="staff-by-municipality"),
+	path('staff/education/<str:education_level>/', StaffByEducation, name="staff-by-education"),
+	path('staff/status/<str:status>/', StaffByStatus, name="staff-by-status"),
+	path('staff/position/<str:position>/', StaffByPosition, name="staff-by-position"),
+	path('staff/department/<int:department_id>/', StaffByDepartment, name="staff-by-department"),
+	path('staff/study-area/<str:study_area>/', StaffByStudyArea, name="staff-by-study-area"),
+	path('staff/civil-status/<str:civil_status>/', StaffByCivilStatus, name="staff-by-civil-status"),
+	path('staff/with-classes/', StaffWithClasses, name="staff-with-classes"),
+	path('staff/without-classes/', StaffWithoutClasses, name="staff-without-classes"),
+	
+	# Student filtered views
+	path('students/active/', StudentsActive, name="students-active"),
+	path('students/gender/<str:gender>/', StudentsByGender, name="students-by-gender"),
+	path('students/class/<str:class_name>/', StudentsByClass, name="students-by-class"),
+	path('students/alumni/', StudentsAlumni, name="students-alumni"),
+	path('students/transferred-in/', StudentsTransferredIn, name="students-transferred-in"),
+	path('students/transferred-out/', StudentsTransferredOut, name="students-transferred-out"),
+	
 ]

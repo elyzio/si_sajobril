@@ -24,7 +24,16 @@ from django.utils import timezone
 @allowed_users(allowed_roles=['admin','Tesoreira','Director','Secretario','kurikulum','professor'])
 def Listaestudante(request):
 	group = request.user.groups.all()[0].name
-	est = Estudante.objects.all()		
+	
+	# Get students who have been transferred out (approved OUT transfers)
+	transferred_out_ids = TransferStudent.objects.filter(
+		transfer_type='OUT',
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	# Exclude transferred-out students from the list
+	est = Estudante.objects.exclude(id__in=transferred_out_ids)
+	
 	deps = departamento.objects.all().order_by('id')
 	tinan = Ano.objects.all()
 	KlasseLista = classe.objects.distinct().values('name').all()
@@ -53,7 +62,19 @@ def ListEstudanteClass(request, id):
     for a in KlasseLista:
         getClasse = classe.objects.filter(name=a['name']).last()
         KlasseList.append(getClasse)
-    est = DetailEst.objects.filter(Turma_id__classe__name=klasse.name,is_active=True,Ano_Academinco=ano_act).all().order_by('estudante__naran')
+    
+    # Get students who have been transferred out (approved OUT transfers)
+    transferred_out_ids = TransferStudent.objects.filter(
+        transfer_type='OUT',
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    # Exclude transferred-out students from the list
+    est = DetailEst.objects.filter(
+        Turma_id__classe__name=klasse.name,
+        is_active=True,
+        Ano_Academinco=ano_act
+    ).exclude(estudante_id__in=transferred_out_ids).order_by('estudante__naran')
 	
     sumariuEstudante = list()
     depList = departamento.objects.all()
@@ -87,7 +108,20 @@ def ListEstDepClaTur(request, idDep,klasse,idTur):
 	for a in KlasseLista:
 		getClasse = classe.objects.filter(name=a['name']).last()
 		KlasseList.append(getClasse)
-	est = DetailEst.objects.filter(Turma_id__classe_id__Departamento=dep,Turma_id__classe__name=klasse.name,Turma=tur,is_active=True).all().order_by('estudante__naran')
+	
+	# Get students who have been transferred out (approved OUT transfers)
+	transferred_out_ids = TransferStudent.objects.filter(
+		transfer_type='OUT',
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	# Exclude transferred-out students from the list
+	est = DetailEst.objects.filter(
+		Turma_id__classe_id__Departamento=dep,
+		Turma_id__classe__name=klasse.name,
+		Turma=tur,
+		is_active=True
+	).exclude(estudante_id__in=transferred_out_ids).order_by('estudante__naran')
 	
 	sumariuEstudante = list()
 	depList = departamento.objects.all()
@@ -298,7 +332,15 @@ def list_students_aprovado(request):
     # print(group)
     KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
     ano_act = Ano.objects.filter(is_active=True).first()
-    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    
+    # Get students who have been transferred out (approved OUT transfers)
+    transferred_out_ids = TransferStudent.objects.filter(
+        transfer_type='OUT',
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    # Exclude transferred-out students from the list
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act).exclude(estudante_id__in=transferred_out_ids)
     # estudantes = Estudante.objects.all()
     students_with_media = []  # Initialize the list here
     object_disc = 13
@@ -356,7 +398,15 @@ def ListEstudanteClassAprovado(request):
     group = request.user.groups.all()[0].name
     KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
     ano_act = Ano.objects.filter(is_active=True).first()
-    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    
+    # Get students who have been transferred out (approved OUT transfers)
+    transferred_out_ids = TransferStudent.objects.filter(
+        transfer_type='OUT',
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    # Exclude transferred-out students from the list
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act).exclude(estudante_id__in=transferred_out_ids)
     # estudantes = Estudante.objects.all()
     # ano_act = Ano.objects.filter(is_active=True).first()
     students_with_media = []  # Initialize the list here
@@ -403,7 +453,15 @@ def ListEstudanteClassAprovado12(request):
     group = request.user.groups.all()[0].name
     KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
     ano_act = Ano.objects.filter(is_active=True).first()
-    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    
+    # Get students who have been transferred out (approved OUT transfers)
+    transferred_out_ids = TransferStudent.objects.filter(
+        transfer_type='OUT',
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    # Exclude transferred-out students from the list
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act).exclude(estudante_id__in=transferred_out_ids)
     # estudantes = Estudante.objects.all()
     students_with_media = []  # Initialize the list here
     object_disc = 13 
