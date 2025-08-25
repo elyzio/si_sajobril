@@ -85,23 +85,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'SI_SAJOBRIL.wsgi.application'
 # Database
 # 
-# DATABASES = {
-#     'default': {
-#         'NAME': 'db_sajobril',
-#         'ENGINE': 'django.db.backends.mysql',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'OPTIONS': {
-#          'autocommit': True,
-#         },
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'db_sajobril',
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'root',
+        'PASSWORD': '',
+        'OPTIONS': {
+         'autocommit': True,
+        },
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
