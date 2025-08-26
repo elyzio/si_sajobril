@@ -580,22 +580,28 @@ def transferred_out_students(request, year_id=None):
     group = request.user.groups.all()[0].name
     
     # Get students who have been transferred out (approved OUT transfers)
+    # transfers = TransferStudent.objects.filter(transfer_type='OUT',status='APPROVED')
     transfers = TransferStudent.objects.filter(
         transfer_type='OUT',
         status='APPROVED'
     ).select_related('estudante')
+
+    anos = Ano.objects.all()
     
     if year_id:
         year = get_object_or_404(Ano, id=year_id)
         transfers = transfers.filter(estudante__Ano_Resisto=year)
         title = f'Transferred Out Students - {year.ano}'
+        print("year:",year)
     else:
         title = 'All Transferred Out Students'
+    print(year_id)
     
     context = {
         'transfers': transfers,
         'group': group,
         'title': title,
-        'page': 'list'
+        'page': 'list',
+        'anos': anos,
     }
     return render(request, 'estudante/transfer/transferred_out_students.html', context)
