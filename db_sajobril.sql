@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 25, 2025 at 03:25 PM
+-- Generation Time: Aug 27, 2025 at 05:03 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -31,7 +31,7 @@ CREATE TABLE `ano_ano` (
   `id` bigint NOT NULL,
   `ano` varchar(20) NOT NULL,
   `is_active` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `ano_ano`
@@ -54,7 +54,7 @@ INSERT INTO `ano_ano` (`id`, `ano`, `is_active`) VALUES
 CREATE TABLE `auth_group` (
   `id` int NOT NULL,
   `name` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `auth_group`
@@ -78,7 +78,7 @@ CREATE TABLE `auth_group_permissions` (
   `id` bigint NOT NULL,
   `group_id` int NOT NULL,
   `permission_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `auth_group_permissions`
@@ -201,7 +201,7 @@ CREATE TABLE `auth_permission` (
   `name` varchar(255) NOT NULL,
   `content_type_id` int NOT NULL,
   `codename` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `auth_permission`
@@ -319,7 +319,11 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (109, 'Can add transfer student', 28, 'add_transferstudent'),
 (110, 'Can change transfer student', 28, 'change_transferstudent'),
 (111, 'Can delete transfer student', 28, 'delete_transferstudent'),
-(112, 'Can view transfer student', 28, 'view_transferstudent');
+(112, 'Can view transfer student', 28, 'view_transferstudent'),
+(113, 'Can add alumni student', 29, 'add_alumnistudent'),
+(114, 'Can change alumni student', 29, 'change_alumnistudent'),
+(115, 'Can delete alumni student', 29, 'delete_alumnistudent'),
+(116, 'Can view alumni student', 29, 'view_alumnistudent');
 
 -- --------------------------------------------------------
 
@@ -339,17 +343,17 @@ CREATE TABLE `auth_user` (
   `is_staff` tinyint(1) NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   `date_joined` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `auth_user`
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$JmdeB69Ykiz5myjOo3rOaT$/QA64cVca8dAn2MOdPburaEekWxyZ5hi0mqQEi/bfVQ=', '2025-08-21 17:35:42.443257', 1, 'admin', '', '', '', 1, 1, '2024-06-03 03:46:52.000000'),
+(1, 'pbkdf2_sha256$600000$JmdeB69Ykiz5myjOo3rOaT$/QA64cVca8dAn2MOdPburaEekWxyZ5hi0mqQEi/bfVQ=', '2025-08-27 03:53:12.485108', 1, 'admin', '', '', '', 1, 1, '2024-06-03 03:46:52.000000'),
 (56, 'pbkdf2_sha256$720000$NKm0Y3GLWVUVpKgYe1JDZB$l6h9iRWIGUimeROjXTgvOkS2dT//mKbx6xyOniF+MzM=', '2025-02-03 06:13:22.000000', 1, 'admin2', '', '', 'P@mail.com', 1, 1, '2025-02-03 06:12:03.000000'),
 (57, 'pbkdf2_sha256$720000$u4IBGyKCYgXPO81Ns3vOkN$nU5pqR0Z5dJknj3pgxDl4aYxYpK4nZ1zqfDHwWyf184=', '2025-03-17 15:46:35.867812', 1, 'admin1', '', '', 'dd@mail.com', 1, 1, '2025-03-10 07:38:31.000000'),
-(61, 'pbkdf2_sha256$600000$Oh8U1yiFKkp6bNiBOQIUco$WGHB+jK65nmeeF5ENFT63aCcHSVpHKxkW4VNYa4nZh8=', '2025-08-21 13:21:59.443000', 0, 'secretaria', '', '', '', 0, 1, '2025-04-19 00:29:15.000000'),
+(61, 'pbkdf2_sha256$600000$Oh8U1yiFKkp6bNiBOQIUco$WGHB+jK65nmeeF5ENFT63aCcHSVpHKxkW4VNYa4nZh8=', '2025-08-27 03:10:32.976338', 0, 'secretaria', '', '', '', 0, 1, '2025-04-19 00:29:15.000000'),
 (62, 'pbkdf2_sha256$600000$UI4qeY9Je9WCcKiqw3NdoX$gEulYGsAULdnfleZC264DGbfg5zxDBxrWa/7sEYmLlI=', NULL, 0, 'diretor', '', '', '', 0, 1, '2025-04-19 00:29:49.000000'),
 (63, 'pbkdf2_sha256$600000$fn22Ph26zIXAwqA3fBRJWh$4a4dRPEixrg1Ra40g0w1LUoInxpOtMaxYOqKZHnyZoo=', '2025-08-20 14:09:55.476510', 0, '370972', '', '', '', 0, 1, '2025-04-22 06:18:34.740158'),
 (64, 'pbkdf2_sha256$600000$hTv1k1Fb1mLVdcNAdGr3sn$NheQleZgPo3VQSZbpvJDIin6oiuiP8E1AR7/1FDRu7M=', NULL, 0, '408332', '', '', '', 0, 1, '2025-04-22 06:28:41.641334'),
@@ -497,7 +501,8 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 (208, 'pbkdf2_sha256$600000$aPL8JNROwwORKIOZFRKt5k$PRgeblBq0cz+K4F2ensH96yhG7TUTa2FYPED6nKx7oQ=', NULL, 0, '408167', '', '', '', 0, 1, '2025-07-27 06:23:05.241001'),
 (209, 'pbkdf2_sha256$600000$SERGr5c49xG5w833WgyUlV$gavt6JvQH8WNaqg/pRSsPICHBVuZ3+d+k1jBxjxBXdc=', NULL, 0, '408144', '', '', '', 0, 1, '2025-07-27 06:24:51.630747'),
 (210, 'pbkdf2_sha256$600000$Rj0liAxXs9LE6L0moSNnsc$AQCMI0DH7t/rPr8ZOe56sY7KDKKjN+ziJfp/PKg/hME=', NULL, 0, '408004', '', '', '', 0, 1, '2025-07-27 06:26:36.396841'),
-(211, 'pbkdf2_sha256$600000$HrzZ6RsbI1R3mG4rkPpymm$kprIjO46UpKeke7stFrfbXAohmeaMvST33j3r2TUjVY=', NULL, 0, '407659', '', '', '', 0, 1, '2025-07-27 06:28:26.321228');
+(211, 'pbkdf2_sha256$600000$HrzZ6RsbI1R3mG4rkPpymm$kprIjO46UpKeke7stFrfbXAohmeaMvST33j3r2TUjVY=', NULL, 0, '407659', '', '', '', 0, 1, '2025-07-27 06:28:26.321228'),
+(212, 'testpass', '2025-08-27 04:48:19.326353', 0, 'testadmin', '', '', 'admin@test.com', 0, 1, '2025-08-27 04:48:19.229308');
 
 -- --------------------------------------------------------
 
@@ -509,7 +514,7 @@ CREATE TABLE `auth_user_groups` (
   `id` bigint NOT NULL,
   `user_id` int NOT NULL,
   `group_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `auth_user_groups`
@@ -517,6 +522,7 @@ CREATE TABLE `auth_user_groups` (
 
 INSERT INTO `auth_user_groups` (`id`, `user_id`, `group_id`) VALUES
 (1, 1, 1),
+(221, 1, 2),
 (59, 56, 2),
 (58, 57, 3),
 (63, 61, 2),
@@ -666,7 +672,8 @@ INSERT INTO `auth_user_groups` (`id`, `user_id`, `group_id`) VALUES
 (209, 208, 5),
 (210, 209, 5),
 (211, 210, 5),
-(212, 211, 5);
+(212, 211, 5),
+(220, 212, 1);
 
 -- --------------------------------------------------------
 
@@ -678,7 +685,7 @@ CREATE TABLE `auth_user_user_permissions` (
   `id` bigint NOT NULL,
   `user_id` int NOT NULL,
   `permission_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -690,7 +697,7 @@ CREATE TABLE `classe_classe` (
   `id` bigint NOT NULL,
   `name` varchar(30) NOT NULL,
   `Departamento_id` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `classe_classe`
@@ -716,7 +723,7 @@ CREATE TABLE `custom_administrativepost` (
   `id` bigint NOT NULL,
   `name` varchar(100) NOT NULL,
   `municipality_id` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `custom_administrativepost`
@@ -800,7 +807,7 @@ CREATE TABLE `custom_aldeia` (
   `id` bigint NOT NULL,
   `name` varchar(100) NOT NULL,
   `village_id` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `custom_aldeia`
@@ -3033,7 +3040,7 @@ CREATE TABLE `custom_municipality` (
   `code` varchar(5) DEFAULT NULL,
   `name` varchar(100) NOT NULL,
   `hckey` varchar(32) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `custom_municipality`
@@ -3067,7 +3074,7 @@ CREATE TABLE `custom_village` (
   `id` bigint NOT NULL,
   `name` varchar(100) NOT NULL,
   `administrativepost_id` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `custom_village`
@@ -3529,7 +3536,7 @@ INSERT INTO `custom_village` (`id`, `name`, `administrativepost_id`) VALUES
 CREATE TABLE `departamento_departamento` (
   `id` bigint NOT NULL,
   `nome_departamento` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `departamento_departamento`
@@ -3549,7 +3556,7 @@ CREATE TABLE `disiplina_diciplina` (
   `id` bigint NOT NULL,
   `Diciplina` varchar(100) DEFAULT NULL,
   `code_dics` varchar(15) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `disiplina_diciplina`
@@ -6535,7 +6542,7 @@ CREATE TABLE `django_content_type` (
   `id` int NOT NULL,
   `app_label` varchar(100) NOT NULL,
   `model` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `django_content_type`
@@ -6555,6 +6562,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (9, 'custom', 'village'),
 (13, 'departamento', 'departamento'),
 (17, 'Disiplina', 'diciplina'),
+(29, 'estudante', 'alumnistudent'),
 (15, 'estudante', 'detailest'),
 (14, 'estudante', 'estudante'),
 (28, 'estudante', 'transferstudent'),
@@ -6582,7 +6590,7 @@ CREATE TABLE `django_migrations` (
   `app` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `django_migrations`
@@ -6640,7 +6648,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (49, 'valor', '0001_initial', '2025-08-21 16:34:33.951428'),
 (50, 'valor', '0002_valor_est_is_approved', '2025-08-21 16:34:34.027790'),
 (51, 'valor', '0003_periode_is_active', '2025-08-21 16:34:34.094460'),
-(52, 'estudante', '0008_transferstudent', '2025-08-25 15:22:02.638264');
+(52, 'estudante', '0008_transferstudent', '2025-08-25 15:22:02.638264'),
+(53, 'estudante', '0009_alumnistudent', '2025-08-27 03:00:52.551637');
 
 -- --------------------------------------------------------
 
@@ -6652,7 +6661,7 @@ CREATE TABLE `django_session` (
   `session_key` varchar(40) NOT NULL,
   `session_data` longtext NOT NULL,
   `expire_date` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `django_session`
@@ -6673,16 +6682,20 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('6w5uh5t61n2oft8ps2l92dnk0mebqsdo', '.eJxVjDsOwyAQBe9CHSG-C6RM7zOgBdbBSYQlY1dR7h5bcpG0M_Pem0Xc1hq3TkucCrsyEOzyCxPmJ7XDlAe2-8zz3NZlSvxI-Gk7H-ZCr9vZ_h1U7HVfC23smBUoCQWNE95q4UmDoSCTDwZAeI8EoHaEWkszBrBGg8oOnJDs8wXHUTYE:1u0GoB:Ymq8LuDn3mxuVLW8ggUy5uj0ldJiyHo_SiybtMryRdY', '2025-04-17 09:24:23.126051'),
 ('88t0un5oohxz09u2ow1jcrtjdhl10937', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1uoNRq:i9fqhRGI9n8PVCMGTsFSJveyP0hY-XSqdMvGuMuWQSk', '2025-09-02 14:36:26.088396'),
 ('8i5p78odtnobv7ynotf52dp2m4vau47q', '.eJxVjMsOwiAQRf-FtSG8hlCX7v0GMsyAVA0kpV0Z_12bdKHbe865LxFxW2vcRl7izOIsvDj9bgnpkdsO-I7t1iX1ti5zkrsiDzrktXN-Xg7376DiqN9aK-8sKUvWJUsmOfAGmSZbLLhEjEihZKZi1GRCDtoQFAagojU7A-L9AepEOEw:1sOfA3:qWvthm2THlyAUtuipltqKcAtCt8ms7WpWTVmQYG7fMc', '2024-07-16 15:11:15.941627'),
+('96e3wl27emczgpuxvk8ekks0gstr3t5d', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1ur6YT:CliPJHB-aUsywBLq4ro5_m4YZHZ_wPKHwYvrlB8-7nU', '2025-09-10 03:10:33.010849'),
 ('9grsaf4mm5zeu7x03w2kh15qv4bvibt2', '.eJxVjEEOwiAQRe_C2hAZhoIu3XsGMjCDVE1JSrsy3l2bdKHb_977LxVpXWpcu8xxZHVWqA6_W6L8kGkDfKfp1nRu0zKPSW-K3mnX18byvOzu30GlXr-19eB8Jixc2AkYdBIcgYUEpyGkowGPvqDIUNB4dCwUbJE8FCFAZPX-ANz8OA4:1sOcSY:W4CpAcXmTzaS6a3JA7jmyv5mJnIBKu9xwaazTQW3GJg', '2024-07-16 12:18:10.369660'),
 ('a39qsco171vpagiibup2gh0h6unpp6a0', '.eJxVjMsOwiAQRf-FtSG8p-PSvd9AgAGpGkhKuzL-uzbpQrf3nHNfzIdtrX4befEzsTOzwE6_YwzpkdtO6B7arfPU27rMke8KP-jg1075eTncv4MaRv3WImuMoJWSULSz2mZlbAIFBi1JEiiEEhEnROcy2ZKSgSlKLRUJKAbZ-wPPRTab:1tuCiA:5DfaN8FFMN7e6P3RYsrKcBMmmBnzh1n03_fXaNX7ZfQ', '2025-03-31 15:49:06.599985'),
 ('aisrhaxj5iafe85l9kkeyr1cvnh0rorp', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1uoisY:YAX0coyAQmGcHlR-QTEnLYREQAiFBd6YDrK7fGY8UNI', '2025-09-03 13:29:26.063336'),
+('ajcixrhfa6yat6tmxhb1mo0uru6j6hsb', 'e30:1ur7zf:GOtgdnRiwATwFthcVK7v4ycTL2R3l2HOwn6MvsAmdrg', '2025-09-10 04:42:43.081509'),
 ('ao5cgtqdo37y5vzlxmonfiwwb4ypy5ml', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1uoi3x:lGuoSBxnqPJUZseGZ8PxxL4pjnsGvTaAzCSwsPLek2I', '2025-09-03 12:37:09.781220'),
 ('aqz3nlx94mk4xwjoy414mvt7dz51fy37', '.eJxVjEEOwiAQRe_C2hAodKa4dO8ZyAxDpGogKe3KeHdt0oVu_3vvv1SkbS1x63mJs6izQnX63ZjSI9cdyJ3qrenU6rrMrHdFH7Tra5P8vBzu30GhXr41O4M8Ck2exRu0KGymlJm9hUBAwSP44IJDY9HJiDAEDxhgSM5ATur9AdM0NsU:1sN8An:htCzjsTIok8bu-5_rWhDTlQ9Z-xX5zm4oZZtd3wWxr4', '2024-07-12 09:45:41.985360'),
 ('b9azlbk9po3brwi12dmawzu43qm1hjgl', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1u9FjM:V2BeEbEKivATXFH0fuxRSCockh5xwGNpyFn3xu1Eqvc', '2025-05-12 04:04:32.049594'),
 ('bitr95onwx5s84d9o0xby594eq6oz8m3', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1uoNQ8:Uu_AEj40lolUBJlGjWMNCnPgtFJmCLem0KXDjYxsOtM', '2025-09-02 14:34:40.847834'),
 ('bs1eydregv3kjzaf2z9uxeeetcztfbca', '.eJxVjMEOwiAQRP-FsyGlFFw8eu83kN0FpGogKe3J-O9K0oPeJvPezEt43Lfs9xZXvwRxEdaI029JyI9YOgl3LLcquZZtXUh2RR60ybmG-Lwe7t9Bxpb7mhSMOgFHQHXWIQGyVdPgzDeRBW0cOQUUeUpGj84BTMzkBtaQDJN4fwAVEjhb:1u7k7k:scGKqcmbssMh1mM-4QbX5S_ig7TrXvEdrxEhfySNSo4', '2025-05-08 00:07:28.057401'),
 ('clcmcrcmoqw0zncrsrq3vh3xd49qiku0', '.eJxVjMEOwiAQRP-FsyGlFFw8eu83kN0FpGogKe3J-O9K0oPeJvPezEt43Lfs9xZXvwRxEdaI029JyI9YOgl3LLcquZZtXUh2RR60ybmG-Lwe7t9Bxpb7mhSMOgFHQHXWIQGyVdPgzDeRBW0cOQUUeUpGj84BTMzkBtaQDJN4fwAVEjhb:1ufrFQ:7A9fwVx68lMZ-34BWamKmlT4FG2GuqymCpkHgI8Yi60', '2025-08-10 02:36:24.305663'),
+('d9kbq4r2rwd20c1265yd3mcrdl6m6uwz', 'e30:1ur82m:tih37Te1oWr9Gf2__LdMY5u8UCw6ZluYm1ag2txeMTQ', '2025-09-10 04:45:56.995678'),
 ('dd6leguoad19352elkby7fjbozhjex1b', '.eJxVjEEOwiAQRe_C2hAZhoIu3XsGMjCDVE1JSrsy3l2bdKHb_977LxVpXWpcu8xxZHVWqA6_W6L8kGkDfKfp1nRu0zKPSW-K3mnX18byvOzu30GlXr-19eB8Jixc2AkYdBIcgYUEpyGkowGPvqDIUNB4dCwUbJE8FCFAZPX-ANz8OA4:1sIs0j:Y81UihWvfgILpkefo86PAKsHqOrsind1WFg-kqEK-X8', '2024-06-30 15:41:41.781382'),
+('dp8a82j9q5ywjhnsw6sqg7d7jtl12cj3', 'e30:1ur7oo:JJGgSM0DLL6wUQZixk6xTav700DXZCOomQClZ_G2WnI', '2025-09-10 04:31:30.193011'),
 ('dur1pc0m18v75iyi8harsufwyirl15dj', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1uXxhR:QxbV4YlgrA-Z9m5ZjskyRgQahoUG6bAv-LSkhC04ivk', '2025-07-19 07:52:41.163808'),
 ('dw94fam1gitxfssvq7rpuxt3dx4pcxd1', '.eJxVjMsOwiAQRf-FtSEwPKa6dO83EIaHVA0kpV0Z_12adKHbc869b-b8tha39bS4ObILk-z0y8iHZ6q7iA9f742HVtdlJr4n_LCd31pMr-vR_h0U38tYewyAAkCjJWsVKCstggEjUEwwgEQk0iHlMEnKI_XnrA1ZiSagIvb5ApYjNkk:1tvhlK:2vPaPIXi2DKlT1w6oS0mWt3qC6qnVyhXYG103gubvRs', '2025-04-04 19:10:34.792146'),
 ('eg5vhlywkyeehtsmp5owgdg3j7u66a2p', '.eJxVjDsOwyAQBe9CHSE-ZsEp0_sMCNglOIlAMnYV5e6xJRdJOzPvvZkP21r81mnxM7IrU-zyy2JIT6qHwEeo98ZTq-syR34k_LSdTw3pdTvbv4MSetnXLjhpIySLOVulIUN2FnAnWphAQmCGUccY00gEaAbUykjIg5DJyCTZ5wv4JDg3:1sPCLk:BrId-LwPhc_XGWXrQ6CZ1ZYrdXsBO2c5L8ozwW7kBVk', '2024-07-18 02:37:32.534633'),
@@ -6703,14 +6716,17 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('jrb95eh7y4c6vvl8wekmjtkq3u79im2w', '.eJxVjMEOwiAQRP-FsyGFslA8eu83kF3YStVAUtqT8d9tkx70NMm8N_MWAbc1h63xEuYkrkKLy29HGJ9cDpAeWO5VxlrWZSZ5KPKkTY418et2un8HGVve1-DZIznvWbkEaAldD7brBnAe457K8qSMtZphAuXVYHrNpK0xgEmR-HwByIs27g:1tyXri:GdTbgjD_715XvSzBfOnT7KlwTIamUH96s5lGNJQKQtY', '2025-04-12 15:12:54.854924'),
 ('jsbg6qxi4wata8akod8s4chmwgj3znxg', '.eJxVjMsOwiAQRf-FtSEzhfJw6b7fQGYApWogKe3K-O_apAvd3nPOfYlA21rC1vMS5iTOAsXpd2OKj1x3kO5Ub03GVtdlZrkr8qBdTi3l5-Vw_w4K9fKtDWsEQIyDB1KAxkV0jr0eOQMye2NSVjYlb8hfickqreNoWdFgnAPx_gC-ODcz:1sTM7N:oH1w5tuc50e4qwUceJv7XcTQSXxRqo0uFlB5WkUh8sk', '2024-07-29 13:51:53.234221'),
 ('jsifm805ohrn3ts0fhxpphcg1ox5smfx', '.eJxVjDsOwyAQBe9CHSG-C6RM7zOgBdbBSYQlY1dR7h5bcpG0M_Pem0Xc1hq3TkucCrsyEOzyCxPmJ7XDlAe2-8zz3NZlSvxI-Gk7H-ZCr9vZ_h1U7HVfC23smBUoCQWNE95q4UmDoSCTDwZAeI8EoHaEWkszBrBGg8oOnJDs8wXHUTYE:1tycui:gAw90PuFZNBwVntQpjtbyGg1fq1M8f7th1w8By1f1Rs', '2025-04-12 20:36:20.472303'),
+('jwxy4q5zghbierjbpmk59j9tdabauosm', 'e30:1ur82U:8tQfjVW08UjcPKL06JF-ZhmPjhiLH3x4SLn1BmFZUwg', '2025-09-10 04:45:38.579385'),
 ('ka2yxkgqrwe77xtg924j7tuxn7rwtbof', '.eJxVjEEOwiAQRe_C2hDagZG6dN8zNDMwSNVAUtqV8e7apAvd_vfef6mJtjVPW5NlmqO6KIfq9DsyhYeUncQ7lVvVoZZ1mVnvij5o02ON8rwe7t9Bppa_tXjsGV3PZwyD7aJPiTwEDAkliCVhgQgGLCQ3YGLDvvNigD04Q5LU-wMlljjU:1tephy:_Itu4LjTlKP6zGmNvdQMJKTnMEAchim8dcT8t2ISLcU', '2025-02-17 06:13:22.625197'),
 ('kuztig6fh7v9d9v4813a8d76k6ymhx8s', '.eJxVjMsOwiAQRf-FtSEzhfJw6b7fQGYApWogKe3K-O_apAvd3nPOfYlA21rC1vMS5iTOAsXpd2OKj1x3kO5Ub03GVtdlZrkr8qBdTi3l5-Vw_w4K9fKtDWsEQIyDB1KAxkV0jr0eOQMye2NSVjYlb8hfickqreNoWdFgnAPx_gC-ODcz:1sQTv5:kS-IZVCSRLLvqntn05c2EOpcrYxQ1Rfih5w_ymI8AtQ', '2024-07-21 15:35:19.107116'),
 ('lt2qv99a7yyqleg2c4tcuzpu2z78jlwo', '.eJxVjMEOwiAQRP-FsyGFslA8eu83kF3YStVAUtqT8d9tkx70NMm8N_MWAbc1h63xEuYkrkKLy29HGJ9cDpAeWO5VxlrWZSZ5KPKkTY418et2un8HGVve1-DZIznvWbkEaAldD7brBnAe457K8qSMtZphAuXVYHrNpK0xgEmR-HwByIs27g:1txoBj:iMtML34nMOJ6ak9R5mkTavA6t6l46zivgITIMADLv9c', '2025-04-10 14:26:31.580130'),
+('m32p2qxwuujwouzi0muuyv2a7ifk0bjt', 'e30:1ur7kL:n0WzUdW8Z19myeGtEC8ziAO_OJWVkHbPv8ZpSVCxyzY', '2025-09-10 04:26:53.766310'),
 ('m6pan9u5zpafo7rkp9t0unev8ejbufke', '.eJxVjMsOwiAQAP-FsyFL6W6LR-_9BkKXRaoGkj5Oxn83JD3odWYyb-XDsWd_bLL6JaqrMuryy-bATylNxEco96q5ln1dZt0SfdpNTzXK63a2f4Mctty2IxB1JAJIHRJYSG4YxA59SgawN0ZmQxAC0kiELMxonYs4kmUGpz5fo2k2jA:1sF7S8:dRm5-YrJrmLD-Te27Qj-CZeabWNNJsWRQq1ThhudBS0', '2024-06-20 07:22:28.627990'),
 ('mpypjrvdhan3sh0sos8yyp7e9k609aak', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1udq8Y:50243FRTgRkJ8jWwpyCdRetwWIIfJ_tSiIhxOodhhDc', '2025-08-04 13:00:58.020853'),
 ('n00t5qint2v6t3zbtamev3eustjl9kxh', '.eJxVjEEOwiAQRe_C2pCBUJi6dO8ZyMBMpWpoUtpV491tky50-997f1OR1qXEtckcR1ZXZdTld0uUX1IPwE-qj0nnqS7zmPSh6JM2fZ9Y3rfT_Tso1Mpeo8eQEyTyPjCbntAF11mLjpKDTky2MjDLriCDCYHBWwPOEfgecFCfL9pKN2U:1sPYd0:lHvC9qpofX9w8jsO0Dxm0hg4eRzDnYmKEQoyomXB-rc', '2024-07-19 02:24:50.498740'),
 ('n3hg4f3f2d5vrozibi5q8doeys6gaiof', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1u7qjn:3Af9dVrXJHYb9xy9TObQEqPO4QDc7RfLlFl0W8o9uQ4', '2025-05-08 07:11:11.354057'),
 ('ngkjvufgg8lqw4gm0vl161u9pev0b608', '.eJxVjMEOwiAQRP-FsyGlFFw8eu83kN0FpGogKe3J-O9K0oPeJvPezEt43Lfs9xZXvwRxEdaI029JyI9YOgl3LLcquZZtXUh2RR60ybmG-Lwe7t9Bxpb7mhSMOgFHQHXWIQGyVdPgzDeRBW0cOQUUeUpGj84BTMzkBtaQDJN4fwAVEjhb:1u9Fuk:ixmAr8k57RI9zaJ-prEg_aWB0hfI1Ww5nGuQfT_kkCY', '2025-05-12 04:16:18.856409'),
+('o0zu12hnswql0qaxxdpd68qzwuij2748', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1ur7Dk:eKKS5RdaoUbkIlI5YshI98rMwYZLVT3JQs5cfTKAW1M', '2025-09-10 03:53:12.505766'),
 ('of7h33pvz5ea1xds1z3h6n6fp7jmp486', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1u5w7e:5bLzsBrwO8xtFLEg3ZH1FMg_-VRQtGUcJGW9vf8mQfE', '2025-05-03 00:31:54.344297'),
 ('okx39xjwqfjn0u9apq2igftast44ipjf', '.eJxVjMsOwiAQAP-FsyFL6W6LR-_9BkKXRaoGkj5Oxn83JD3odWYyb-XDsWd_bLL6JaqrMuryy-bATylNxEco96q5ln1dZt0SfdpNTzXK63a2f4Mctty2IxB1JAJIHRJYSG4YxA59SgawN0ZmQxAC0kiELMxonYs4kmUGpz5fo2k2jA:1sDnNM:qv0FW9CqniB5fGf5dEJDnnmR6WlcvRU03M7Ba9Wm_AE', '2024-06-16 15:44:04.771082'),
 ('omafdqd5b1kr5wqryfqbv6jb7iwni8cj', '.eJxVjMsOwiAQRf-FtSEzhfJw6b7fQGYApWogKe3K-O_apAvd3nPOfYlA21rC1vMS5iTOAsXpd2OKj1x3kO5Ub03GVtdlZrkr8qBdTi3l5-Vw_w4K9fKtDWsEQIyDB1KAxkV0jr0eOQMye2NSVjYlb8hfickqreNoWdFgnAPx_gC-ODcz:1sLSgH:Er5t-ra6TrUg2_evLBawRkur_qWHx-foLW2xrZXsjyc', '2024-07-07 19:15:17.998451'),
@@ -6719,6 +6735,7 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('p4br6bfv7v7mqwzl59nfu5j74mii1c25', '.eJxVjDkOwjAUBe_iGlneFCeU9JzB-isOoESKkwpxd4iUAto3M-9lCmxrLVuTpYxsziaa0--GQA-ZdsB3mG6zpXlalxHtrtiDNnudWZ6Xw_07qNDqt_aArD56hJS4Q82o1Hdekqi4wGHw3NOQJZIjYM0KjgQUU_CRIKp5fwAhljnJ:1sOcRv:C_WiZu-cIcqQKXnM7WiS9CI4Wl1K3GOflQOefimOQfw', '2024-07-16 12:17:31.308085'),
 ('pchtzh5noc96f1rcshdvggilp6o6ipmg', '.eJxVjEEOwiAQRe_C2pCBUJi6dO8ZyMBMpWpoUtpV491tky50-997f1OR1qXEtckcR1ZXZdTld0uUX1IPwE-qj0nnqS7zmPSh6JM2fZ9Y3rfT_Tso1Mpeo8eQEyTyPjCbntAF11mLjpKDTky2MjDLriCDCYHBWwPOEfgecFCfL9pKN2U:1sPYhN:Wh7KqyHLTxcqAfBI_MXf6pgMqTJWTEDsyHccL3cYbTw', '2024-07-19 02:29:21.953919'),
 ('qgvez94zmi68jd20svu7ome6jt5yt9sa', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1up86o:2xSvYLwg5tGKycqBOc7moqGrbuiAomiBF0BwKO44cFg', '2025-09-04 16:25:50.178163'),
+('qn9cuwg7hdxcpc8c95ga3r38pnt5yta7', 'e30:1ur7jS:qTLLaak_XwdUwAuK_LW3vhVkHvHeGXLNV2UlEzMjVeA', '2025-09-10 04:25:58.826931'),
 ('qnybh0e134tqhpzak7m7to01di5z85rc', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1uEkuA:F4KheWiHv21GP-ICHWfZakokwK0cRHtoB6RAVd_Lgik', '2025-05-27 08:22:26.343670'),
 ('qqtpfngprmp91zh0mc9p65zlo4n4csm8', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1up5Kk:vhCbqe_KuRQLDDA74w-TLgQ79I-FLYH7ONYi9YOxLRE', '2025-09-04 13:28:02.038403'),
 ('qyvrjw3138b3lci654pyb5sorb6o4xkh', '.eJxVjDsOwjAQBe_iGln-7jqU9JzBWscbHEC2FCcV4u4QKQW0b2beS0Ta1hK3zkucszgLJ06_W6LxwXUH-U711uTY6rrMSe6KPGiX15b5eTncv4NCvXzroIwHDgODsgkcIGinPRh2SBkzog1ZMwNOHr3yJiFY1qgnNTCBVeL9AalXNmw:1tvQfg:IWmZDPZrVDywJHrRHaC9K3reFN5rvTI5e312n6OKLj8', '2025-04-04 00:55:36.013716'),
@@ -6728,12 +6745,14 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('rz662jp8zhlepbsbkqkwczw3t7cnau2w', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1uol0M:-Lap80aeA6IkG-Qio0_ZO8kNRflUKygYCDnJXHu3558', '2025-09-03 15:45:38.560565'),
 ('sc2lma573xalwhv6s3ea0bxz61pf4w1o', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1uogDf:_a6z0fFddcqT0GA_r3ihWLsWqki5YVeAnAGcNwcQyCk', '2025-09-03 10:39:03.062899'),
 ('seoikwgtzff3x210d4o3z6ab9pp67q12', '.eJxVjMsOwiAQAP-FsyEsZbvFo_d-A9nykKqBpLQn478bkh70OjOZt3B87NkdLW5uDeIqwKC4_NKF_TOWrsKDy71KX8u-rYvsiTxtk3MN8XU7279B5pb7eEpo2ZP1kGKcGFXSwAOaGIASgyXAQFqRHnSwgwGltAILnIjGNKL4fAEktTdH:1uXEZW:0z2b2DXbI-hMe1QNmG4aPhOUKU6-Q714U3ZrR6_KnBI', '2025-07-17 07:41:30.461926'),
+('ses9kvipuqan5c0djvs698vgzywap41t', 'e30:1ur8DY:jNPMvZeK3VIiISsq6DmsMbXD-LqXwtM-pnYTYzL08_8', '2025-09-10 04:57:04.156369'),
 ('sf4dgfitn925ga9y8arkb8gmp8176jg5', '.eJxVjMsOwiAQAP-FsyFL6W6LR-_9BkKXRaoGkj5Oxn83JD3odWYyb-XDsWd_bLL6JaqrMuryy-bATylNxEco96q5ln1dZt0SfdpNTzXK63a2f4Mctty2IxB1JAJIHRJYSG4YxA59SgawN0ZmQxAC0kiELMxonYs4kmUGpz5fo2k2jA:1sIm2E:O0bNqeOuP0gOSgHlnrsX-MnJRO9-y96RI7rEqz6jHIg', '2024-06-30 09:18:50.395134'),
 ('siumdbpdx18c1jz09g485xq4mxmgeqvu', '.eJxVjEEOwiAQRe_C2hCmHRhx6b5naAYGpGpoUtqV8e7apAvd_vfef6mRt7WMW0vLOIm6KFCn3y1wfKS6A7lzvc06znVdpqB3RR-06WGW9Lwe7t9B4Va-NQKAYHSUTDJAwthTcGch6AW9DSSZfKbMmK3DGDtrInpGI5CN64x6fwDSTDdr:1uXwxL:-xeFKnWE1qFeRKsg9avnOM6FoX-jEcwoK2QacUdOZFw', '2025-07-19 07:05:03.611518'),
 ('sppx7y3ejdno77moo28ewj6ew5xu09us', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1uofcs:OacRJEBhdyuZz8WjyG6xgRJwzTGS3K5_V4Z61Wg7RwI', '2025-09-03 10:01:02.054144'),
 ('t3preengbmivkuwx5blg9i77nddfyj64', '.eJxVjMEOwiAQRP-FsyFLBUo9evcbyMLuStXQpLQn47_bJj3oYS7z3sxbRVyXEtfGcxxJXVSnTr9dwvzkugN6YL1POk91mcekd0UftOnbRPy6Hu7fQcFWtjVwAvABwWYW70yPBo3joZPAVgR9Iov-7PIWoSH02QoYAsBMwRmnPl_vFDgl:1sQUAq:0Lv1mATP_pUudZw0bjIIzGQnexk36xQDvSdUsQAuGk4', '2024-07-21 15:51:36.808111'),
 ('t44fvi93up65gyngcu5ud85nooox85ay', '.eJxVjEEOwiAQRe_C2hAK0xFcuu8ZyMCAVA0kpV0Z765NutDtf-_9l_C0rcVvPS1-ZnERWpx-t0DxkeoO-E711mRsdV3mIHdFHrTLqXF6Xg_376BQL98aWcMQs86gjNIxZQSXHLuATgXDFnWiMY85YkRiZYEIrQaXySCcYRDvD-oQN90:1sDnOk:Fk_mEdjCk1rwhAbzdy-cBDRJ4DrapXrnKIliT3ANLTc', '2024-06-16 15:45:30.917117'),
 ('t473g3aug2k1nciy9tovww61sko535r0', '.eJxVjMEOwiAQRP-FsyFLBUo9evcbyMLuStXQpLQn47_bJj3oYS7z3sxbRVyXEtfGcxxJXVSnTr9dwvzkugN6YL1POk91mcekd0UftOnbRPy6Hu7fQcFWtjVwAvABwWYW70yPBo3joZPAVgR9Iov-7PIWoSH02QoYAsBMwRmnPl_vFDgl:1sQUAq:0Lv1mATP_pUudZw0bjIIzGQnexk36xQDvSdUsQAuGk4', '2024-07-21 15:51:36.659769'),
+('t88ugnldmt7adaq34sap94zxr7nji7om', '.eJxVjEsOAiEQBe_C2hBgYACX7j0D6aYbGTWQzGdlvLtOMgvdvqp6L5FgW2vaFp7TROIsjDbi9Lsi5Ae3HdEd2q3L3Ns6Tyh3RR50kddO_Lwc7t9BhaV-a29RaRezcq4Yz5QHZ62mIRt0HCnYMSBEyz6gdTpwxAGKjmpkBUi5iPcHG1k4bA:1ur855:23RpOIOxTN3uYtJGLKd5J6EM03OONtoaEbav4j-HsIU', '2025-09-10 04:48:19.339386'),
 ('tl1dg8qhpkfmubpqrfgndx8icljj2nbp', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1up5Et:QF1RadyDE5Fhyw4vLAVL1XWkMuE9SG5p3T7g1UboxmE', '2025-09-04 13:21:59.457863'),
 ('tzevoyur5e5kaolx9viqlm2313tism97', '.eJxVjEEOwiAQRe_C2hAK0xFcuu8ZyMCAVA0kpV0Z765NutDtf-_9l_C0rcVvPS1-ZnERWpx-t0DxkeoO-E711mRsdV3mIHdFHrTLqXF6Xg_376BQL98aWcMQs86gjNIxZQSXHLuATgXDFnWiMY85YkRiZYEIrQaXySCcYRDvD-oQN90:1sE19g:LjWkxynDvYyuo48W8cHwXYzT_vHF-gqra15ctwAAhIk', '2024-06-17 06:26:52.285723'),
 ('uh9jxyk0zvytoat8fw851vdk31y9hr0c', '.eJxVjMsOwiAQRf-FtSG8p-PSvd9AgAGpGkhKuzL-uzbpQrf3nHNfzIdtrX4befEzsTOzwE6_YwzpkdtO6B7arfPU27rMke8KP-jg1075eTncv4MaRv3WImuMoJWSULSz2mZlbAIFBi1JEiiEEhEnROcy2ZKSgSlKLRUJKAbZ-wPPRTab:1trXok:puwj43zJpEDdFysnurb9gsn4kxiijmeuYNA1-nlnHII', '2025-03-24 07:44:54.338734'),
@@ -6742,6 +6761,7 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('v1lqqp6cocqsiqn4lq6a4sk4r9by45br', '.eJxVjEEOwiAQRe_C2hAo0Cku3XsGMgyDVA0kpV0Z765NutDtf-_9lwi4rSVsnZcwJ3EWgzj9bhHpwXUH6Y711iS1ui5zlLsiD9rltSV-Xg7376BgL9_a2RFIGaOVR-MwDwDJeWRgNZEz2RBrUAQ8uaQ1jDaprLJG9pzZRhbvD8qjOAU:1sPYeE:C43TW3VcmIwTRFWZ8oeZlYsSvfbRAI7x4nFTTOwFtH8', '2024-07-19 02:26:06.650381'),
 ('vnpyw4ago010kvyj08by16hl5ojv7i1u', '.eJxVjDsOwjAQBe_iGlnrNc7alPQ5g-Xf4gBypDipEHeHSCmgfTPzXsKHba1-62XxUxYXMWhx-h1jSI_SdpLvod1mmea2LlOUuyIP2uU45_K8Hu7fQQ29fuuCKTvFEQ1wRqstDZCQ1RnAMZAmBEccA3MympTNqAFAWQQy0RQU7w_25DcI:1uKL6g:bSbsgdexDwc55I1FjcrKxa-ibPPeO17QdO_1PKzcWmA', '2025-06-11 18:02:26.171050'),
 ('vquxlq6bjfbvv1vnqo6zqwtvovrro1gs', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1uojTp:SZgfzzem7D5T6yfm2N3rjqlzN4Clczniqgua7jNnWRU', '2025-09-03 14:07:57.236823'),
+('vqz6iig3xtfaxh8sz8boa3b9dy931bmf', 'e30:1ur7tV:VBgd4YNguosrqYpVELMic1zclGplu6-hV4DsUZEoxNI', '2025-09-10 04:36:21.978737'),
 ('vt0h336274o7wmnbmw8rskjwfj1sfbzd', '.eJxVjMsOwiAQRf-FtSEdwKG4dN9vIAMzSNXQpI-V8d-1SRe6veec-1KRtrXGbZE5jqwuCkGdfsdE-SFtJ3yndpt0nto6j0nvij7oooeJ5Xk93L-DSkv91sQYwAbfJdNlLi4Qc48FjINzZ51FAwGtABNhn8QbNOySGO-ooBCo9wf28jfK:1uZSS2:3JIJ9GLFD-X8ABoNhtLIo4I9jqbP91nCI8tyfW4Q6kM', '2025-07-23 10:54:58.199749'),
 ('vwr8atsqv5556uxtr1dizbs6c4n889j4', '.eJxVjDsOwjAQBe_iGlnrNc7alPQ5g-Xf4gBypDipEHeHSCmgfTPzXsKHba1-62XxUxYXMWhx-h1jSI_SdpLvod1mmea2LlOUuyIP2uU45_K8Hu7fQQ29fuuCKTvFEQ1wRqstDZCQ1RnAMZAmBEccA3MympTNqAFAWQQy0RQU7w_25DcI:1u7keS:WVEDuH3DckImdDBynCz9FQszIxILXxV2LJIilR-0jeU', '2025-05-08 00:41:16.741594'),
 ('w2e29udjh43m4e0eot40apmxpve0b92i', '.eJxVjMsOwiAQRf-FtSG8p-PSvd9AgAGpGkhKuzL-uzbpQrf3nHNfzIdtrX4befEzsTOzwE6_YwzpkdtO6B7arfPU27rMke8KP-jg1075eTncv4MaRv3WImuMoJWSULSz2mZlbAIFBi1JEiiEEhEnROcy2ZKSgSlKLRUJKAbZ-wPPRTab:1tsE7D:ZgsgpcRdPirimSsZpC5PBB8RPeOS_HiV9rPWZHbybGM', '2025-03-26 04:54:47.324379'),
@@ -6760,6 +6780,35 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `estudante_alumnistudent`
+--
+
+CREATE TABLE `estudante_alumnistudent` (
+  `id` bigint NOT NULL,
+  `graduation_date` date NOT NULL,
+  `request_date` datetime(6) NOT NULL,
+  `final_grade` decimal(4,2) DEFAULT NULL,
+  `graduation_remarks` longtext,
+  `status` varchar(10) NOT NULL,
+  `approval_date` datetime(6) DEFAULT NULL,
+  `career_path` varchar(200) DEFAULT NULL,
+  `contact_info` longtext,
+  `approved_by_id` int DEFAULT NULL,
+  `completed_turma_id` bigint DEFAULT NULL,
+  `estudante_id` bigint NOT NULL,
+  `graduation_year_id` bigint DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `estudante_alumnistudent`
+--
+
+INSERT INTO `estudante_alumnistudent` (`id`, `graduation_date`, `request_date`, `final_grade`, `graduation_remarks`, `status`, `approval_date`, `career_path`, `contact_info`, `approved_by_id`, `completed_turma_id`, `estudante_id`, `graduation_year_id`) VALUES
+(1, '2025-08-27', '2025-08-27 04:10:26.449336', NULL, '', 'APPROVED', '2025-08-27 04:10:56.425009', NULL, '', 61, 13, 105, 5);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `estudante_detailest`
 --
 
@@ -6771,7 +6820,7 @@ CREATE TABLE `estudante_detailest` (
   `Ano_Academinco_id` bigint DEFAULT NULL,
   `Turma_id` bigint NOT NULL,
   `estudante_id` bigint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `estudante_detailest`
@@ -6787,7 +6836,7 @@ INSERT INTO `estudante_detailest` (`id`, `is_active`, `is_aprovadu`, `is_reprova
 (72, 1, 0, 0, 5, 1, 58),
 (73, 1, 0, 0, 5, 1, 59),
 (74, 1, 0, 0, 5, 1, 59),
-(75, 1, 0, 0, 5, 1, 60),
+(75, 0, 0, 0, 5, 1, 60),
 (76, 1, 0, 0, 5, 1, 61),
 (77, 1, 0, 0, 5, 1, 62),
 (78, 1, 0, 0, 5, 1, 63),
@@ -6825,7 +6874,7 @@ INSERT INTO `estudante_detailest` (`id`, `is_active`, `is_aprovadu`, `is_reprova
 (116, 1, 0, 0, 5, 6, 102),
 (117, 1, 0, 0, 5, 6, 103),
 (118, 1, 0, 0, 5, 6, 104),
-(119, 1, 0, 0, 5, 13, 105),
+(119, 0, 0, 0, 5, 13, 105),
 (120, 1, 0, 0, 5, 13, 106),
 (121, 1, 0, 0, 5, 13, 107),
 (122, 1, 0, 0, 5, 13, 108),
@@ -6944,7 +6993,7 @@ CREATE TABLE `estudante_estudante` (
   `village_id` bigint DEFAULT NULL,
   `have_classes` tinyint(1) DEFAULT NULL,
   `user_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `estudante_estudante`
@@ -7093,7 +7142,14 @@ CREATE TABLE `estudante_transferstudent` (
   `estudante_id` bigint NOT NULL,
   `from_turma_id` bigint DEFAULT NULL,
   `to_turma_id` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `estudante_transferstudent`
+--
+
+INSERT INTO `estudante_transferstudent` (`id`, `transfer_type`, `from_school`, `to_school`, `transfer_date`, `request_date`, `reason`, `status`, `approval_date`, `notes`, `approved_by_id`, `estudante_id`, `from_turma_id`, `to_turma_id`) VALUES
+(1, 'OUT', 'SAJOBRIL', 'SACROJES', '2025-08-26', '2025-08-27 04:37:48.039672', '', 'APPROVED', '2025-08-27 04:38:01.536372', NULL, 61, 60, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -7104,7 +7160,7 @@ CREATE TABLE `estudante_transferstudent` (
 CREATE TABLE `funsionariu_depfun` (
   `id` bigint NOT NULL,
   `name` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `funsionariu_depfun`
@@ -7127,7 +7183,7 @@ CREATE TABLE `funsionariu_funsionarioturma` (
   `ano_id` bigint DEFAULT NULL,
   `funsionario_id` bigint NOT NULL,
   `turma_id` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `funsionariu_funsionarioturma`
@@ -7170,7 +7226,7 @@ CREATE TABLE `funsionariu_funsionariu` (
   `data_moris` date DEFAULT NULL,
   `fatin_moris` varchar(50) DEFAULT NULL,
   `hela_fatin` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `funsionariu_funsionariu`
@@ -7211,7 +7267,7 @@ CREATE TABLE `funsionariu_userfunsionariu` (
   `funsionariu_id` bigint NOT NULL,
   `user_id` int DEFAULT NULL,
   `user_created_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -7227,7 +7283,7 @@ CREATE TABLE `historia_historia` (
   `Missaun` longtext NOT NULL,
   `historia_eskola` longtext NOT NULL,
   `images` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `historia_historia`
@@ -7249,7 +7305,7 @@ CREATE TABLE `horario_horario_est` (
   `profesores_id` bigint NOT NULL,
   `turma_id` bigint DEFAULT NULL,
   `Horas_id` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `horario_horario_est`
@@ -7273,7 +7329,7 @@ CREATE TABLE `horario_horas` (
   `id` bigint NOT NULL,
   `oras_hahu` time(6) DEFAULT NULL,
   `oras_remata` time(6) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `horario_horas`
@@ -7298,7 +7354,7 @@ CREATE TABLE `turma_turma` (
   `id` bigint NOT NULL,
   `Turma` varchar(15) NOT NULL,
   `classe_id` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `turma_turma`
@@ -7340,7 +7396,7 @@ CREATE TABLE `valor_clasificasao_valor` (
   `Klasse_id` bigint NOT NULL,
   `estudante_id` bigint NOT NULL,
   `periode_id` bigint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -7352,7 +7408,7 @@ CREATE TABLE `valor_periode` (
   `id` bigint NOT NULL,
   `nome_periode` varchar(100) NOT NULL,
   `is_active` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `valor_periode`
@@ -7382,7 +7438,7 @@ CREATE TABLE `valor_valor_est` (
   `loron` varchar(50) DEFAULT NULL,
   `profesores_id` int DEFAULT NULL,
   `Horas_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `valor_valor_est`
@@ -7620,6 +7676,16 @@ ALTER TABLE `django_session`
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
 
 --
+-- Indexes for table `estudante_alumnistudent`
+--
+ALTER TABLE `estudante_alumnistudent`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `estudante_alumnistudent_approved_by_id_03686892_fk_auth_user_id` (`approved_by_id`),
+  ADD KEY `estudante_alumnistud_completed_turma_id_39226ab6_fk_Turma_tur` (`completed_turma_id`),
+  ADD KEY `estudante_alumnistud_estudante_id_1b306e1a_fk_estudante` (`estudante_id`),
+  ADD KEY `estudante_alumnistud_graduation_year_id_25481cbe_fk_Ano_ano_i` (`graduation_year_id`);
+
+--
 -- Indexes for table `estudante_detailest`
 --
 ALTER TABLE `estudante_detailest`
@@ -7768,19 +7834,19 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
 --
 ALTER TABLE `auth_user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=212;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=213;
 
 --
 -- AUTO_INCREMENT for table `auth_user_groups`
 --
 ALTER TABLE `auth_user_groups`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=213;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=222;
 
 --
 -- AUTO_INCREMENT for table `auth_user_user_permissions`
@@ -7840,13 +7906,19 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
+--
+-- AUTO_INCREMENT for table `estudante_alumnistudent`
+--
+ALTER TABLE `estudante_alumnistudent`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `estudante_detailest`
@@ -7864,7 +7936,7 @@ ALTER TABLE `estudante_estudante`
 -- AUTO_INCREMENT for table `estudante_transferstudent`
 --
 ALTER TABLE `estudante_transferstudent`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `funsionariu_depfun`
@@ -7993,6 +8065,15 @@ ALTER TABLE `custom_village`
 ALTER TABLE `django_admin_log`
   ADD CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   ADD CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Constraints for table `estudante_alumnistudent`
+--
+ALTER TABLE `estudante_alumnistudent`
+  ADD CONSTRAINT `estudante_alumnistud_completed_turma_id_39226ab6_fk_Turma_tur` FOREIGN KEY (`completed_turma_id`) REFERENCES `turma_turma` (`id`),
+  ADD CONSTRAINT `estudante_alumnistud_estudante_id_1b306e1a_fk_estudante` FOREIGN KEY (`estudante_id`) REFERENCES `estudante_estudante` (`id`),
+  ADD CONSTRAINT `estudante_alumnistud_graduation_year_id_25481cbe_fk_Ano_ano_i` FOREIGN KEY (`graduation_year_id`) REFERENCES `ano_ano` (`id`),
+  ADD CONSTRAINT `estudante_alumnistudent_approved_by_id_03686892_fk_auth_user_id` FOREIGN KEY (`approved_by_id`) REFERENCES `auth_user` (`id`);
 
 --
 -- Constraints for table `estudante_detailest`
