@@ -30,7 +30,11 @@
         <div class="col-12">
             <div class="card border-primary">
                 <div class="card-body text-center">
+                    {% if filter_type == 'alumni' %}
+                    <h2 class="text-primary">{{alumni_records|length}}</h2>
+                    {% else %}
                     <h2 class="text-primary">{{students|length}}</h2>
+                    {% endif %}
                     <p class="mb-0">{{filter_value}} Students</p>
                     <a href="{% url 'report-student-stats' %}" class="btn btn-sm btn-outline-primary mt-2 back-link">
                         <i class="fa fa-arrow-left"></i> Back to Statistics
@@ -57,13 +61,55 @@
                                     <th>EMIS</th>
                                     <th>Name</th>
                                     <th>Gender</th>
+                                    {% if filter_type == 'alumni' %}
+                                    <th>Completed Class</th>
+                                    <th>Graduation Date</th>
+                                    <th>Department</th>
+                                    <th>Registration Year</th>
+                                    {% else %}
                                     <th>Class</th>
                                     <th>Turma</th>
                                     <th>Department</th>
                                     <th>Year</th>
+                                    {% endif %}
                                 </tr>
                             </thead>
                             <tbody>
+                                {% if filter_type == 'alumni' %}
+                                <!-- Alumni students display using new AlumniStudent system -->
+                                {% for alumni in alumni_records %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td class="text-center">
+                                        {% if alumni.estudante.image %}
+                                        <img src="{{alumni.estudante.image.url}}" class="rounded-circle" width="40" height="40">
+                                        {% else %}
+                                        <div class="rounded-circle bg-success d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                            <i class="fa fa-graduation-cap text-white"></i>
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ alumni.estudante.emis }}</td>
+                                    <td class="font-weight-bold">{{ alumni.estudante.naran }}</td>
+                                    <td>
+                                        {% if alumni.estudante.Sexo == 'Mane' %}
+                                        <span class="badge badge-primary">{{ alumni.estudante.Sexo }}</span>
+                                        {% else %}
+                                        <span class="badge badge-pink">{{ alumni.estudante.Sexo }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ alumni.completed_turma.classe.name|default:"12 Ano" }}</td>
+                                    <td>{{ alumni.graduation_date|date:"d/m/Y"|default:"N/A" }}</td>
+                                    <td>{{ alumni.completed_turma.classe.Departamento.nome_departamento|default:"N/A" }}</td>
+                                    <td>{{ alumni.estudante.Ano_Resisto.ano|default:"N/A" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center text-muted">No alumni students found</td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <!-- Regular students display -->
                                 {% for detail in students %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
@@ -95,6 +141,7 @@
                                     <td colspan="9" class="text-center text-muted">No students found</td>
                                 </tr>
                                 {% endfor %}
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>

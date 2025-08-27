@@ -29,30 +29,8 @@
                     <div class="card-body">
                       <h5 align="center">Relatoriu Valor Estudante Alumni </h5><hr/>
                        <div class="table-responsive">
-                      <table class="table table-sm responsive table-bordered" style="width:100%">
-                       <thead>
-                          <tr class="text-center">
-                            <th rowspan="3">Turma</th>
-                           
-                          </tr>
-                          <tr class="text-center">
-                            <th colspan="{{loopingturm|length}}">CIENCIAS E TECNOLOGIA </th>
-                            <th colspan="{{loopingturm3|length}}">CIENCIAS E SOCIAIS</th>
-                            
-                          </tr>
-                          <tr class="text-center">
-                            {% for xx in tur %}
-                            <td><a href="{% url 'select_estudante_turma_listValor1' xx.id%}">{{xx.Turma}}</a></td>
-                            {%endfor%}
-                            {% for xx in tur1 %}
-                            <td><a href="{% url 'select_estudante_turma_listValor2' xx.id%}">{{xx.Turma}} </a></td>
-                            {%endfor%}
-                            {% for xx in tur3 %}
-                            <td><a href="{% url 'select_estudante_turma_listValor3' xx.id%}">{{xx.Turma}}</a></td>
-                            {%endfor%}
-                          </tr>
-                        </thead>
-                      </table>
+                      <!-- Alumni no longer organized by turma classes, using new AlumniStudent system -->
+                      <p class="text-center"><em>Alumni data is now managed through the new Alumni Student system and organized by graduation year and department rather than individual classes.</em></p>
                       </div>
                     </div>
                     <hr>
@@ -112,7 +90,7 @@
                             <td>{{forloop.counter}}</td>
                             <td class="text-left"><a href="">{{xx.name}} </a></td>
                             <td><a href="">{{xx.total_sexo_Mane}}</a></td>
-                            <td><a href="{% url 'select_estudante_turma_listValor3' xx.id%}">{{xx.total_Sexo_Feto}}</a></td>
+                            <td><a href="#" title="Alumni data from new system">{{xx.total_Sexo_Feto}}</a></td>
                             {%endfor%}
                           </tr>
                        </tbody>
@@ -121,6 +99,43 @@
                     </div>
                   </div>
                </div> <!--end col-->
+              
+              <!-- Department Statistics Section -->
+              <div class="col-sm-12">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 align="center">RELATORIU ALUMNI TUIR DEPARTAMENTO NO TINAN</h5><hr/>
+                    <div class="table-responsive">
+                      <table class="table table-sm responsive table-bordered" style="width:100%">
+                        <thead>
+                          <tr class="text-center">
+                            <th rowspan="2">NU</th>
+                            <th rowspan="2">TINAN</th>
+                            <th colspan="2">DEPARTAMENTO</th>
+                            <th rowspan="2">TOTAL</th>
+                          </tr>
+                          <tr class="text-center">
+                            <th>CIENCIAS E TECNOLOGIA</th>
+                            <th>CIENCIAS SOCIAIS E HUMANIDADE</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for xx in loopingestudantesProgrm %}
+                          <tr class="text-center">
+                            <td>{{forloop.counter}}</td>
+                            <td>{{xx.ano}}</td>
+                            <td>{{xx.total_estudantesCt}}</td>
+                            <td>{{xx.total_estudantesCsh}}</td>
+                            <td>{{xx.total_estudante}}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
               </div><!--end row-->
               <!-- Total Estudante Tuir Tinan -->
         

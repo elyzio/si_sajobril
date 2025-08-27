@@ -79,3 +79,27 @@ class TransferStudent(models.Model):
 	
 	def __str__(self):
 		return f"{self.estudante.naran} - {self.get_transfer_type_display()} ({self.status})"
+
+
+class AlumniStudent(models.Model):
+	STATUS_CHOICES = (
+		('PENDING', 'Pending'),
+		('APPROVED', 'Approved'),
+		('REJECTED', 'Rejected'),
+	)
+	
+	estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE, related_name='alumni_records')
+	graduation_year = models.ForeignKey(Ano, on_delete=models.SET_NULL, null=True, related_name='alumni_graduates')
+	completed_turma = models.ForeignKey(turma, on_delete=models.SET_NULL, null=True, blank=True, related_name='alumni_graduates')
+	graduation_date = models.DateField()
+	request_date = models.DateTimeField(auto_now_add=True)
+	final_grade = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+	graduation_remarks = models.TextField(null=True, blank=True)
+	status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+	approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_alumni')
+	approval_date = models.DateTimeField(null=True, blank=True)
+	career_path = models.CharField(max_length=200, null=True, blank=True, help_text="Current career or further studies")
+	contact_info = models.TextField(null=True, blank=True, help_text="Updated contact information")
+	
+	def __str__(self):
+		return f"{self.estudante.naran} - Alumni ({self.graduation_year}) - {self.status}"

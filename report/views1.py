@@ -24,6 +24,21 @@ def ReportStudentStats(request):
     
     if not active_year:
         return {}
+    
+    # Calculate excluded students (transferred out and approved alumni)
+    from estudante.models import AlumniStudent
+    transferred_out_ids = TransferStudent.objects.filter(
+        transfer_type='OUT',
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    approved_alumni_ids = AlumniStudent.objects.filter(
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    # Combine both exclusion lists
+    excluded_ids = set(list(transferred_out_ids) + list(approved_alumni_ids))
+    
     student_gender = DetailEst.objects.filter(Ano_Academinco=active_year).values('estudante__Sexo').annotate(count=Count('estudante__Sexo'))
     print(student_gender)
 
@@ -51,12 +66,15 @@ def ReportStudentStats(request):
         classes_with_name = classe.objects.filter(name=class_name)
         
         # For each department, sum counts across all classes with this name
+        # Exclude approved alumni and transferred out students
         for dep in departments:
             count = DetailEst.objects.filter(
                 Ano_Academinco=active_year,
                 is_active=True,
                 Turma__classe__name=class_name,
                 Turma__classe__Departamento=dep
+            ).exclude(
+                estudante_id__in=excluded_ids
             ).count()
             
             row[dep.nome_departamento] = count
@@ -70,22 +88,24 @@ def ReportStudentStats(request):
 			Turma__classe__name=c,
 			estudante__Sexo='Mane',
 			Turma__classe__name__in=classes
-		).count()
+		).exclude(
+            estudante_id__in=excluded_ids
+        ).count()
         
         feto_count = DetailEst.objects.filter(
 			Turma__classe__name=c,
 			estudante__Sexo='Feto',
 			Turma__classe__name__in=classes
-		).count()
+		).exclude(
+            estudante_id__in=excluded_ids
+        ).count()
         class_gender_counts[c] = {'Mane': mane_count, 'Feto': feto_count}
 
-    # Alumni statistics
-    alumni_count = DetailEst.objects.filter(
-        Turma__classe__name='Alumni'
-    ).count()
+    # Alumni statistics using new AlumniStudent system
+    alumni_count = AlumniStudent.objects.filter(status='APPROVED').count()
     
-    alumni_by_gender = DetailEst.objects.filter(
-        Turma__classe__name='Alumni'
+    alumni_by_gender = AlumniStudent.objects.filter(
+        status='APPROVED'
     ).values('estudante__Sexo').annotate(count=Count('estudante__Sexo'))
     
     # Transfer statistics  
@@ -117,14 +137,9 @@ def ReportStudentStats(request):
         status='APPROVED'
     ).count()
     
-    # Current active students (excluding transferred out)
-    transferred_out_ids = TransferStudent.objects.filter(
-        transfer_type='OUT',
-        status='APPROVED'
-    ).values_list('estudante_id', flat=True)
-    
+    # Current active students (already calculated excluded_ids above)
     active_students_count = Estudante.objects.exclude(
-        id__in=transferred_out_ids
+        id__in=excluded_ids
     ).count()
 
     context = {
@@ -159,15 +174,17 @@ def StudentsByGender(request, gender):
         status='APPROVED'
     ).values_list('estudante_id', flat=True)
     
-    # Get active students by gender
+    # Get active students by gender - exclude both transferred out and alumni
+    from estudante.models import AlumniStudent
+    alumni_ids = AlumniStudent.objects.filter(status='APPROVED').values_list('estudante_id', flat=True)
+    excluded_ids = set(list(transferred_out_ids) + list(alumni_ids))
+    
     students = DetailEst.objects.filter(
         Ano_Academinco=active_year,
         estudante__Sexo=gender,
         is_active=True
     ).exclude(
-        estudante_id__in=transferred_out_ids
-    ).exclude(
-        Turma__classe__name__icontains='alumni'
+        estudante_id__in=excluded_ids
     ).select_related('estudante')
     
     context = {
@@ -209,14 +226,16 @@ def StudentsByClass(request, class_name):
 @login_required()
 @allowed_users(allowed_roles=['admin','Tesoreira','Director','Secretario','kurikulum','estudante','professor'])
 def StudentsAlumni(request):
-    # Get alumni students
-    students = DetailEst.objects.filter(
-        Turma__classe__name__icontains='alumni'
-    ).select_related('estudante')
+    # Get alumni students using new AlumniStudent system
+    from estudante.models import AlumniStudent
+    
+    alumni_records = AlumniStudent.objects.filter(
+        status='APPROVED'
+    ).select_related('estudante', 'completed_turma__classe__Departamento')
     
     context = {
         'title': 'Alumni Students',
-        'students': students,
+        'alumni_records': alumni_records,  # Pass alumni records directly
         'filter_type': 'alumni',
         'filter_value': 'Alumni',
     }
@@ -271,14 +290,16 @@ def StudentsActive(request):
         status='APPROVED'
     ).values_list('estudante_id', flat=True)
     
-    # Get all active students
+    # Get all active students - exclude both transferred out and alumni
+    from estudante.models import AlumniStudent
+    alumni_ids = AlumniStudent.objects.filter(status='APPROVED').values_list('estudante_id', flat=True)
+    excluded_ids = set(list(transferred_out_ids) + list(alumni_ids))
+    
     students = DetailEst.objects.filter(
         Ano_Academinco=active_year,
         is_active=True
     ).exclude(
-        estudante_id__in=transferred_out_ids
-    ).exclude(
-        Turma__classe__name__icontains='alumni'
+        estudante_id__in=excluded_ids
     ).select_related('estudante')
     
     context = {

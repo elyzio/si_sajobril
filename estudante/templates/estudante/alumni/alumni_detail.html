@@ -1,0 +1,176 @@
+{% extends "main/layout1.html" %}
+{% load static %}
+
+{% block contents %}
+<section>
+  <div class="container mt-5 border-0 p-3">
+    <header>
+      <ol class="breadcrumb mb-1 mt-1">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+        <li class="breadcrumb-item"><a href="#">Estudante</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'list_alumni' %}">Alumni</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+      </ol>
+    </header>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-8">
+                <h5 class="card-title">{{title}}</h5>
+              </div>
+              <div class="col-4 text-right">
+                {% if alumni_record.status == 'PENDING' and user.groups.all.0.name in 'admin,Secretario' %}
+                  <a href="{% url 'approve_alumni' alumni_record.id %}" class="btn btn-sm btn-success"
+                     onclick="return confirm('Aprova alumni record ne\'e?')">
+                    <i class="fa fa-check"></i> Aprova
+                  </a>
+                  <a href="{% url 'reject_alumni' alumni_record.id %}" class="btn btn-sm btn-danger"
+                     onclick="return confirm('Rejeita alumni record ne\'e?')">
+                    <i class="fa fa-times"></i> Rejeita
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6><strong>Alumni Information</strong></h6>
+                <table class="table table-sm table-borderless">
+                  <tr>
+                    <td><strong>Tinan Graduasaun:</strong></td>
+                    <td>{{alumni_record.graduation_year.ano}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Turma ne'ebe Remata:</strong></td>
+                    <td>{{alumni_record.completed_turma}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Data Graduasaun:</strong></td>
+                    <td>{{alumni_record.graduation_date|date:"d/m/Y"}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Nota Final:</strong></td>
+                    <td>{{alumni_record.final_grade|default:"-"}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Status:</strong></td>
+                    <td>
+                      <span class="badge badge-{% if alumni_record.status == 'APPROVED' %}success{% elif alumni_record.status == 'REJECTED' %}danger{% else %}warning{% endif %}">
+                        {{alumni_record.get_status_display}}
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h6><strong>Request Information</strong></h6>
+                <table class="table table-sm table-borderless">
+                  <tr>
+                    <td><strong>Data Request:</strong></td>
+                    <td>{{alumni_record.request_date|date:"d/m/Y H:i"}}</td>
+                  </tr>
+                  {% if alumni_record.approved_by %}
+                  <tr>
+                    <td><strong>Aprova husi:</strong></td>
+                    <td>{{alumni_record.approved_by.username}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Data Aprovação:</strong></td>
+                    <td>{{alumni_record.approval_date|date:"d/m/Y H:i"}}</td>
+                  </tr>
+                  {% endif %}
+                </table>
+              </div>
+            </div>
+
+            {% if alumni_record.career_path %}
+            <div class="mt-3">
+              <h6><strong>Karreira/Estudu Seluk:</strong></h6>
+              <p>{{alumni_record.career_path}}</p>
+            </div>
+            {% endif %}
+
+            {% if alumni_record.graduation_remarks %}
+            <div class="mt-3">
+              <h6><strong>Observasaun Graduasaun:</strong></h6>
+              <p>{{alumni_record.graduation_remarks}}</p>
+            </div>
+            {% endif %}
+
+            {% if alumni_record.contact_info %}
+            <div class="mt-3">
+              <h6><strong>Informasaun Kontaktu:</strong></h6>
+              <p>{{alumni_record.contact_info}}</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Informasaun Estudante</h5>
+          </div>
+          
+          <div class="card-body">
+            <div class="text-center mb-3">
+              {% if alumni_record.estudante.image %}
+                <img src="{{ alumni_record.estudante.image.url }}" alt="{{alumni_record.estudante.naran}}" 
+                     class="img-thumbnail" style="width: 150px;">
+              {% else %}
+                <img src="{% static 'main/images/default-avatar.png' %}" alt="{{alumni_record.estudante.naran}}" 
+                     class="img-thumbnail" style="width: 150px;">
+              {% endif %}
+            </div>
+            
+            <table class="table table-sm">
+              <tr>
+                <td><strong>Naran:</strong></td>
+                <td>{{alumni_record.estudante.naran}}</td>
+              </tr>
+              <tr>
+                <td><strong>EMIS:</strong></td>
+                <td>{{alumni_record.estudante.emis}}</td>
+              </tr>
+              <tr>
+                <td><strong>Sexu:</strong></td>
+                <td>{{alumni_record.estudante.Sexo}}</td>
+              </tr>
+              <tr>
+                <td><strong>Data Moris:</strong></td>
+                <td>{{alumni_record.estudante.Data_moris|date:"d/m/Y"}}</td>
+              </tr>
+              <tr>
+                <td><strong>Munisípiu:</strong></td>
+                <td>{{alumni_record.estudante.municipality}}</td>
+              </tr>
+            </table>
+            
+            <div class="text-center mt-3">
+              <a href="{% url 'detailViewest' alumni_record.estudante.id %}" class="btn btn-sm btn-info">
+                <i class="fa fa-user"></i> View Full Profile
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock contents %}

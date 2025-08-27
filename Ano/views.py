@@ -46,20 +46,27 @@ def EstTinList(request, pk):
 	group = request.user.groups.all()[0].name 
 	tin = get_object_or_404(Ano, pk=pk)
 	
-	# Get students who have been transferred out (approved OUT transfers)
+	# Get students who have been transferred out (approved OUT transfers)  
 	transferred_out_ids = TransferStudent.objects.filter(
 		transfer_type='OUT',
 		status='APPROVED'
 	).values_list('estudante_id', flat=True)
 	
-	# Get students registered in this year, excluding transferred-out students and alumni
-	# First get students from DetailEst to check their current class status
+	# Get students who are approved alumni (new system)
+	from estudante.models import AlumniStudent
+	alumni_ids = AlumniStudent.objects.filter(
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	# Get students registered in this year, excluding transferred-out students and new alumni
+	excluded_ids = set(list(transferred_out_ids) + list(alumni_ids))
 	est_details = DetailEst.objects.filter(
-		estudante__Ano_Resisto=tin
+		estudante__Ano_Resisto=tin,
+		is_active=True
 	).exclude(
-		estudante_id__in=transferred_out_ids
+		estudante_id__in=excluded_ids
 	).exclude(
-		Turma__classe__name__icontains='alumni'
+		Turma__classe__name__icontains='alumni'  # Also exclude old alumni system
 	).select_related('estudante').order_by('estudante__Ano_Resisto')
 	
 	# Extract the Estudante objects
@@ -103,10 +110,10 @@ def EstTinList(request, pk):
 		Q(from_school__isnull=False) | Q(to_school__isnull=False)
 	).count()
 	
-	# Alumni from this registration year
-	alumni_from_year = DetailEst.objects.filter(
+	# Alumni from this registration year (using new system)
+	alumni_from_year = AlumniStudent.objects.filter(
 		estudante__Ano_Resisto=tin,
-		Turma__classe__name__icontains='alumni'
+		status='APPROVED'
 	).count()
 	
 	# Total students originally from this year
@@ -268,13 +275,13 @@ def YearAlumni(request, pk):
 	group = request.user.groups.all()[0].name 
 	tin = get_object_or_404(Ano, pk=pk)
 	
-	# Get alumni from this registration year
-	alumni_details = DetailEst.objects.filter(
+	# Get alumni from this registration year (using new Alumni system)
+	alumni_records = AlumniStudent.objects.filter(
 		estudante__Ano_Resisto=tin,
-		Turma__classe__name__icontains='alumni'
+		status='APPROVED'
 	).select_related('estudante')
 	
-	est = [detail.estudante for detail in alumni_details]
+	est = [alumni.estudante for alumni in alumni_records]
 	tinan = Ano.objects.all()
 	
 	context = {

@@ -37,4 +37,13 @@ urlpatterns = [
     path('transfer/reject/<int:transfer_id>/', reject_transfer, name='reject_transfer'),
     path('transferred-out/', transferred_out_students, name='transferred_out_students_all'),
     path('transferred-out/<int:year_id>/', transferred_out_students, name='transferred_out_students'),
+    
+    # Alumni functionality
+    path('alumni/', list_alumni, name='list_alumni'),
+    path('alumni/create/<int:estudante_id>/', create_alumni_record, name='create_alumni_record'),
+    path('alumni/detail/<int:alumni_id>/', alumni_detail, name='alumni_detail'),
+    path('alumni/approve/<int:alumni_id>/', approve_alumni, name='approve_alumni'),
+    path('alumni/reject/<int:alumni_id>/', reject_alumni, name='reject_alumni'),
+    path('approved-alumni/', approved_alumni_students, name='approved_alumni_students_all'),
+    path('approved-alumni/<int:year_id>/', approved_alumni_students, name='approved_alumni_students'),
 ]

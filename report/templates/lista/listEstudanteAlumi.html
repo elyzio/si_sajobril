@@ -61,13 +61,13 @@
                         </tr>
                       </thead>
                       <tbody>
-                        {% for data in objects %}
+                        {% for alumni in objects %}
                         <tr>
                           <th scope="row">{{ forloop.counter }}</th>
-                          <td class="text-center">{% if data.estudante.image %}<a href="{{data.estudante.image.url}}" target="_blank"><img src="{{data.estudante.image.url}}" width="50px" height="50px"></a>{%else%}{%endif%}</td>
-                          <td> {% if group == "admin" %}<a href="{% url 'detailViewest' data.id %}">{%endif%} {{ data.estudante.emis }}</td></td>
-                          <td>{{ data.estudante.naran }}</td>
-                          <td>{{ data.estudante.Sexo }}</td>
+                          <td class="text-center">{% if alumni.estudante.image %}<a href="{{alumni.estudante.image.url}}" target="_blank"><img src="{{alumni.estudante.image.url}}" width="50px" height="50px"></a>{%else%}<div class="rounded-circle bg-success d-flex align-items-center justify-content-center" style="width:50px;height:50px;"><i class="fa fa-graduation-cap text-white"></i></div>{%endif%}</td>
+                          <td> {% if group == "admin" %}<a href="{% url 'detailViewest' alumni.estudante.id %}">{%endif%} {{ alumni.estudante.emis }}</td>
+                          <td>{{ alumni.estudante.naran }}</td>
+                          <td>{{ alumni.estudante.Sexo }}</td>
                        
                         </tr>
                         {% endfor %}

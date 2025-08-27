@@ -108,6 +108,20 @@
                             class="btn btn-sm btn-warning" title="Update Klasse estudante"><i
                               class="fa fa-edit"></i></a>
                         </div>
+                        {% if group == "admin" or group == "Secretario" %}
+                        <!-- Alumni Button - Only show if student is in 12 Ano AND has 13 grades in each period -->
+                        {% if data.estudante.is_alumni_eligible %}
+                        <div class="ml-2"><a href="{% url 'create_alumni_record' data.estudante.id %}"
+                            class="btn btn-sm btn-primary" title="Create Alumni Record ({{data.estudante.current_class}}, I:{{data.estudante.grades_periodo_1}} II:{{data.estudante.grades_periodo_2}} III:{{data.estudante.grades_periodo_3}})">
+                            <i class="fa fa-graduation-cap"></i></a>
+                        </div>
+                        {% else %}
+                        <div class="ml-2"><span class="btn btn-sm btn-secondary disabled" 
+                            title="{% if not data.estudante.is_12_ano %}Must be in 12 Ano class (currently {{data.estudante.current_class}}){% elif not data.estudante.has_all_periods_complete %}Need 13 grades per period: I({{data.estudante.grades_periodo_1}}/13) II({{data.estudante.grades_periodo_2}}/13) III({{data.estudante.grades_periodo_3}}/13){% endif %}">
+                            <i class="fa fa-lock"></i></span>
+                        </div>
+                        {% endif %}
+                        {% endif %}
                         <div class="ml-2">
                           <div class="flex-fill"> <button type="button" class="btn btn-sm btn-danger"
                               data-toggle="modal" data-target="#delete-{{ data.id }}"

@@ -14,4 +14,5 @@ admin.site.register(Estudante, EstudanteAdmin)
 # admin.site.register(UserEstudante)
 admin.site.register(DetailEst)
 admin.site.register(TransferStudent)
+admin.site.register(AlumniStudent)
 

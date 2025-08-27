@@ -23,14 +23,76 @@ from django.db.models import Sum
 @allowed_users(allowed_roles=['admin','Tesoreira','Director','Secretario','kurikulum','professor'])
 def Listaestudante(request):
 	group = request.user.groups.all()[0].name
-	est = Estudante.objects.all()		
+	# Exclude students who have been transferred out (approved OUT transfers) or are alumni
+	transferred_out_students = TransferStudent.objects.filter(
+		transfer_type='OUT', 
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	alumni_students = AlumniStudent.objects.filter(
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	excluded_students = set(list(transferred_out_students) + list(alumni_students))
+	est = Estudante.objects.exclude(id__in=excluded_students)		
+	
+	# Add alumni eligibility check for each student
+	from valor.models import valor_est
+	ano_act = Ano.objects.filter(is_active=True).first()
+	
+	for student in est:
+		# Get student's current active class
+		current_detail = DetailEst.objects.filter(
+			estudante=student,
+			is_active=True,
+			Ano_Academinco=ano_act
+		).first()
+		
+		# Count grades for each period separately
+		grades_periodo_1 = valor_est.objects.filter(
+			estudante=student,
+			Tinan_periode=ano_act,
+			periode__nome_periode='I Periodu'
+		).count()
+		
+		grades_periodo_2 = valor_est.objects.filter(
+			estudante=student,
+			Tinan_periode=ano_act,
+			periode__nome_periode='II Periodu'
+		).count()
+		
+		grades_periodo_3 = valor_est.objects.filter(
+			estudante=student,
+			Tinan_periode=ano_act,
+			periode__nome_periode='III Periodu'
+		).count()
+		
+		total_grades = grades_periodo_1 + grades_periodo_2 + grades_periodo_3
+		
+		# Check all conditions for alumni eligibility
+		is_12_ano = current_detail and current_detail.Turma.classe.name == '12 Ano' if current_detail else False
+		has_all_periods_complete = (grades_periodo_1 >= 13 and 
+									grades_periodo_2 >= 13 and 
+									grades_periodo_3 >= 13)
+		
+		student.is_alumni_eligible = is_12_ano and has_all_periods_complete
+		student.total_grades = total_grades
+		student.grades_periodo_1 = grades_periodo_1
+		student.grades_periodo_2 = grades_periodo_2
+		student.grades_periodo_3 = grades_periodo_3
+		student.current_class = current_detail.Turma.classe.name if current_detail else 'No Class'
+		student.is_12_ano = is_12_ano
+		student.has_all_periods_complete = has_all_periods_complete
+	
 	deps = departamento.objects.all().order_by('id')
 	tinan = Ano.objects.all()
-	KlasseLista = classe.objects.distinct().values('name').all()
+	# Exclude old Alumni classes from the filter buttons
+	KlasseLista = classe.objects.exclude(name__icontains='alumni').distinct().values('name').all()
 	Klasse = list()
 	for a in KlasseLista:
-		getClasse = classe.objects.filter(name=a['name']).last()
-		Klasse.append(getClasse)
+		getClasse = classe.objects.filter(name=a['name']).exclude(name__icontains='alumni').last()
+		if getClasse:  # Only add if class exists after filtering
+			Klasse.append(getClasse)
 	context = {
         'rejDadus':'active',
         'rejDadus2':'in active',
@@ -46,13 +108,81 @@ def Listaestudante(request):
 def ListEstudanteClass(request, id):
     group = request.user.groups.all()[0].name
     ano_act = Ano.objects.filter(is_active=True).first()
-    klasse = classe.objects.filter(name=id).last()
-    KlasseLista = classe.objects.distinct().values('name').all()
+    
+    # Prevent access to old Alumni classes
+    if 'alumni' in id.lower():
+        messages.error(request, 'Old Alumni classes are no longer accessible. Please use the new Alumni system.')
+        return redirect('Listaestudante')
+    
+    klasse = classe.objects.filter(name=id).exclude(name__icontains='alumni').last()
+    if not klasse:
+        messages.error(request, f'Class "{id}" not found or is an old Alumni class.')
+        return redirect('Listaestudante')
+        
+    # Exclude old Alumni classes from the filter buttons
+    KlasseLista = classe.objects.exclude(name__icontains='alumni').distinct().values('name').all()
     KlasseList = list()
     for a in KlasseLista:
-        getClasse = classe.objects.filter(name=a['name']).last()
-        KlasseList.append(getClasse)
-    est = DetailEst.objects.filter(Turma_id__classe__name=klasse.name,is_active=True,Ano_Academinco=ano_act).all().order_by('estudante__naran')
+        getClasse = classe.objects.filter(name=a['name']).exclude(name__icontains='alumni').last()
+        if getClasse:  # Only add if class exists after filtering
+            KlasseList.append(getClasse)
+    # Exclude students who have been transferred out (approved OUT transfers) or are alumni
+    transferred_out_students = TransferStudent.objects.filter(
+        transfer_type='OUT', 
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    alumni_students = AlumniStudent.objects.filter(
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    excluded_students = set(list(transferred_out_students) + list(alumni_students))
+    est = DetailEst.objects.filter(
+        Turma_id__classe__name=klasse.name,
+        is_active=True,
+        Ano_Academinco=ano_act
+    ).exclude(estudante_id__in=excluded_students).order_by('estudante__naran')
+    
+    # Add alumni eligibility check for each student
+    from valor.models import valor_est
+    for detail_est in est:
+        student = detail_est.estudante
+        
+        # Count grades for each period separately
+        grades_periodo_1 = valor_est.objects.filter(
+            estudante=student,
+            Tinan_periode=ano_act,
+            periode__nome_periode='I Periodu'
+        ).count()
+        
+        grades_periodo_2 = valor_est.objects.filter(
+            estudante=student,
+            Tinan_periode=ano_act,
+            periode__nome_periode='II Periodu'
+        ).count()
+        
+        grades_periodo_3 = valor_est.objects.filter(
+            estudante=student,
+            Tinan_periode=ano_act,
+            periode__nome_periode='III Periodu'
+        ).count()
+        
+        total_grades = grades_periodo_1 + grades_periodo_2 + grades_periodo_3
+        
+        # Check all conditions for alumni eligibility
+        is_12_ano = detail_est.Turma.classe.name == '12 Ano'
+        has_all_periods_complete = (grades_periodo_1 >= 13 and 
+                                    grades_periodo_2 >= 13 and 
+                                    grades_periodo_3 >= 13)
+        
+        student.is_alumni_eligible = is_12_ano and has_all_periods_complete
+        student.total_grades = total_grades
+        student.grades_periodo_1 = grades_periodo_1
+        student.grades_periodo_2 = grades_periodo_2
+        student.grades_periodo_3 = grades_periodo_3
+        student.current_class = detail_est.Turma.classe.name
+        student.is_12_ano = is_12_ano
+        student.has_all_periods_complete = has_all_periods_complete
 	
     sumariuEstudante = list()
     depList = departamento.objects.all()
@@ -86,7 +216,23 @@ def ListEstDepClaTur(request, idDep,klasse,idTur):
 	for a in KlasseLista:
 		getClasse = classe.objects.filter(name=a['name']).last()
 		KlasseList.append(getClasse)
-	est = DetailEst.objects.filter(Turma_id__classe_id__Departamento=dep,Turma_id__classe__name=klasse.name,Turma=tur,is_active=True).all().order_by('estudante__naran')
+	# Exclude students who have been transferred out (approved OUT transfers) or are alumni
+	transferred_out_students = TransferStudent.objects.filter(
+		transfer_type='OUT', 
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	alumni_students = AlumniStudent.objects.filter(
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	excluded_students = set(list(transferred_out_students) + list(alumni_students))
+	est = DetailEst.objects.filter(
+		Turma_id__classe_id__Departamento=dep,
+		Turma_id__classe__name=klasse.name,
+		Turma=tur,
+		is_active=True
+	).exclude(estudante_id__in=excluded_students).order_by('estudante__naran')
 	
 	sumariuEstudante = list()
 	depList = departamento.objects.all()
@@ -111,7 +257,18 @@ def ListEstDepClaTur(request, idDep,klasse,idTur):
 def EstTinList(request, pk):
 	group = request.user.groups.all()[0].name 
 	tin = get_object_or_404(Ano, pk=pk)
-	est = DetailEst.objects.filter(Ano_Academinco=tin).all().order_by('Ano_Academinco')
+	# Exclude students who have been transferred out (approved OUT transfers) or are alumni
+	transferred_out_students = TransferStudent.objects.filter(
+		transfer_type='OUT', 
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	alumni_students = AlumniStudent.objects.filter(
+		status='APPROVED'
+	).values_list('estudante_id', flat=True)
+	
+	excluded_students = set(list(transferred_out_students) + list(alumni_students))
+	est = DetailEst.objects.filter(Ano_Academinco=tin).exclude(estudante_id__in=excluded_students).order_by('Ano_Academinco')
 	# tinan = Ano.objects.all()
 	context = {'est': est, 'group': group,"page":"list",
 		'title': 'Lista Estudante', 'legend': 'Lista Estudante'
@@ -297,7 +454,18 @@ def list_students_aprovado(request):
     # print(group)
     KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
     ano_act = Ano.objects.filter(is_active=True).first()
-    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    # Exclude students who have been transferred out (approved OUT transfers) or are alumni
+    transferred_out_students = TransferStudent.objects.filter(
+        transfer_type='OUT', 
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    alumni_students = AlumniStudent.objects.filter(
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    excluded_students = set(list(transferred_out_students) + list(alumni_students))
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act).exclude(estudante_id__in=excluded_students)
     # estudantes = Estudante.objects.all()
     students_with_media = []  # Initialize the list here
     object_disc = 13
@@ -355,7 +523,18 @@ def ListEstudanteClassAprovado(request):
     group = request.user.groups.all()[0].name
     KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
     ano_act = Ano.objects.filter(is_active=True).first()
-    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    # Exclude students who have been transferred out (approved OUT transfers) or are alumni
+    transferred_out_students = TransferStudent.objects.filter(
+        transfer_type='OUT', 
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    alumni_students = AlumniStudent.objects.filter(
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    excluded_students = set(list(transferred_out_students) + list(alumni_students))
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act).exclude(estudante_id__in=excluded_students)
     # estudantes = Estudante.objects.all()
     # ano_act = Ano.objects.filter(is_active=True).first()
     students_with_media = []  # Initialize the list here
@@ -402,7 +581,18 @@ def ListEstudanteClassAprovado12(request):
     group = request.user.groups.all()[0].name
     KlasseLista = classe.objects.exclude(name__icontains='alumni').values('name').distinct()
     ano_act = Ano.objects.filter(is_active=True).first()
-    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act)
+    # Exclude students who have been transferred out (approved OUT transfers) or are alumni
+    transferred_out_students = TransferStudent.objects.filter(
+        transfer_type='OUT', 
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    alumni_students = AlumniStudent.objects.filter(
+        status='APPROVED'
+    ).values_list('estudante_id', flat=True)
+    
+    excluded_students = set(list(transferred_out_students) + list(alumni_students))
+    estudantes = DetailEst.objects.filter(Ano_Academinco=ano_act).exclude(estudante_id__in=excluded_students)
     # estudantes = Estudante.objects.all()
     students_with_media = []  # Initialize the list here
     object_disc = 13 
@@ -452,8 +642,22 @@ def ListEstTurma(request):
     user = request.user
     prof = Funsionariu.objects.get(user = user)
     profturma = FunsionarioTurma.objects.filter(funsionario = prof.id).last()
-    if profturma:  
-        list_est = DetailEst.objects.filter(Turma = profturma.turma, Ano_Academinco = profturma.ano)
+    if profturma:
+        # Exclude students who have been transferred out (approved OUT transfers) or are alumni
+        transferred_out_students = TransferStudent.objects.filter(
+            transfer_type='OUT', 
+            status='APPROVED'
+        ).values_list('estudante_id', flat=True)
+        
+        alumni_students = AlumniStudent.objects.filter(
+            status='APPROVED'
+        ).values_list('estudante_id', flat=True)
+        
+        excluded_students = set(list(transferred_out_students) + list(alumni_students))
+        list_est = DetailEst.objects.filter(
+            Turma = profturma.turma, 
+            Ano_Academinco = profturma.ano
+        ).exclude(estudante_id__in=excluded_students)
     else:
         list_est = DetailEst.objects.none()
     context = {
@@ -544,6 +748,16 @@ def approve_transfer(request, transfer_id):
     transfer.approval_date = timezone.now()
     transfer.save()
     
+    # If it's an OUT transfer, deactivate the student's current detail record
+    if transfer.transfer_type == 'OUT':
+        current_detail = DetailEst.objects.filter(
+            estudante=transfer.estudante,
+            is_active=True
+        ).first()
+        if current_detail:
+            current_detail.is_active = False
+            current_detail.save()
+    
     messages.success(request, f'Transfer for {transfer.estudante.naran} approved successfully.')
     return redirect('list_transfers')
 
@@ -605,3 +819,192 @@ def transferred_out_students(request, year_id=None):
         'anos': anos,
     }
     return render(request, 'estudante/transfer/transferred_out_students.html', context)
+
+
+# ## Alumni functionality
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def list_alumni(request):
+    group = request.user.groups.all()[0].name
+    alumni_records = AlumniStudent.objects.all().order_by('-request_date')
+    
+    context = {
+        'alumni_records': alumni_records,
+        'group': group,
+        'title': 'Lista Alumni',
+        'page': 'list'
+    }
+    return render(request, 'estudante/alumni/list_alumni.html', context)
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def create_alumni_record(request, estudante_id):
+    group = request.user.groups.all()[0].name
+    estudante = get_object_or_404(Estudante, id=estudante_id)
+    
+    # Check if student meets both alumni requirements before allowing alumni creation
+    from valor.models import valor_est
+    ano_act = Ano.objects.filter(is_active=True).first()
+    
+    # Get student's current active class
+    current_detail = DetailEst.objects.filter(
+        estudante=estudante,
+        is_active=True,
+        Ano_Academinco=ano_act
+    ).first()
+    
+    # Count grades for each period separately
+    grades_periodo_1 = valor_est.objects.filter(
+        estudante=estudante,
+        Tinan_periode=ano_act,
+        periode__nome_periode='I Periodu'
+    ).count()
+    
+    grades_periodo_2 = valor_est.objects.filter(
+        estudante=estudante,
+        Tinan_periode=ano_act,
+        periode__nome_periode='II Periodu'
+    ).count()
+    
+    grades_periodo_3 = valor_est.objects.filter(
+        estudante=estudante,
+        Tinan_periode=ano_act,
+        periode__nome_periode='III Periodu'
+    ).count()
+    
+    total_grades = grades_periodo_1 + grades_periodo_2 + grades_periodo_3
+    
+    # Check all conditions
+    is_12_ano = current_detail and current_detail.Turma.classe.name == '12 Ano' if current_detail else False
+    has_all_periods_complete = (grades_periodo_1 >= 13 and 
+                                grades_periodo_2 >= 13 and 
+                                grades_periodo_3 >= 13)
+    
+    if not is_12_ano:
+        current_class = current_detail.Turma.classe.name if current_detail else 'No Class'
+        messages.error(request, f'Student {estudante.naran} is in {current_class}. Only students in 12 Ano class can become alumni.')
+        return redirect('Listaestudante')
+    
+    if not has_all_periods_complete:
+        missing_periods = []
+        if grades_periodo_1 < 13:
+            missing_periods.append(f'I Periodu ({grades_periodo_1}/13)')
+        if grades_periodo_2 < 13:
+            missing_periods.append(f'II Periodu ({grades_periodo_2}/13)')
+        if grades_periodo_3 < 13:
+            missing_periods.append(f'III Periodu ({grades_periodo_3}/13)')
+        
+        missing_text = ', '.join(missing_periods)
+        messages.error(request, f'Student {estudante.naran} needs 13 grades in each period. Missing: {missing_text}.')
+        return redirect('Listaestudante')
+    
+    # Get the student's current active detail record
+    current_detail = DetailEst.objects.filter(
+        estudante=estudante,
+        is_active=True
+    ).first()
+    
+    if request.method == 'POST':
+        form = AlumniForm(request.POST)
+        if form.is_valid():
+            alumni_record = form.save(commit=False)
+            alumni_record.estudante = estudante
+            alumni_record.save()
+            messages.success(request, f'Alumni record for {estudante.naran} created successfully.')
+            return redirect('list_alumni')
+    else:
+        # Pre-populate form with current student data
+        initial_data = {}
+        if current_detail:
+            initial_data['completed_turma'] = current_detail.Turma
+            initial_data['graduation_year'] = current_detail.Ano_Academinco
+        
+        form = AlumniForm(initial=initial_data)
+    
+    context = {
+        'form': form,
+        'estudante': estudante,
+        'current_detail': current_detail,
+        'group': group,
+        'title': f'Create Alumni Record - {estudante.naran}',
+        'page': 'form'
+    }
+    return render(request, 'estudante/alumni/create_alumni.html', context)
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def approve_alumni(request, alumni_id):
+    alumni_record = get_object_or_404(AlumniStudent, id=alumni_id)
+    alumni_record.status = 'APPROVED'
+    alumni_record.approved_by = request.user
+    from django.utils import timezone
+    alumni_record.approval_date = timezone.now()
+    alumni_record.save()
+    
+    # Deactivate the student's current detail record
+    current_detail = DetailEst.objects.filter(
+        estudante=alumni_record.estudante,
+        is_active=True
+    ).first()
+    if current_detail:
+        current_detail.is_active = False
+        current_detail.save()
+    
+    messages.success(request, f'Alumni record for {alumni_record.estudante.naran} approved successfully.')
+    return redirect('list_alumni')
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def reject_alumni(request, alumni_id):
+    alumni_record = get_object_or_404(AlumniStudent, id=alumni_id)
+    alumni_record.status = 'REJECTED'
+    alumni_record.approved_by = request.user
+    from django.utils import timezone
+    alumni_record.approval_date = timezone.now()
+    alumni_record.save()
+    
+    messages.warning(request, f'Alumni record for {alumni_record.estudante.naran} rejected.')
+    return redirect('list_alumni')
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def alumni_detail(request, alumni_id):
+    alumni_record = get_object_or_404(AlumniStudent, id=alumni_id)
+    group = request.user.groups.all()[0].name
+    
+    context = {
+        'alumni_record': alumni_record,
+        'group': group,
+        'title': f'Alumni Detail - {alumni_record.estudante.naran}',
+        'page': 'detail'
+    }
+    return render(request, 'estudante/alumni/alumni_detail.html', context)
+
+@login_required
+@allowed_users(allowed_roles=['admin', 'Secretario'])
+def approved_alumni_students(request, year_id=None):
+    group = request.user.groups.all()[0].name
+    
+    # Get students who have been approved as alumni
+    alumni_records = AlumniStudent.objects.filter(
+        status='APPROVED'
+    ).select_related('estudante')
+
+    anos = Ano.objects.all()
+    
+    if year_id:
+        year = get_object_or_404(Ano, id=year_id)
+        alumni_records = alumni_records.filter(graduation_year=year)
+        title = f'Alumni Students - {year.ano}'
+    else:
+        title = 'All Alumni Students'
+    
+    context = {
+        'alumni_records': alumni_records,
+        'group': group,
+        'title': title,
+        'page': 'list',
+        'anos': anos,
+    }
+    return render(request, 'estudante/alumni/approved_alumni_students.html', context)

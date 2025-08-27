@@ -1,0 +1,90 @@
+{% extends "main/layout1.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+<section>
+  <div class="container mt-5 border-0 p-3">
+    <header>
+      <ol class="breadcrumb mb-1 mt-1">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+        <li class="breadcrumb-item"><a href="#">Estudante</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'list_alumni' %}">Alumni</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+      </ol>
+    </header>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div id="divmessage" class="alert alert-{{ message.tags }} alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">{{title}}</h5>
+          </div>
+          
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              {% crispy form %}
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Informasaun Estudante</h5>
+          </div>
+          
+          <div class="card-body">
+            <div class="text-center mb-3">
+              {% if estudante.image %}
+                <img src="{{ estudante.image.url }}" alt="{{estudante.naran}}" 
+                     class="img-thumbnail" style="width: 150px;">
+              {% else %}
+                <img src="{% static 'main/images/default-avatar.png' %}" alt="{{estudante.naran}}" 
+                     class="img-thumbnail" style="width: 150px;">
+              {% endif %}
+            </div>
+            
+            <table class="table table-sm">
+              <tr>
+                <td><strong>Naran:</strong></td>
+                <td>{{estudante.naran}}</td>
+              </tr>
+              <tr>
+                <td><strong>EMIS:</strong></td>
+                <td>{{estudante.emis}}</td>
+              </tr>
+              <tr>
+                <td><strong>Sexu:</strong></td>
+                <td>{{estudante.Sexo}}</td>
+              </tr>
+              {% if current_detail %}
+              <tr>
+                <td><strong>Turma Atual:</strong></td>
+                <td>{{current_detail.Turma}}</td>
+              </tr>
+              <tr>
+                <td><strong>Tinan Akademiku:</strong></td>
+                <td>{{current_detail.Ano_Academinco.ano}}</td>
+              </tr>
+              {% endif %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock contents %}

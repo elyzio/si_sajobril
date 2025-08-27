@@ -106,6 +106,11 @@ class est_classe_Form(forms.ModelForm):
 		
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
+		
+		# Hide Alumni classes from student forms - students now graduate through new AlumniStudent system
+		from Turma.models import turma
+		self.fields['Turma'].queryset = turma.objects.exclude(classe__name__icontains='alumni')
+		
 		self.helper = FormHelper()
 		self.helper.form_method = 'post'
 		self.helper.layout = Layout(
@@ -140,9 +145,11 @@ class InternalTransferForm(forms.ModelForm):
 		current_turma = kwargs.pop('current_turma', None)
 		super().__init__(*args, **kwargs)
 		
-		# Exclude current turma from choices
+		# Exclude current turma from choices and also exclude Alumni classes
+		turma_queryset = turma.objects.exclude(classe__name__icontains='alumni')
 		if current_turma:
-			self.fields['to_turma'].queryset = turma.objects.exclude(id=current_turma.id)
+			turma_queryset = turma_queryset.exclude(id=current_turma.id)
+		self.fields['to_turma'].queryset = turma_queryset
 		
 		self.helper = FormHelper()
 		self.helper.form_method = 'post'
@@ -181,6 +188,10 @@ class ExternalTransferForm(forms.ModelForm):
 	
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
+		
+		# Exclude Alumni classes from external transfer options
+		self.fields['to_turma'].queryset = turma.objects.exclude(classe__name__icontains='alumni')
+		
 		self.helper = FormHelper()
 		self.helper.form_method = 'post'
 		self.helper.layout = Layout(
@@ -201,5 +212,55 @@ class ExternalTransferForm(forms.ModelForm):
 				Column('reason', css_class='form-group col-md-12 mb-0'),
 			),
 			HTML(""" <div class="text-left mt-4"> <button class="btn btn-sm btn-labeled btn-warning" type="submit" title="Save"><span class="btn-label"><i class='fa fa-plane'></i></span> Transfer External</button>"""),
+			HTML("""  <button class="btn btn-sm btn-labeled btn-secondary" onclick=self.history.back()><span class="btn-label"><i class="fa fa-window-close"></i></span> Cancel</button></div>""")
+		)
+
+
+class AlumniForm(forms.ModelForm):
+	graduation_date = forms.DateField(label='Data Graduasaun', widget=DateInput())
+	
+	class Meta:
+		model = AlumniStudent
+		fields = ['graduation_year', 'completed_turma', 'graduation_date', 'final_grade', 'graduation_remarks', 'career_path', 'contact_info']
+		labels = {
+			'graduation_year': 'Tinan Graduasaun',
+			'completed_turma': 'Turma ne\'ebe Remata',
+			'graduation_date': 'Data Graduasaun',
+			'final_grade': 'Nota Final',
+			'graduation_remarks': 'Observasaun Graduasaun',
+			'career_path': 'Karreira/Estudu Seluk',
+			'contact_info': 'Informasaun Kontaktu'
+		}
+		widgets = {
+			'graduation_remarks': forms.Textarea(attrs={'rows': 3}),
+			'contact_info': forms.Textarea(attrs={'rows': 2}),
+			'final_grade': forms.NumberInput(attrs={'step': '0.01', 'min': '0', 'max': '20'})
+		}
+	
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.helper.form_method = 'post'
+		self.helper.layout = Layout(
+			Row(
+				Column('graduation_year', css_class='form-group col-md-6 mb-0'),
+				Column('completed_turma', css_class='form-group col-md-6 mb-0'),
+				css_class='form-row'
+			),
+			Row(
+				Column('graduation_date', css_class='form-group col-md-6 mb-0'),
+				Column('final_grade', css_class='form-group col-md-6 mb-0'),
+				css_class='form-row'
+			),
+			Row(
+				Column('career_path', css_class='form-group col-md-12 mb-0'),
+			),
+			Row(
+				Column('graduation_remarks', css_class='form-group col-md-12 mb-0'),
+			),
+			Row(
+				Column('contact_info', css_class='form-group col-md-12 mb-0'),
+			),
+			HTML(""" <div class="text-left mt-4"> <button class="btn btn-sm btn-labeled btn-success" type="submit" title="Save"><span class="btn-label"><i class='fa fa-graduation-cap'></i></span> Registu Alumni</button>"""),
 			HTML("""  <button class="btn btn-sm btn-labeled btn-secondary" onclick=self.history.back()><span class="btn-label"><i class="fa fa-window-close"></i></span> Cancel</button></div>""")
 		)

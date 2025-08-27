@@ -15,7 +15,9 @@ from Turma.models import turma
 def listaReport(request):
 	Total_estudante=Estudante.objects.all().count()
 	totalProfessores = Funsionariu.objects.all().count()
-	totlAlumi=DetailEst.objects.filter(Turma_id__classe__name='Alumni').all().count()
+	# Use new Alumni system instead of old Alumni classes
+	from estudante.models import AlumniStudent
+	totlAlumi=AlumniStudent.objects.filter(status='APPROVED').count()
 	totalestudanteMane=Estudante.objects.filter(Sexo='Mane').count()
 	totalestudanteFeto=Estudante.objects.filter(Sexo='Feto').count()
 	
@@ -58,11 +60,14 @@ def reporlistaestudante(request):
 	tur3=turma.objects.filter(classe__name='Alumni')
 	dep=departamento.objects.order_by('-nome_departamento')
 	Total_estudante=Estudante.objects.all().count()
-	Total_estudante1=Estudante.objects.exclude(detailest__Turma__classe__name='Alumni').count()
+	# Use new Alumni system for active student count
+	from estudante.models import AlumniStudent
+	approved_alumni_ids = AlumniStudent.objects.filter(status='APPROVED').values_list('estudante_id', flat=True)
+	Total_estudante1=Estudante.objects.exclude(id__in=approved_alumni_ids).count()
 	totalProfessores = Funsionariu.objects.all().count()
 	totalestudanteMane=Estudante.objects.filter(Sexo='Mane').count()
 	totalestudanteFeto=Estudante.objects.filter(Sexo='Feto').count()
-	totlAlumi=DetailEst.objects.filter(Turma_id__classe__name='Alumni').count()
+	totlAlumi=AlumniStudent.objects.filter(status='APPROVED').count()
 	loopingturm=[] 
 	for tt in tur.iterator():
 		tot=DetailEst.objects.filter(Turma_id=tt.id,Turma_id__classe__name='10 Ano').count()
@@ -413,12 +418,14 @@ def EReportListActiveEstudanteAlumiprint(request):
 @allowed_users(allowed_roles=['admin','Director','Secretario','kurikulum','professor'])
 def ListaEstudanteAlumi(request):
 	group = request.user.groups.all()[0].name
-	objects = DetailEst.objects.filter(Turma_id__classe__name='Alumni')
+	# Use new Alumni system instead of old Alumni classes
+	from estudante.models import AlumniStudent
+	alumni_records = AlumniStudent.objects.filter(status='APPROVED').select_related('estudante')
 
 	context ={
-		"title":f"Pajina Relatoriu Lista Estudante",
+		"title":f"Pajina Relatoriu Lista Estudante Alumni",
 		"report_active":"active",
-		"objects":objects,
+		"objects":alumni_records,  # Pass alumni records instead of DetailEst objects
 		'group': group,
 		"page":"list",
 		
@@ -502,28 +509,44 @@ def report_shart(request):
 @login_required()
 def report_shartAlumni(request):
 	group = request.user.groups.all()[0].name
+	from estudante.models import AlumniStudent
+	
+	# Use new Alumni system
 	estudante = Estudante.objects.all()
-	Total_estudante=DetailEst.objects.all().count() 
-	totalestudanteMane=DetailEst.objects.filter(estudante_id__Sexo='Mane', Turma_id__classe__name='Alumni').count()
-	totalestudanteFeto=DetailEst.objects.filter(estudante_id__Sexo='Feto', Turma_id__classe__name='Alumni').count()
-	ano=Ano.objects.order_by('-ano')
+	Total_estudante = DetailEst.objects.all().count() 
+	
+	# Get Alumni statistics by gender using new system
+	approved_alumni = AlumniStudent.objects.filter(status='APPROVED').select_related('estudante')
+	totalestudanteMane = approved_alumni.filter(estudante__Sexo='Mane').count()
+	totalestudanteFeto = approved_alumni.filter(estudante__Sexo='Feto').count()
+	ano = Ano.objects.order_by('-ano')
 
-	tur3=turma.objects.filter(classe__name='Alumni')
+	# Remove old alumni turma references
+	# tur3=turma.objects.filter(classe__name='Alumni')
 	# .....................luping estudante kada munisipiu..........................
 	data_class=classe.objects.all()
 	loopingestudanteano= []	
-	for x in ano.iterator() :
-		total_sexo_Mane_tinan = DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id,estudante_id__Sexo="Mane", Turma_id__classe__name='Alumni').count()
-		total_sexo_Feto_tinan = DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id,estudante_id__Sexo="Feto", Turma_id__classe__name='Alumni').count()
+	for x in ano.iterator():
+		# Use new Alumni system for year-based statistics
+		total_sexo_Mane_tinan = AlumniStudent.objects.filter(
+			estudante__Ano_Resisto_id=x.id,
+			estudante__Sexo="Mane",
+			status='APPROVED'
+		).count()
+		total_sexo_Feto_tinan = AlumniStudent.objects.filter(
+			estudante__Ano_Resisto_id=x.id,
+			estudante__Sexo="Feto",
+			status='APPROVED'
+		).count()
 		loopingestudanteano.append({'id':x.id,'ano':x.ano,
 		'total_sexo_Mane_tinan':total_sexo_Mane_tinan,'total_sexo_Feto_tinan':total_sexo_Feto_tinan,})
 
 	data_mun=Municipality.objects.all()
 	loopingestudantesexo = []
 	for ii in data_mun.iterator():
-		total_sexo_Mane = DetailEst.objects.filter(estudante_id__municipality_id=ii.id, estudante_id__Sexo="Mane", Turma_id__classe__name='Alumni').count()
-		total_Sexo_Feto = DetailEst.objects.filter(estudante_id__municipality_id=ii.id,estudante_id__Sexo="Feto", Turma_id__classe__name='Alumni').count()
-		total_estudante=DetailEst.objects.filter(estudante_id__municipality_id=ii.id,Turma_id__classe__name='Alumni').all().count()
+		total_sexo_Mane = AlumniStudent.objects.filter(estudante__municipality_id=ii.id, estudante__Sexo="Mane", status='APPROVED').count()
+		total_Sexo_Feto = AlumniStudent.objects.filter(estudante__municipality_id=ii.id, estudante__Sexo="Feto", status='APPROVED').count()
+		total_estudante = AlumniStudent.objects.filter(estudante__municipality_id=ii.id, status='APPROVED').count()
 		loopingestudantesexo.append({'id':ii.id,'name':ii.name,
 			'total_sexo_Mane':total_sexo_Mane,'total_estudante':total_estudante,"total_Sexo_Feto":total_Sexo_Feto,})
 
@@ -532,9 +555,9 @@ def report_shartAlumni(request):
 	data_programa=departamento.objects.all()
 	loopingestudantesProgrm=[]
 	for x in data_tin.iterator():
-		total_estudantesCt = DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id,Turma_id__classe__name='Alumni',Turma_id__classe_id__Departamento__nome_departamento='Ciencias e Tecnologia').all().count()
-		total_estudantesCsh = DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id,Turma_id__classe__name='Alumni',Turma_id__classe_id__Departamento__nome_departamento='Ciensias Sociais e Humanidade').all().count()
-		total_estudante= DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id).all().count()
+		total_estudantesCt = AlumniStudent.objects.filter(estudante__Ano_Resisto_id=x.id, status='APPROVED', completed_turma__classe__Departamento__nome_departamento='Ciencias e Tecnologia').count()
+		total_estudantesCsh = AlumniStudent.objects.filter(estudante__Ano_Resisto_id=x.id, status='APPROVED', completed_turma__classe__Departamento__nome_departamento='Ciensias Sociais e Humanidade').count()
+		total_estudante = AlumniStudent.objects.filter(estudante__Ano_Resisto_id=x.id, status='APPROVED').count()
 		loopingestudantesProgrm.append({'id':x.id,'ano':x.ano,
 			'total_estudantesCt':total_estudantesCt,
 			'total_estudantesCsh':total_estudantesCsh,
@@ -547,8 +570,6 @@ def report_shartAlumni(request):
 		'loopingestudanteano':loopingestudanteano,'totalestudanteMane':totalestudanteMane,
 		'totalestudanteFeto':totalestudanteFeto,
 		'Total_estudante':Total_estudante,
-		'tur3':tur3,
-		'Total_estudante':Total_estudante,
 		"data_mun":data_mun,
 		"loopingestudantesexo":loopingestudantesexo,'loopingestudantesProgrm':loopingestudantesProgrm,
 		'group': group,
@@ -559,44 +580,62 @@ def report_shartAlumni(request):
 @login_required()
 def report_TabularAlumni(request):
 	group = request.user.groups.all()[0].name
+	from estudante.models import AlumniStudent
+	
+	# Use new Alumni system
 	estudante = Estudante.objects.all()
-	Total_estudante=DetailEst.objects.all().count() 
-	totalestudanteMane=DetailEst.objects.filter(estudante_id__Sexo='Mane', Turma_id__classe__name='Alumni').count()
-	totalestudanteFeto=DetailEst.objects.filter(estudante_id__Sexo='Feto', Turma_id__classe__name='Alumni').count()
-	ano=Ano.objects.order_by('-ano')
-	tur3=turma.objects.filter(classe__name='Alumni')
+	Total_estudante = DetailEst.objects.all().count() 
+	
+	# Get Alumni statistics by gender using new system
+	approved_alumni = AlumniStudent.objects.filter(status='APPROVED').select_related('estudante')
+	totalestudanteMane = approved_alumni.filter(estudante__Sexo='Mane').count()
+	totalestudanteFeto = approved_alumni.filter(estudante__Sexo='Feto').count()
+	ano = Ano.objects.order_by('-ano')
+	
+	# Remove old alumni turma references
+	# tur3=turma.objects.filter(classe__name='Alumni')
 	# .....................luping estudante kada munisipiu..........................
 	data_class=classe.objects.all()
 	loopingestudanteano= []	
-	for x in ano.iterator() :
-		total_sexo_Mane_tinan = DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id,estudante_id__Sexo="Mane", Turma_id__classe__name='Alumni').count()
-		total_sexo_Feto_tinan = DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id,estudante_id__Sexo="Feto", Turma_id__classe__name='Alumni').count()
+	for x in ano.iterator():
+		# Use new Alumni system for year-based statistics
+		total_sexo_Mane_tinan = AlumniStudent.objects.filter(
+			estudante__Ano_Resisto_id=x.id,
+			estudante__Sexo="Mane",
+			status='APPROVED'
+		).count()
+		total_sexo_Feto_tinan = AlumniStudent.objects.filter(
+			estudante__Ano_Resisto_id=x.id,
+			estudante__Sexo="Feto",
+			status='APPROVED'
+		).count()
 		loopingestudanteano.append({'id':x.id,'ano':x.ano,
 		'total_sexo_Mane_tinan':total_sexo_Mane_tinan,'total_sexo_Feto_tinan':total_sexo_Feto_tinan,})
 
 	data_mun=Municipality.objects.all()
 	loopingestudantesexo = []
 	for ii in data_mun.iterator():
-		total_sexo_Mane = DetailEst.objects.filter(estudante_id__municipality_id=ii.id, estudante_id__Sexo="Mane", Turma_id__classe__name='Alumni').count()
-		total_Sexo_Feto = DetailEst.objects.filter(estudante_id__municipality_id=ii.id,estudante_id__Sexo="Feto", Turma_id__classe__name='Alumni').count()
-		total_estudante=DetailEst.objects.filter(estudante_id__municipality_id=ii.id,Turma_id__classe__name='Alumni').all().count()
+		total_sexo_Mane = AlumniStudent.objects.filter(estudante__municipality_id=ii.id, estudante__Sexo="Mane", status='APPROVED').count()
+		total_Sexo_Feto = AlumniStudent.objects.filter(estudante__municipality_id=ii.id, estudante__Sexo="Feto", status='APPROVED').count()
+		total_estudante = AlumniStudent.objects.filter(estudante__municipality_id=ii.id, status='APPROVED').count()
 		loopingestudantesexo.append({'id':ii.id,'name':ii.name,
 			'total_sexo_Mane':total_sexo_Mane,'total_estudante':total_estudante,"total_Sexo_Feto":total_Sexo_Feto,})
 
-	loopingturm3=[]
-	for tt in tur3.iterator():
-		tot3=DetailEst.objects.filter(Turma_id=tt.id,Turma_id__classe__name='Alumni').count()
-		loopingturm3.append({'id':tt.id,'Turma':tt.Turma,
-			'tot3':tot3,
-			})
+	# Remove old Alumni turma loops since we're using new Alumni system
+	# loopingturm3=[]
+	# for tt in tur3.iterator():
+	#	tot3=DetailEst.objects.filter(Turma_id=tt.id,Turma_id__classe__name='Alumni').count()
+	#	loopingturm3.append({'id':tt.id,'Turma':tt.Turma,
+	#		'tot3':tot3,
+	#		})
 #LOOPING DEPARTAMENTO
 	data_tin=Ano.objects.all()
 	data_programa=departamento.objects.all()
 	loopingestudantesProgrm=[]
 	for x in data_tin.iterator():
-		total_estudantesCt = DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id,Turma_id__classe__name='Alumni',Turma_id__classe_id__Departamento__nome_departamento='Ciencias e Tecnologia').all().count()
-		total_estudantesCsh = DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id,Turma_id__classe__name='Alumni',Turma_id__classe_id__Departamento__nome_departamento='Ciensias Sociais e Humanidade').all().count()
-		total_estudante= DetailEst.objects.filter(estudante_id__Ano_Resisto_id=x.id).all().count()
+		total_estudantesCt = AlumniStudent.objects.filter(estudante__Ano_Resisto_id=x.id, status='APPROVED', completed_turma__classe__Departamento__nome_departamento='Ciencias e Tecnologia').count()
+		total_estudantesCsh = AlumniStudent.objects.filter(estudante__Ano_Resisto_id=x.id, status='APPROVED', completed_turma__classe__Departamento__nome_departamento='Ciensias Sociais e Humanidade').count()
+		total_estudante = AlumniStudent.objects.filter(estudante__Ano_Resisto_id=x.id, status='APPROVED').count()
 		loopingestudantesProgrm.append({'id':x.id,'ano':x.ano,
 			'total_estudantesCt':total_estudantesCt,
 			'total_estudantesCsh':total_estudantesCsh,
@@ -606,10 +645,8 @@ def report_TabularAlumni(request):
 	dict = {
 		"title":"Sistema Informasaun Akademiku Escola Secundario Colegio Santo de Inacio de Loiola ",
 		'konfigurasaunActive':"active",
-		'loopingestudanteano':loopingestudanteano,'totalestudanteMane':totalestudanteMane,'loopingturm3':loopingturm3,
+		'loopingestudanteano':loopingestudanteano,'totalestudanteMane':totalestudanteMane,
 		'totalestudanteFeto':totalestudanteFeto,
-		'Total_estudante':Total_estudante,
-		'tur3':tur3,
 		'Total_estudante':Total_estudante,
 		"data_mun":data_mun,
 		"loopingestudantesexo":loopingestudantesexo,'loopingestudantesProgrm':loopingestudantesProgrm,
